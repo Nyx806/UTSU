@@ -16,16 +16,7 @@ class Posts
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $post_ID = null;
-
-    #[ORM\Column]
-    private ?int $user_ID = null;
-
-    #[ORM\Column]
-    private ?int $cat_ID = null;
-
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(length: 255)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -39,69 +30,33 @@ class Posts
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $poster = null;
+    private ?User $userID = null;
 
-    /**
-     * @var Collection<int, Commentaire>
-     */
-    #[ORM\ManyToMany(targetEntity: Commentaire::class, inversedBy: 'posts')]
-    private Collection $com;
+    #[ORM\ManyToOne(inversedBy: 'posts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Categories $cat = null;
 
     /**
      * @var Collection<int, Likes>
      */
-    #[ORM\ManyToMany(targetEntity: Likes::class, inversedBy: 'posts')]
+    #[ORM\OneToMany(targetEntity: Likes::class, mappedBy: 'post', orphanRemoval: true)]
     private Collection $likes;
 
-    #[ORM\ManyToOne(inversedBy: 'post')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Categories $categories = null;
+    /**
+     * @var Collection<int, Commentaires>
+     */
+    #[ORM\OneToMany(targetEntity: Commentaires::class, mappedBy: 'post')]
+    private Collection $commentaires;
 
     public function __construct()
     {
-        $this->com = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->commentaires = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getPostID(): ?int
-    {
-        return $this->post_ID;
-    }
-
-    public function setPostID(int $post_ID): static
-    {
-        $this->post_ID = $post_ID;
-
-        return $this;
-    }
-
-    public function getUserID(): ?int
-    {
-        return $this->user_ID;
-    }
-
-    public function setUserID(int $user_ID): static
-    {
-        $this->user_ID = $user_ID;
-
-        return $this;
-    }
-
-    public function getCatID(): ?int
-    {
-        return $this->cat_ID;
-    }
-
-    public function setCatID(int $cat_ID): static
-    {
-        $this->cat_ID = $cat_ID;
-
-        return $this;
     }
 
     public function getTitle(): ?string
@@ -152,38 +107,26 @@ class Posts
         return $this;
     }
 
-    public function getPoster(): ?User
+    public function getUserID(): ?User
     {
-        return $this->poster;
+        return $this->userID;
     }
 
-    public function setPoster(?User $poster): static
+    public function setUserID(?User $userID): static
     {
-        $this->poster = $poster;
+        $this->userID = $userID;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Commentaire>
-     */
-    public function getCom(): Collection
+    public function getCat(): ?Categories
     {
-        return $this->com;
+        return $this->cat;
     }
 
-    public function addCom(Commentaire $com): static
+    public function setCat(?Categories $cat): static
     {
-        if (!$this->com->contains($com)) {
-            $this->com->add($com);
-        }
-
-        return $this;
-    }
-
-    public function removeCom(Commentaire $com): static
-    {
-        $this->com->removeElement($com);
+        $this->cat = $cat;
 
         return $this;
     }
@@ -200,6 +143,7 @@ class Posts
     {
         if (!$this->likes->contains($like)) {
             $this->likes->add($like);
+            $like->setPost($this);
         }
 
         return $this;
@@ -207,19 +151,42 @@ class Posts
 
     public function removeLike(Likes $like): static
     {
-        $this->likes->removeElement($like);
+        if ($this->likes->removeElement($like)) {
+            // set the owning side to null (unless already changed)
+            if ($like->getPost() === $this) {
+                $like->setPost(null);
+            }
+        }
 
         return $this;
     }
 
-    public function getCategories(): ?Categories
+    /**
+     * @return Collection<int, Commentaires>
+     */
+    public function getCommentaires(): Collection
     {
-        return $this->categories;
+        return $this->commentaires;
     }
 
-    public function setCategories(?Categories $categories): static
+    public function addCommentaire(Commentaires $commentaire): static
     {
-        $this->categories = $categories;
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaires $commentaire): static
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getPost() === $this) {
+                $commentaire->setPost(null);
+            }
+        }
 
         return $this;
     }
