@@ -16,38 +16,23 @@ class Categories
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $categorie_ID = null;
-
     #[ORM\Column(type: Types::TEXT)]
     private ?string $name = null;
 
     /**
      * @var Collection<int, Posts>
      */
-    #[ORM\OneToMany(targetEntity: Posts::class, mappedBy: 'categories')]
-    private Collection $post;
+    #[ORM\OneToMany(targetEntity: Posts::class, mappedBy: 'cat', orphanRemoval: true)]
+    private Collection $posts;
 
     public function __construct()
     {
-        $this->post = new ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCategorieID(): ?int
-    {
-        return $this->categorie_ID;
-    }
-
-    public function setCategorieID(int $categorie_ID): static
-    {
-        $this->categorie_ID = $categorie_ID;
-
-        return $this;
     }
 
     public function getName(): ?string
@@ -65,16 +50,16 @@ class Categories
     /**
      * @return Collection<int, Posts>
      */
-    public function getPost(): Collection
+    public function getPosts(): Collection
     {
-        return $this->post;
+        return $this->posts;
     }
 
     public function addPost(Posts $post): static
     {
-        if (!$this->post->contains($post)) {
-            $this->post->add($post);
-            $post->setCategories($this);
+        if (!$this->posts->contains($post)) {
+            $this->posts->add($post);
+            $post->setCat($this);
         }
 
         return $this;
@@ -82,10 +67,10 @@ class Categories
 
     public function removePost(Posts $post): static
     {
-        if ($this->post->removeElement($post)) {
+        if ($this->posts->removeElement($post)) {
             // set the owning side to null (unless already changed)
-            if ($post->getCategories() === $this) {
-                $post->setCategories(null);
+            if ($post->getCat() === $this) {
+                $post->setCat(null);
             }
         }
 

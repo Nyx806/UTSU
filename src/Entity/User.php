@@ -7,14 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -38,7 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(type: Types::BLOB)]
-    private $pp_image = null;
+    private $pp_img = null;
 
     #[ORM\Column]
     private ?int $type = null;
@@ -46,24 +44,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Abonnement>
      */
-    #[ORM\ManyToMany(targetEntity: Abonnement::class, inversedBy: 'users')]
-    private Collection $abonnement;
+    #[ORM\OneToMany(targetEntity: Abonnement::class, mappedBy: 'userID')]
+    private Collection $abonnements;
 
     /**
      * @var Collection<int, Posts>
      */
-    #[ORM\OneToMany(targetEntity: Posts::class, mappedBy: 'poster')]
+    #[ORM\OneToMany(targetEntity: Posts::class, mappedBy: 'userID')]
     private Collection $posts;
 
     /**
      * @var Collection<int, Likes>
      */
-    #[ORM\OneToMany(targetEntity: Likes::class, mappedBy: 'user_like')]
+    #[ORM\OneToMany(targetEntity: Likes::class, mappedBy: 'userID', orphanRemoval: true)]
     private Collection $likes;
 
     public function __construct()
     {
-        $this->abonnement = new ArrayCollection();
+        $this->abonnements = new ArrayCollection();
         $this->posts = new ArrayCollection();
         $this->likes = new ArrayCollection();
     }
@@ -143,14 +141,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getPpImage()
+    public function getPpImg()
     {
-        return $this->pp_image;
+        return $this->pp_img;
     }
 
-    public function setPpImage($pp_image): static
+    public function setPpImg($pp_img): static
     {
-        $this->pp_image = $pp_image;
+        $this->pp_img = $pp_img;
 
         return $this;
     }
@@ -170,15 +168,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Abonnement>
      */
-    public function getAbonnement(): Collection
+    public function getAbonnements(): Collection
     {
-        return $this->abonnement;
+        return $this->abonnements;
     }
 
     public function addAbonnement(Abonnement $abonnement): static
     {
-        if (!$this->abonnement->contains($abonnement)) {
-            $this->abonnement->add($abonnement);
+        if (!$this->abonnements->contains($abonnement)) {
+            $this->abonnements->add($abonnement);
+            $abonnement->setUserID($this);
         }
 
         return $this;
@@ -186,7 +185,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeAbonnement(Abonnement $abonnement): static
     {
-        $this->abonnement->removeElement($abonnement);
+        if ($this->abonnements->removeElement($abonnement)) {
+            // set the owning side to null (unless already changed)
+            if ($abonnement->getUserID() === $this) {
+                $abonnement->setUserID(null);
+            }
+        }
 
         return $this;
     }
@@ -203,7 +207,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->posts->contains($post)) {
             $this->posts->add($post);
-            $post->setPoster($this);
+            $post->setUserID($this);
         }
 
         return $this;
@@ -213,8 +217,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->posts->removeElement($post)) {
             // set the owning side to null (unless already changed)
-            if ($post->getPoster() === $this) {
-                $post->setPoster(null);
+            if ($post->getUserID() === $this) {
+                $post->setUserID(null);
             }
         }
 
@@ -233,7 +237,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->likes->contains($like)) {
             $this->likes->add($like);
-            $like->setUserLike($this);
+            $like->setUserID($this);
         }
 
         return $this;
@@ -243,8 +247,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->likes->removeElement($like)) {
             // set the owning side to null (unless already changed)
-            if ($like->getUserLike() === $this) {
-                $like->setUserLike(null);
+            if ($like->getUserID() === $this) {
+                $like->setUserID(null);
             }
         }
 

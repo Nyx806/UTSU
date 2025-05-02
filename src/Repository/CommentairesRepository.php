@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\Tableau;
+use App\Entity\Commentaires;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Tableau>
+ * @extends ServiceEntityRepository<Commentaires>
  */
-class TableauRepository extends ServiceEntityRepository
+class CommentairesRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Tableau::class);
+        parent::__construct($registry, Commentaires::class);
     }
 
     //    /**
-    //     * @return Tableau[] Returns an array of Tableau objects
+    //     * @return Commentaires[] Returns an array of Commentaires objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
+    //        return $this->createQueryBuilder('c')
+    //            ->andWhere('c.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
+    //            ->orderBy('c.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Tableau
+    //    public function findOneBySomeField($value): ?Commentaires
     //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
+    //        return $this->createQueryBuilder('c')
+    //            ->andWhere('c.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()
