@@ -59,11 +59,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Likes::class, mappedBy: 'userID', orphanRemoval: true)]
     private Collection $likes;
 
+    #[ORM\Column(length: 255)]
+    private ?string $username = null;
+
+    /**
+     * @var Collection<int, Commentaires>
+     */
+    #[ORM\OneToMany(targetEntity: Commentaires::class, mappedBy: 'userID', orphanRemoval: true)]
+    private Collection $commentaires;
+
     public function __construct()
     {
         $this->abonnements = new ArrayCollection();
         $this->posts = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->commentaires = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -249,6 +259,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($like->getUserID() === $this) {
                 $like->setUserID(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commentaires>
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Commentaires $commentaire): static
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setUserID($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaires $commentaire): static
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getUserID() === $this) {
+                $commentaire->setUserID(null);
             }
         }
 

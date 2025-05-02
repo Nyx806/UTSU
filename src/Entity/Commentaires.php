@@ -41,6 +41,10 @@ class Commentaires
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'com_parent')]
     private Collection $commentaires;
 
+    #[ORM\ManyToOne(inversedBy: 'commentaires')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $userID = null;
+
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
@@ -149,6 +153,18 @@ class Commentaires
                 $commentaire->setComParent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUserID(): ?User
+    {
+        return $this->userID;
+    }
+
+    public function setUserID(?User $userID): static
+    {
+        $this->userID = $userID;
 
         return $this;
     }
