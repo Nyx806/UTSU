@@ -66,14 +66,6 @@ class AppFixtures extends Fixture
         }
         
 
-
-        dd([
-            'users' => $suers,
-            'categories' => $categories,
-            'posts' => $posts,
-            'comments' => $comments,
-        ]);
-
         $manager->flush();
     }
 }
