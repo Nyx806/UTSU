@@ -25,7 +25,7 @@ class UserCrudController extends AbstractCrudController
             TextField::new('username'),
             TextField::new('email'),
             ArrayField::new('roles')->setHelp('["ROLE_USER"]'),
-            ImageField::new('image'),
+            ImageField::new('pp_img'),
         ];
     }
    

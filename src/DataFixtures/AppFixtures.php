@@ -23,7 +23,7 @@ class AppFixtures extends Fixture
             $user->setEmail($faker->email);
             $user->setPassword(password_hash('password', PASSWORD_BCRYPT));
             $user->setRoles(['ROLE_USER']);
-            $user->setPpImg($faker->imageUrl(640, 480, 'people', true));
+            $user->setPpImg('https://picsum.photos/100/150');
             $user->setType('1');
             $manager->persist($user);
             $suers[] = $user;
@@ -48,7 +48,7 @@ class AppFixtures extends Fixture
             $post->setUserID($suers[array_rand($suers)]);
             $post->setCat($categories[array_rand($categories)]);
             $post->setContenu($faker->paragraph(3, true));
-            $post->setPhoto($faker->imageUrl(640, 480, 'nature', true));
+            $post->setPhoto('https://picsum.photos/200/300'); // Random image URL);
             $manager->persist($post);
             $posts[] = $post;
         }
