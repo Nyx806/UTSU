@@ -19,8 +19,8 @@ class Commentaires
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
 
-    #[ORM\Column(type: Types::BLOB, nullable: true)]
-    private $img;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $img;
 
     #[ORM\Column(type: Types::BLOB, nullable: true)]
     private $video;

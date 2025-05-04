@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Controller\Admin;
+
+use App\Entity\Posts;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+
+class PostsCrudController extends AbstractCrudController
+{
+    public static function getEntityFqcn(): string
+    {
+        return Posts::class;
+    }
+
+        # TODO: changer le strockager des images ( blob pas supporter par easyadmin) possibilié de le passer en srting pour afficher l'url de l'image
+    
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            IdField::new('id'),
+            TextField::new('title'),
+            TextField::new('contenu'),
+            DateTimeField::new('date'),
+            AssociationField::new('userID'),
+            associationField::new('cat'),
+            ImageField::new('photo'),
+            AssociationField::new('likes'),
+            AssociationField::new('commentaires'),
+        ];
+    }
+   
+}
