@@ -18,6 +18,7 @@ class PostsCrudController extends AbstractCrudController
         return Posts::class;
     }
 
+        # TODO: changer le strockager des images ( blob pas supporter par easyadmin) possibilié de le passer en srting pour afficher l'url de l'image
     
     public function configureFields(string $pageName): iterable
     {
@@ -28,6 +29,7 @@ class PostsCrudController extends AbstractCrudController
             DateTimeField::new('date'),
             AssociationField::new('userID'),
             associationField::new('cat'),
+            ImageField::new('photo'),
             AssociationField::new('likes'),
             AssociationField::new('commentaires'),
         ];

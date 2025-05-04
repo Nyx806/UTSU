@@ -25,8 +25,8 @@ class Posts
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(type: Types::BLOB, nullable: true)]
-    private $photo;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $photo;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     #[ORM\JoinColumn(nullable: false)]
