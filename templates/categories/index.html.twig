@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CategoriesController!{% endblock %}
+
+{% block body %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liste des Catégories</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-blue-600">SocialCat</h1>
+    <div>
+      <a href="/" class="text-sm text-blue-600 hover:underline">Accueil</a>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="max-w-5xl mx-auto mt-8 p-4">
+    <h2 class="text-3xl font-bold mb-6 text-gray-800">Toutes les catégories</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {% for category in categories %}
+        <div class="bg-white rounded shadow p-4 flex flex-col justify-between">
+          <div>
+            <h3 class="text-xl font-semibold text-blue-600 mb-2">{{ category.name }}</h3>
+          </div>
+          <a href="#"
+             class="mt-auto inline-block text-sm bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+            Voir les posts
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</body>
+</html>
+
+{% endblock %}

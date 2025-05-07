@@ -2,16 +2,22 @@
 
 namespace App\Controller;
 
+use App\Repository\CategoriesRepository;
+use App\Repository\PostsRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class HomeController extends AbstractController{
     #[Route('/', name: 'app_home')]
-    public function index(): Response
+    public function index(CategoriesRepository $categoriesRepository,PostsRepository $postsRepository,UserRepository $userRepository): Response
     {
         return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
+            'categories' => $categoriesRepository->findBy([],['id' => 'ASC']),
+            'posts' => $postsRepository->findBy([],['id' => 'ASC']),
+            'users' => $userRepository->findBy([],['id' => 'ASC']),
+
         ]);
     }
 }
