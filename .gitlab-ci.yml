@@ -2,6 +2,8 @@ image: jakzal/phpqa:php8.4
 
 before_script:
   - composer install
+  - composer require --dev pheromone/phpcs-security-audit
+
 
 cache:
   paths:
@@ -15,7 +17,7 @@ stages:
 SecurityChecker:
   stage: SecurityChecker
   script:
-    - vendor/bin/phpcs --extensions=php,inc,lib,module,info --standard=./vendor/pheromone/phpcs-security-audit/example_base_ruleset.xml ./src
+    - vendor/bin/phpcs --extensions=php,inc,lib,module,info --standard=PSR2 ./src
   allow_failure: false
 
 security-checker:
