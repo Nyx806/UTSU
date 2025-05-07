@@ -15,7 +15,13 @@ stages:
 SecurityChecker:
   stage: SecurityChecker
   script:
-      - symfony security:check composer.lock
+      - phpcs --extensions=php,inc,lib,module,info --standard=./vendor/pheromone/phpcs-security-audit/example_base_ruleset.xml ./src
+  allow_failure: false
+
+security-checker:
+  stage: SecurityChecker
+  script:
+      - $ local-php-security-checker
   allow_failure: false
 
 phpcs:
