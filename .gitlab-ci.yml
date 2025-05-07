@@ -2,8 +2,6 @@ image: jakzal/phpqa:php8.4
 
 before_script:
   - composer install
-  - composer require --dev pheromone/phpcs-security-audit
-
 
 cache:
   paths:
@@ -17,35 +15,35 @@ stages:
 SecurityChecker:
   stage: SecurityChecker
   script:
-    - vendor/bin/phpcs --extensions=php,inc,lib,module,info --standard=PSR2 ./src
+      - phpcs --extensions=php,inc,lib,module,info --standard=Security ./src
   allow_failure: false
 
 security-checker:
   stage: SecurityChecker
   script:
-    - vendor/bin/local-php-security-checker
+      - local-php-security-checker
   allow_failure: false
 
 phpcs:
   stage: CodingStandards
   script:
-    - vendor/bin/phpcs --standard=PSR2 --ignore=./src/Kernel.php ./src
+      - phpcs --standard=PSR2 --ignore=./src/Kernel.php ./src
   allow_failure: false
 
 phpstan:
   stage: CodingStandards
   script:
-    - vendor/bin/phpstan analyse ./src
+      - phpstan analyse ./src
   allow_failure: false
 
 twig-lint:
   stage: CodingStandards
   script:
-    - twig-lint lint ./templates
+      - twig-lint lint ./templates
   allow_failure: false
 
 phpunit:
   stage: UnitTests
   script:
-    - php bin/phpunit
+      - php bin/phpunit
   allow_failure: false
