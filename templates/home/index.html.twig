@@ -4,6 +4,70 @@
 
 {% block body %}
 
-<h1>Welcome</h1>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Réseau Social</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-blue-600">SocialCat</h1>
+    <div>
+      <button class="text-sm bg-blue-600 text-white px-4 py-2 rounded">Se connecter</button>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div class="flex p-6 space-x-6">
+
+    <!-- Sidebar: Categories -->
+    <aside class="w-1/4 bg-white rounded shadow p-4">
+      <h2 class="text-xl font-semibold mb-4">Catégories</h2>
+      <ul class="space-y-2">
+        {% for category in categories %}
+        <li><a href="#" class="block px-3 py-2 hover:bg-blue-100 rounded">{{ category.name }}</a></li>
+        {% endfor %}
+        
+      </ul>
+      
+    </aside>
+
+    <!-- Posts Feed -->
+    <main class="flex-1">
+      <h2 class="text-2xl font-semibold mb-4">Posts récents</h2>
+
+      <div class="space-y-4">
+        <!-- Post -->
+        <div class="bg-white p-4 rounded shadow">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-gray-500">Publié par @alice dans #Technologie</span>
+            <span class="text-xs text-gray-400">il y a 2h</span>
+          </div>
+          <h3 class="text-lg font-bold mb-1">Nouvelles avancées en IA</h3>
+          <p class="text-gray-700">L'intelligence artificielle progresse à grands pas avec des modèles capables de générer du contenu de qualité...</p>
+        </div>
+
+        <!-- Post -->
+        <div class="bg-white p-4 rounded shadow">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-gray-500">Publié par @bob dans #Art</span>
+            <span class="text-xs text-gray-400">il y a 5h</span>
+          </div>
+          <h3 class="text-lg font-bold mb-1">Mon nouveau dessin numérique</h3>
+          <p class="text-gray-700">Voici ma dernière création réalisée sur Procreate. J'espère qu'elle vous plaira !</p>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+</body>
+</html>
+
 
 {% endblock %}
