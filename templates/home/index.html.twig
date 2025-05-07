@@ -27,7 +27,7 @@
 
     <!-- Sidebar: Categories -->
     <aside class="w-1/4 bg-white rounded shadow p-4">
-      <h2 class="text-xl font-semibold mb-4"><a href="#" class="block px-3 py-2 hover:bg-blue-100 rounded">Catégories</a></h2>
+      <h2 class="text-xl font-semibold mb-4"><a href="{{ path('categories_index')}}" class="block px-3 py-2 hover:bg-blue-100 rounded">Catégories</a></h2>
       <ul class="space-y-2">
         {% for category in categories %}
         <li><a href="#" class="block px-3 py-2 hover:bg-blue-100 rounded">{{ category.name }}</a></li>
