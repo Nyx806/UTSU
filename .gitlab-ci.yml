@@ -15,7 +15,7 @@ stages:
 SecurityChecker:
   stage: SecurityChecker
   script:
-      - security-checker security:check composer.lock
+      - symfony security:check composer.lock
   allow_failure: false
 
 phpcs:
