@@ -1,4 +1,5 @@
-// src/Controller/RegistrationController.php
+<?php
+
 namespace App\Controller;
 
 use App\Entity\User;
@@ -20,20 +21,11 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string $plainPassword */
+            // Récupération du mot de passe en clair
             $plainPassword = $form->get('plainPassword')->getData();
 
             // Hachage du mot de passe
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-
-            // On gère le type et la photo de profil
-            $type = $form->get('type')->getData();
-            $user->setType($type);
-            
-            $ppImage = $form->get('pp_image')->getData();
-            if ($ppImage) {
-                $user->setPpImage($ppImage);
-            }
 
             // Enregistrement en base de données
             $entityManager->persist($user);
