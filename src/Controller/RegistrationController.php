@@ -1,3 +1,5 @@
+<?php
+
 // src/Controller/RegistrationController.php
 namespace App\Controller;
 

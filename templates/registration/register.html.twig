@@ -1,28 +1,51 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Utsu{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+<div class="absolute inset-0 bg-cover bg-no-repeat flex items-center justify-end"
+     style="background-image: url('{{ asset('img/image.png') }}'); background-position: -100% center;">
 
-    {{ form_errors(registrationForm) }}
+  <!-- Formulaire -->
+  <div class="w-full max-w-[600px] bg-white border-4 border-black rounded-xl shadow-lg p-6 md:p-10 space-y-6 m-4 md:mr-10 overflow-y-auto max-h-[90vh]">
 
-    {{ form_start(registrationForm) }}
+    <!-- Bouton Exit -->
+    <button class="absolute top-4 right-4 text-black text-3xl leading-none">&times;</button>
 
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.username) }}
-        {{ form_row(registrationForm.type) }}
-        {{ form_row(registrationForm.pp_img) }}
+    <!-- Titre -->
+    <h1 class="text-4xl md:text-5xl font-bold text-[#030303] font-[Poppins] text-center">Welcome</h1>
+    <p class="text-lg md:text-2xl text-[#030303] font-[Roboto] font-bold text-center">Register</p>
 
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        
-        {{ form_row(registrationForm.agreeTerms, {
-            label: 'I agree to the terms and conditions'
-        }) }}
-        
-        <button type="submit" class="btn">Register</button>
+    <!-- Avatar -->
+    <div class="flex justify-center">
+      <div class="w-28 h-28 rounded-full bg-cover bg-center shadow-md"
+           style="background-image: url('{{ asset('img/pp_basic.png') }}')"></div>
+    </div>
 
-    {{ form_end(registrationForm) }}
+    <!-- Champs -->
+    <input type="text" placeholder="Username or Email"
+           class="w-full h-12 px-4 border border-[#979797] rounded-full bg-white text-slate-400 font-[Roboto] text-base focus:outline-none" />
+    <input type="email" placeholder="Email"
+           class="w-full h-12 px-4 border border-[#979797] rounded-full bg-white text-slate-400 font-[Roboto] text-base focus:outline-none" />
+    <input type="password" placeholder="Password"
+           class="w-full h-12 px-4 border border-[#979797] rounded-full bg-white text-slate-400 font-[Roboto] text-base focus:outline-none" />
+    <input type="password" placeholder="Retype password"
+           class="w-full h-12 px-4 border border-[#979797] rounded-full bg-white text-slate-400 font-[Roboto] text-base focus:outline-none" />
+
+    <!-- Captcha -->
+    <div class="w-full h-16 bg-[#d6c5a8] rounded-full flex items-center justify-center">
+      <img src="{{ asset('img/captcha.png') }}" alt="captcha" class="h-10" />
+    </div>
+
+    <!-- Bouton -->
+    <button class="w-full h-14 bg-[#796557] text-white text-sm md:text-base font-bold font-[Roboto] rounded-full hover:bg-[#5f4e44] transition">
+      Register
+    </button>
+
+    <!-- Lien login -->
+    <p class="text-sm text-[#030303] font-[Roboto] text-center">
+      Already have an account? <a href="#" class="text-green-700 font-medium">Login</a>
+    </p>
+  </div>
+</div>
 {% endblock %}
