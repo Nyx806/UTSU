@@ -1,6 +1,5 @@
 <?php
 
-// src/Controller/RegistrationController.php
 namespace App\Controller;
 
 use App\Entity\User;
@@ -22,6 +21,9 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($form->getErrors(true) as $error) {
+                dump($error->getMessage());
+            }
             // Récupération du mot de passe en clair
             $plainPassword = $form->get('plainPassword')->getData();
 

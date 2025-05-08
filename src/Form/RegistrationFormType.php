@@ -13,18 +13,40 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
+            ->add('email', EmailType::class, [
+                'required' => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'Please enter an email']),
+                    new Length([
+                        'max' => 180,
+                        'maxMessage' => 'The email cannot exceed {{ limit }} characters',
+                    ]),
+                ],
+            ])
             ->add('username', TextType::class, [
                 'required' => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'Please enter a username']),
+                    new Length([
+                        'min' => 3,
+                        'minMessage' => 'Your username should be at least {{ limit }} characters',
+                        'max' => 255,
+                        'maxMessage' => 'Your username cannot exceed {{ limit }} characters',
+                    ]),
+                ],
             ])
             ->add('type', IntegerType::class, [
                 'required' => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'Please select a type']),
+                ],
             ])
             ->add('pp_img', TextType::class, [
                 'required' => false,
@@ -32,26 +54,21 @@ class RegistrationFormType extends AbstractType
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
+                    new IsTrue(['message' => 'You should agree to our terms.']),
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
+                    new NotBlank(['message' => 'Please enter a password']),
                     new Length([
                         'min' => 6,
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
                         'max' => 4096,
                     ]),
                 ],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
