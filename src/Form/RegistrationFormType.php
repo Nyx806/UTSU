@@ -1,6 +1,8 @@
 <?php
 
+
 namespace App\Form;
+
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
@@ -8,12 +10,15 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+
 
 class RegistrationFormType extends AbstractType
 {
@@ -42,14 +47,23 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('type', IntegerType::class, [
-                'required' => true,
-                'constraints' => [
-                    new NotBlank(['message' => 'Please select a type']),
-                ],
-            ])
-            ->add('pp_img', TextType::class, [
+            ->add('pp_img', FileType::class, [
                 'required' => false,
+                'mapped' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid image (JPEG, PNG, GIF)',
+                    ]),
+                ],
+                'attr' => [
+                    'accept' => 'image/*',
+                ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
@@ -70,6 +84,7 @@ class RegistrationFormType extends AbstractType
                 ],
             ]);
     }
+
 
     public function configureOptions(OptionsResolver $resolver): void
     {
