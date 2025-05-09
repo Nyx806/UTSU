@@ -1,25 +1,121 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Utsu{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+<div class="absolute inset-0 bg-cover bg-no-repeat flex items-center justify-end"
+     style="background-image: url('{{ asset('img/image.png') }}'); background-position: -100% center;">
 
+  {{ form_start(registrationForm, {
+    attr: {
+      enctype: 'multipart/form-data',
+      class: 'w-full max-w-[600px] bg-white border-4 border-black rounded-xl shadow-lg p-6 md:p-10 space-y-6 m-4 md:mr-10 overflow-y-auto max-h-[90vh]'
+    }
+  }) }}
+
+    <!-- Bouton Exit -->
+    <button class="absolute top-4 right-4 text-black text-3xl leading-none" type="button">&times;</button>
+
+    <!-- Titre -->
+    <h1 class="text-4xl md:text-5xl font-bold text-[#030303] font-[Poppins] text-center">Welcome</h1>
+    <p class="text-lg md:text-2xl text-[#030303] font-[Roboto] font-bold text-center">Register</p>
+
+    <!-- Affichage erreurs globales -->
     {{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-    
-        {{ form_row(registrationForm.email) }}
+    <!-- Avatar interactif -->
+    <div class="flex justify-center">
+    <label for="{{ registrationForm.pp_img.vars.id }}" class="cursor-pointer relative group">
+        <div id="avatarPreview" class="w-28 h-28 rounded-full bg-cover bg-center shadow-md"
+            style="background-image: url('{{ asset('img/pp_basic.png') }}')"></div>
+        <div class="absolute inset-0 rounded-full bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-sm font-bold">
+        Change
+        </div>
+        {{ form_widget(registrationForm.pp_img, {
+        attr: {
+            class: 'hidden',
+            onchange: 'previewImage(event)'
+        }
+        }) }}
+    </label>
+    {{ form_errors(registrationForm.pp_img) }}
+    </div>
 
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
+
+    <script>
+      function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('avatarPreview');
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            preview.style.backgroundImage = `url('${e.target.result}')`;
+          }
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+    </script>
+
+    <!-- Champs stylisés via form_row + classes -->
+    {{ form_row(registrationForm.username, {
+      attr: {
+        placeholder: 'Username',
+        class: 'w-full h-12 px-4 border border-[#979797] rounded-full bg-white text-slate-400 font-[Roboto] text-base focus:outline-none'
+      },
+      label: false
+    }) }}
+
+    {{ form_row(registrationForm.email, {
+      attr: {
+        placeholder: 'Email',
+        autocomplete: 'off',
+        class: 'w-full h-12 px-4 border border-[#979797] rounded-full bg-white text-slate-400 font-[Roboto] text-base focus:outline-none'
         
-        {{ form_row(registrationForm.agreeTerms, {
-            label: 'I agree to the terms and conditions'
-        }) }}
-        
-        <button type="submit" class="btn">Register</button>
-    
-    {{ form_end(registrationForm) }}
+      },
+      label: false
+    }) }}
+
+    {{ form_row(registrationForm.plainPassword, {
+      attr: {
+        placeholder: 'Password',
+        class: 'w-full h-12 px-4 border border-[#979797] rounded-full bg-white text-slate-400 font-[Roboto] text-base focus:outline-none'
+      },
+      label: false
+    }) }}
+
+    {# Tu peux ajouter un champ "confirm password" ici si tu le gères manuellement dans le formType #}
+
+    <!-- Captcha (placeholder) -->
+    <div class="w-full h-16 bg-[#d6c5a8] rounded-full flex items-center justify-center">
+      <!-- Ton captcha ici si besoin -->
+    </div>
+
+    <!-- Checkbox personnalisée -->
+    <div class="flex items-center space-x-2">
+      {{ form_widget(registrationForm.agreeTerms, {
+        attr: {
+          class: 'h-4 w-4 text-[#796557] border-gray-300 rounded'
+        }
+      }) }}
+      {{ form_label(registrationForm.agreeTerms, 'I agree to the terms and conditions', {
+        label_attr: {
+          class: 'text-sm text-[#030303] font-[Roboto]'
+        }
+      }) }}
+      {{ form_errors(registrationForm.agreeTerms) }}
+    </div>
+
+    <!-- Bouton -->
+    <button type="submit"
+            class="w-full h-14 bg-[#796557] text-white text-sm md:text-base font-bold font-[Roboto] rounded-full hover:bg-[#5f4e44] transition">
+      Register
+    </button>
+
+    <!-- Lien login -->
+    <p class="text-sm text-[#030303] font-[Roboto] text-center">
+      Already have an account? <a href="/login" class="text-green-700 font-medium">Login</a>
+    </p>
+
+  {{ form_end(registrationForm) }}
+</div>
 {% endblock %}
