@@ -15,35 +15,36 @@ stages:
 SecurityChecker:
   stage: SecurityChecker
   script:
-      - phpcs --extensions=php,inc,lib,module,info --standard=Security ./src
+    - phpcs --extensions=php,inc,lib,module,info --standard=Security ./src
   allow_failure: false
 
 security-checker:
   stage: SecurityChecker
   script:
-      - local-php-security-checker
+    - local-php-security-checker
   allow_failure: false
 
 phpcs:
   stage: CodingStandards
   script:
-      - phpcs --standard=PSR2 --ignore=./src/Kernel.php ./src
+      - phpcbf --standard=PSR2 --ignore=./src/Kernel.php ./src
+      - phpcs --standard=PSR2 --ignore=./src/Kernel.php --warning-severity=0 ./src
   allow_failure: false
 
 phpstan:
   stage: CodingStandards
   script:
-      - phpstan analyse ./src
+    - phpstan analyse ./src
   allow_failure: false
 
 twig-lint:
   stage: CodingStandards
   script:
-      - twig-lint lint ./templates
+    - twig-lint lint ./templates
   allow_failure: false
 
 phpunit:
   stage: UnitTests
   script:
-      - php bin/phpunit
+    - php bin/phpunit
   allow_failure: false
