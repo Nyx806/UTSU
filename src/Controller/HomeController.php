@@ -23,5 +23,5 @@ final class HomeController extends AbstractController
             'posts' => $postsRepository->findBy([], ['id' => 'ASC']),
             'users' => $userRepository->findBy([], ['id' => 'ASC']),
         ]);
-    }    
+    }
 }
