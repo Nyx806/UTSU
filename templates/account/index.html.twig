@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AccountController!{% endblock %}
+
+{% block body %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon Compte</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow px-6 py-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <a href="#" class="text-2xl font-bold text-blue-600">SocialCat</a>
+      <div class="flex space-x-4">
+        <a href="#" class="text-gray-700 hover:text-blue-600">Catégories</a>
+        <a href="#" class="text-red-500 hover:underline">Déconnexion</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded shadow">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Mon compte</h2>
+
+    <div class="space-y-4">
+      <div>
+        <span class="text-gray-500 text-sm">Nom d'utilisateur</span>
+        <p class="text-lg font-medium">{{ users.username }}</p>
+      </div>
+      <div>
+        <span class="text-gray-500 text-sm">Adresse e-mail</span>
+        <p class="text-lg font-medium">{{ users.email }}</p>
+      </div>
+      <div>
+        
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <a href="#"
+         class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+        Modifier mon profil
+      </a>
+    </div>
+  </main>
+
+</body>
+</html>
+
+{% endblock %}

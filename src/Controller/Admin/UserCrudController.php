@@ -17,7 +17,7 @@ class UserCrudController extends AbstractCrudController
         return User::class;
     }
 
-      
+
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -28,5 +28,4 @@ class UserCrudController extends AbstractCrudController
             ImageField::new('pp_img'),
         ];
     }
-   
 }

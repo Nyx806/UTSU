@@ -9,13 +9,14 @@ use App\Entity\User;
 use App\Entity\Categories;
 use App\Entity\Posts;
 use App\Entity\Commentaires;
+
 class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
         $faker = Faker::create('fr_FR');
         // Create 10 users
-        
+
         $suers = [];
         for ($i = 0; $i < 10; $i++) {
             $user = new User();
@@ -64,7 +65,7 @@ class AppFixtures extends Fixture
             $manager->persist($comment);
             $comments[] = $comment;
         }
-        
+
 
         $manager->flush();
     }

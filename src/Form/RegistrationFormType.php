@@ -28,7 +28,7 @@ class RegistrationFormType extends AbstractType
                         'max' => 180,
                         'maxMessage' => 'The email cannot exceed {{ limit }} characters',
                     ]),
-                ],
+                                ],
             ])
             ->add('username', TextType::class, [
                 'required' => true,

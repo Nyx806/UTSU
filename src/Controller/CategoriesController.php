@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\CategoriesRepository;
 
-
 #[Route('/categories', name: 'categories_')]
 final class CategoriesController extends AbstractController
 {
