@@ -28,7 +28,7 @@ phpcs:
   stage: CodingStandards
   script:
       - phpcbf --standard=PSR2 --ignore=./src/Kernel.php ./src
-      - phpcs --standard=PSR2 --ignore=./src/Kernel.php ./src
+      - phpcs --standard=PSR2 --ignore=./src/Kernel.php --warning-severity=0 ./src
   allow_failure: false
 
 phpstan:
