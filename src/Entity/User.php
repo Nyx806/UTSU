@@ -36,7 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private  ?string $pp_img = null;
+    private ?string $pp_img = null;
 
     #[ORM\Column]
     private ?int $type = null;

@@ -10,14 +10,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/', name: 'home_')]
-final class HomeController extends AbstractController{
+final class HomeController extends AbstractController
+{
     #[Route('/', name: 'index')]
-    public function index(CategoriesRepository $categoriesRepository,PostsRepository $postsRepository,UserRepository $userRepository): Response
+    public function index(CategoriesRepository $categoriesRepository, PostsRepository $postsRepository, UserRepository $userRepository): Response
     {
         return $this->render('home/index.html.twig', [
-            'categories' => $categoriesRepository->findBy([],['id' => 'ASC']),
-            'posts' => $postsRepository->findBy([],['id' => 'ASC']),
-            'users' => $userRepository->findBy([],['id' => 'ASC']),
+            'categories' => $categoriesRepository->findBy([], ['id' => 'ASC']),
+            'posts' => $postsRepository->findBy([], ['id' => 'ASC']),
+            'users' => $userRepository->findBy([], ['id' => 'ASC']),
 
         ]);
     }
