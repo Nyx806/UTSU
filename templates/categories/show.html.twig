@@ -24,7 +24,7 @@
           <p class="text-gray-700 mt-2">{{ post.contenu|slice(0, 200) ~ '...' }}</p>
 
 
-          <a href="#" class="mt-4 inline-block text-blue-600 hover:underline">Lire la suite</a>
+          <a href="{{ path('posts_detail', {'id': post.id}) }}" class="mt-4 inline-block text-blue-600 hover:underline">Lire la suite</a>
         </div>
         {% endfor %}
       </div>

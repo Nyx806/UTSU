@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Repository\PostsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\CategoriesRepository;
 
@@ -24,7 +23,6 @@ final class CategoriesController extends AbstractController
     #[Route('/{id}', name: 'posts')]
     public function showByCategorie(int $id, CategoriesRepository $catRepo, PostsRepository $postRepo): Response
     {
-        dump($id);
         $categorie = $catRepo->find($id);
 
         if (!$categorie) {
