@@ -24,8 +24,8 @@
           <div>
             <h3 class="text-xl font-semibold text-blue-600 mb-2">{{ category.name }}</h3>
           </div>
-          <a href="#"
-             class="mt-auto inline-block text-sm bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+          <a href="{{ path('categories_posts', {'id': category.id}) }}"
+            class="mt-auto inline-block text-sm bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
             Voir les posts
           </a>
         </div>

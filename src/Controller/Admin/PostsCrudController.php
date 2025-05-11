@@ -22,13 +22,15 @@ class PostsCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
             TextField::new('title'),
             TextField::new('contenu'),
             DateTimeField::new('date'),
             AssociationField::new('userID'),
             associationField::new('cat'),
-            ImageField::new('photo'),
+            ImageField::new('photo')
+                ->setBasePath('uploads/posts')
+                ->setUploadDir('public/uploads/posts')
+                ->setRequired(false),
             AssociationField::new('likes'),
             AssociationField::new('commentaires'),
         ];

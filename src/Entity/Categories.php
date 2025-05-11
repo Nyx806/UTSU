@@ -76,4 +76,9 @@ class Categories
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->getName(); // ou email, ou nom complet, selon ce que tu veux afficher
+    }
 }
