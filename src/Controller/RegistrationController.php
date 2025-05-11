@@ -44,7 +44,7 @@ class RegistrationController extends AbstractController
                         $this->getParameter('kernel.project_dir') . '/public/uploads/pp',
                         $newFilename
                     );
-                    $user->setPpImg('uploads/pp/' . $newFilename); // Sauvegarde le chemin relatif dans la base
+                    $user->setPpImg($newFilename); // Sauvegarde le chemin relatif dans la base
                 } catch (FileException $e) {
                     // Gérer l'erreur si l'upload échoue (par exemple, afficher un message d'erreur)
                     $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');

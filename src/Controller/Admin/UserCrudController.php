@@ -21,11 +21,14 @@ class UserCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
             TextField::new('username'),
             TextField::new('email'),
             ArrayField::new('roles')->setHelp('["ROLE_USER"]'),
-            ImageField::new('pp_img'),
+            ImageField::new('pp_img')
+                ->setBasePath('uploads/pp')
+                ->setUploadDir('public/uploads/pp')
+                ->setRequired(false)
+                ->setHelp('Upload a profile picture'),
         ];
     }
 }
