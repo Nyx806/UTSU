@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PostsController extends AbstractController
 {
     #[Route('/{id}', name: 'detail')]
-    public function details(int $id,PostsRepository $postsRepository): Response
+    public function details(int $id, PostsRepository $postsRepository): Response
     {
         return $this->render('posts/details.html.twig', [
             'controller_name' => 'PostsController',
