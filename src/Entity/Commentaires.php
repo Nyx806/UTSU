@@ -168,4 +168,9 @@ class Commentaires
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->getContenu(); // ou email, ou nom complet, selon ce que tu veux afficher
+    }
 }

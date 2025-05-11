@@ -308,4 +308,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->getUsername(); // ou email, ou nom complet, selon ce que tu veux afficher
+    }
 }
