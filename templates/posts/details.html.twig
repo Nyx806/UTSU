@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="max-w-4xl mx-auto mt-10 bg-white rounded-lg shadow p-6">
+    <div class="mb-4">
+        <h1 class="text-3xl font-bold text-blue-600">{{ post.title }}</h1>
+        <div class="flex justify-between items-center text-sm text-gray-500 mt-2">
+            <span>Publié le {{ post.date|date('d/m/Y à H:i') }}</span>
+            <span>Catégorie : {{ post.getCat.name }}</span>
+        </div>
+    </div>
+
+    {% if post.photo %}
+        <div class="mb-6">
+            <img src="{{ asset(post.photo) }}" alt="Image du post" class="rounded w-full object-cover max-h-96">
+        </div>
+    {% endif %}
+
+    <div class="text-gray-800 leading-relaxed">
+        {{ post.contenu|nl2br }}
+    </div>
+
+    <div class="mt-6 text-sm text-gray-600">
+        Écrit par : <span class="font-semibold">{{ post.getUserID.username }}</span>
+    </div>
+</div>
+{% endblock %}

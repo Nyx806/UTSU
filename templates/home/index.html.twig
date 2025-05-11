@@ -45,7 +45,7 @@
                     <p class="text-gray-700">{{ post.contenu }}</p>
                     <div class="mt-2 flex justify-between items-center">
                         <span class="text-sm text-gray-500">Auteur: {{ post.getUserID.username }}</span>
-                        <a href="#" class="text-blue-600 hover:underline">Lire la suite</a>
+                        <a href="{{ path('posts_detail', {'id': post.id}) }}" class="text-blue-600 hover:underline">Lire la suite</a>
                     </div>
                 </div> 
             {% endfor %}

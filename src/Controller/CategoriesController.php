@@ -24,7 +24,6 @@ final class CategoriesController extends AbstractController
     #[Route('/{id}', name: 'posts')]
     public function showByCategorie(int $id, CategoriesRepository $catRepo, PostsRepository $postRepo): Response
     {
-        dump($id);
         $categorie = $catRepo->find($id);
 
         if (!$categorie) {
