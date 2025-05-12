@@ -18,10 +18,19 @@ final class HomeController extends AbstractController
         PostsRepository $postsRepository,
         UserRepository $userRepository
     ): Response {
-        return $this->render('home/index.html.twig', [
+
+        if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return New Response('Vous n\'avez pas accès à cette page.');
+
+        }
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('admin_index');
+        }
+
+    return $this->render('home/index.html.twig', [
             'categories' => $categoriesRepository->findBy([], ['id' => 'ASC']),
             'posts' => $postsRepository->findBy([], ['id' => 'ASC']),
             'users' => $userRepository->findBy([], ['id' => 'ASC']),
-        ]);
+            ]);
     }
 }
