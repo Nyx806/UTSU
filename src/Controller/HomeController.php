@@ -20,17 +20,16 @@ final class HomeController extends AbstractController
     ): Response {
 
         if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
-            return New Response('Vous n\'avez pas accès à cette page.');
-
+            return new Response('Vous n\'avez pas accès à cette page.');
         }
         if ($this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('admin_index');
         }
 
-    return $this->render('home/index.html.twig', [
-            'categories' => $categoriesRepository->findBy([], ['id' => 'ASC']),
-            'posts' => $postsRepository->findBy([], ['id' => 'ASC']),
-            'users' => $userRepository->findBy([], ['id' => 'ASC']),
-            ]);
+        return $this->render('home/index.html.twig', [
+        'categories' => $categoriesRepository->findBy([], ['id' => 'ASC']),
+        'posts' => $postsRepository->findBy([], ['id' => 'ASC']),
+        'users' => $userRepository->findBy([], ['id' => 'ASC']),
+        ]);
     }
 }
