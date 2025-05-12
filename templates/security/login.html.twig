@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utsu - Login{% endblock %}
+
+{% block body %}
+<div class="absolute inset-0 bg-cover bg-no-repeat flex items-center justify-end"
+     style="background-image: url('{{ asset('img/image.png') }}'); background-position: -100% center;">
+
+  <form method="post"
+        class="w-full max-w-[600px] bg-white border-4 border-black rounded-xl shadow-lg p-6 md:p-10 space-y-6 m-4 md:mr-10 overflow-y-auto max-h-[90vh]">
+
+    <!-- Bouton Exit -->
+    <button class="absolute top-4 right-4 text-black text-3xl leading-none" type="button">&times;</button>
+
+    <!-- Titre -->
+    <h1 class="text-4xl md:text-5xl font-bold text-[#030303] font-[Poppins] text-center">Welcome Back</h1>
+    <p class="text-lg md:text-2xl text-[#030303] font-[Roboto] font-bold text-center">Login to your account</p>
+
+    <!-- Erreur -->
+    {% if error %}
+      <div class="text-red-600 text-center font-bold">
+        {{ error.messageKey|trans(error.messageData, 'security') }}
+      </div>
+    {% endif %}
+
+    <!-- Utilisateur connecté -->
+    {% if app.user %}
+      <div class="text-green-600 text-center font-bold">
+        You are logged in as {{ app.user.userIdentifier }},
+        <a href="{{ path('app_logout') }}" class="underline text-blue-600">Logout</a>
+      </div>
+    {% endif %}
+
+    <!-- Email -->
+    <input type="email"
+           name="_username"
+           value="{{ last_username }}"
+           placeholder="Email"
+           autocomplete="email"
+           required autofocus
+           class="w-full h-12 px-4 border border-[#979797] rounded-full bg-white text-slate-400 font-[Roboto] text-base focus:outline-none"
+    >
+
+    <!-- Mot de passe -->
+    <input type="password"
+           name="_password"
+           placeholder="Password"
+           autocomplete="current-password"
+           required
+           class="w-full h-12 px-4 border border-[#979797] rounded-full bg-white text-slate-400 font-[Roboto] text-base focus:outline-none"
+    >
+
+    <!-- CSRF -->
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+    <!-- Captcha (facultatif) -->
+    <div class="w-full h-16 bg-[#d6c5a8] rounded-full flex items-center justify-center">
+      <!-- CAPTCHA (si activé) -->
+    </div>
+
+    <!-- Bouton de connexion -->
+    <button type="submit"
+            class="w-full h-14 bg-[#796557] text-white text-sm md:text-base font-bold font-[Roboto] rounded-full hover:bg-[#5f4e44] transition">
+      Login
+    </button>
+
+    <!-- Lien mot de passe oublié -->
+    <p class="text-sm text-[#030303] font-[Roboto] text-center">
+      Forgot password?
+    </p>
+
+    <!-- Lien d'inscription -->
+    <p class="text-sm text-[#030303] font-[Roboto] text-center">
+      Don’t have an account? <a href="/register" class="text-green-700 font-medium">Sign up</a>
+    </p>
+  </form>
+</div>
+{% endblock %}

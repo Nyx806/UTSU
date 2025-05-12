@@ -12,6 +12,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use App\Security\LoginAuthenticator;
 
 class RegistrationController extends AbstractController
 {
@@ -19,7 +21,9 @@ class RegistrationController extends AbstractController
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        UserAuthenticatorInterface $userAuthenticator,
+        LoginAuthenticator $loginAuthenticator
     ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -29,36 +33,38 @@ class RegistrationController extends AbstractController
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
 
-            // encode the plain password
+            // Encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             $user->setType(0);
 
-             // Gestion de l'upload de l'image de profil
+            // Gestion de l'upload de l'image de profil
             $ppImgFile = $form->get('pp_img')->getData();
             if ($ppImgFile) {
                 $newFilename = uniqid() . '.' . $ppImgFile->guessExtension();
 
-                // Déplacement du fichier dans le répertoire public/uploads/pp
                 try {
                     $ppImgFile->move(
                         $this->getParameter('kernel.project_dir') . '/public/uploads/pp',
                         $newFilename
                     );
-                    $user->setPpImg($newFilename); // Sauvegarde le chemin relatif dans la base
+                    $user->setPpImg($newFilename);
                 } catch (FileException $e) {
-                    // Gérer l'erreur si l'upload échoue (par exemple, afficher un message d'erreur)
                     $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');
                     return $this->redirectToRoute('app_register');
                 }
             }
 
-
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this ->addFlash('success', 'Votre compte a été créé avec succès !');
+            $this->addFlash('success', 'Votre compte a été créé avec succès !');
 
-            return $this->redirectToRoute('home_index');
+            // Authentifier l'utilisateur après l'inscription
+            return $userAuthenticator->authenticateUser(
+                $user,
+                $loginAuthenticator,
+                $request
+            );
         }
 
         return $this->render('registration/register.html.twig', [
