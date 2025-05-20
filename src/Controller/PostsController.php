@@ -23,6 +23,15 @@ final class PostsController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $posts = $form->getData();
+            $file = $form->get('photo')->getData();
+            if ($file) {
+                $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                $file->move($this->getParameter('kernel.project_dir') . '/public/uploads/posts', $fileName);
+                $posts->setPhoto($fileName);
+            } else {
+                $posts->setPhoto(null);
+            }
+
             $posts->setDate(new \DateTimeImmutable());
             $em->persist($posts);
             $em->flush();
