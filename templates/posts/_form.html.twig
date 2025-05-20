@@ -1,0 +1,20 @@
+<div class="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+    <h2 class="text-2xl font-bold text-blue-600 mb-6">Créer un nouveau post</h2>
+
+    {{ form_start(PostsForm) }}
+            {{ form_row(PostsForm.title) }}
+            {{ form_errors(PostsForm.title) }}       
+            {{ form_row(PostsForm.contenu) }}
+            {{ form_errors(PostsForm.contenu) }}
+            {{ form_row(PostsForm.photo) }}
+            {{ form_errors(PostsForm.photo) }}
+            {{ form_row(PostsForm.userID)}}
+            {{ form_errors(PostsForm.userID) }}
+            
+            
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded">
+            Publier
+        </button>
+
+    {{ form_end(PostsForm) }}
+</div>
