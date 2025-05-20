@@ -8,16 +8,19 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Posts;
 use App\Form\PostsFromType;
+use App\Repository\CategoriesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 #[Route('/posts', name: 'posts_')]
 final class PostsController extends AbstractController
 {
-    #[Route('/ajout', name: 'ajout')]
-    public function ajout(Request $request, EntityManagerInterface $em): Response
+    #[Route('/ajout/{id}', name: 'ajout')]
+    public function ajout(int $id, Request $request, EntityManagerInterface $em, CategoriesRepository $categories_repository): Response
     {
+        dump($id);
         $posts = new Posts();
+        $cat = $categories_repository->find($id);
         $form = $this->createForm((PostsFromType::class), $posts);
 
         $form->handleRequest($request);
@@ -33,6 +36,7 @@ final class PostsController extends AbstractController
             }
 
             $posts->setDate(new \DateTimeImmutable());
+            $posts->setCat($cat);
             $em->persist($posts);
             $em->flush();
 

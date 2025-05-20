@@ -20,14 +20,6 @@ class PostsFromType extends AbstractType
         $builder
             ->add('title')
             ->add('contenu')
-            /* ->add('date', null, [
-                'widget' => 'single_text',
-            ]) */
-            ->add('cat', EntityType::class, [
-                'class' => Categories::class,
-                'choice_label' => 'name',
-                'label' => 'Catégorie'
-            ])
             ->add('userID', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'username',

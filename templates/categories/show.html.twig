@@ -6,9 +6,15 @@
 <div class="min-h-screen bg-gray-100 py-8">
   <div class="max-w-5xl mx-auto px-4">
     
-    <h1 class="text-3xl font-bold text-blue-700 mb-6">
-      Posts de la catégorie : {{ categorie.name }}
-    </h1>
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl font-bold text-blue-700">
+        Posts de la catégorie : {{ categorie.name }} 
+      </h1>
+      <a href="{{path('posts_ajout', {'id': categorie.id})}}" 
+         class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition">
+        + Ajouter un post
+      </a>
+    </div>
 
     {% if posts is empty %}
       <p class="text-gray-600">Aucun post trouvé dans cette catégorie.</p>
@@ -22,7 +28,6 @@
           </div>
           <h2 class="text-xl font-semibold text-gray-800">{{ post.title }}</h2>
           <p class="text-gray-700 mt-2">{{ post.contenu|slice(0, 200) ~ '...' }}</p>
-
 
           <a href="{{ path('posts_detail', {'id': post.id}) }}" class="mt-4 inline-block text-blue-600 hover:underline">Lire la suite</a>
         </div>
