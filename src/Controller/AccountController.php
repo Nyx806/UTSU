@@ -13,9 +13,17 @@ final class AccountController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(UserRepository $userRepository): Response
     {
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+
+        // Vérifier si un utilisateur est connecté
+        if (!$user) {
+            return $this->redirectToRoute('app_login'); // Rediriger vers la page de connexion si non connecté
+        }
+
         return $this->render('account/index.html.twig', [
             'controller_name' => 'AccountController',
-            'users' => $userRepository->find(19),
+            'user' => $user, // Passer l'utilisateur connecté à la vue
         ]);
     }
 }
