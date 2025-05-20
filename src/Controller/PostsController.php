@@ -16,7 +16,11 @@ use Symfony\Component\HttpFoundation\Request;
 final class PostsController extends AbstractController
 {
     #[Route('/ajout/{id}', name: 'ajout')]
-    public function ajout(int $id, Request $request, EntityManagerInterface $em, CategoriesRepository $categories_repository): Response
+    public function ajout(
+        int $id, 
+        Request $request,
+        EntityManagerInterface $em, 
+        CategoriesRepository $categories_repository): Response
     {
         dump($id);
         $posts = new Posts();
