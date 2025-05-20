@@ -33,7 +33,7 @@ class PostsFromType extends AbstractType
                     'accept' => 'image/*',
                 ],
             ])
-            
+
 
         ;
     }
