@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Categories;
 use App\Entity\Posts;
 use App\Entity\User;
+use Dom\Entity;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,10 +18,21 @@ class PostsFromType extends AbstractType
         $builder
             ->add('title')
             ->add('contenu')
-            ->add('date', null, [
+            /* ->add('date', null, [
                 'widget' => 'single_text',
+            ]) */
+            ->add('cat', EntityType::class, [
+                'class' => Categories::class,
+                'choice_label' => 'name',
+                'label' => 'Catégorie'
             ])
-            ->add('photo')
+            ->add('userID', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'username',
+                'label' => 'Utilisateur'
+            ])
+            //->add('photo')
+
         ;
     }
 
