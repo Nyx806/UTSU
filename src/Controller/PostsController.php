@@ -41,6 +41,7 @@ final class PostsController extends AbstractController
 
             $posts->setDate(new \DateTimeImmutable());
             $posts->setCat($cat);
+            $posts->setUserID($this->getUser());
             $em->persist($posts);
             $em->flush();
 

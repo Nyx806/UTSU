@@ -20,11 +20,6 @@ class PostsFromType extends AbstractType
         $builder
             ->add('title')
             ->add('contenu')
-            ->add('userID', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'username',
-                'label' => 'Utilisateur'
-            ])
             ->add('photo', FileType::class, [
                 'label' => 'Photo',
                 'mapped' => false,
