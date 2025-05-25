@@ -31,18 +31,45 @@
     {% if post.commentaires|length == 0 %}
         <p class="text-gray-500">Aucun commentaire pour le moment.</p>
     {% else %}
-        <div class="space-y-4">
+        <div class="space-y-4 mb-6">
             {% for commentaire in post.commentaires %}
                 <div class="border rounded p-4 bg-gray-50 shadow-sm">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-sm font-semibold text-gray-700">
-                            {{ commentaire.userID}}
+                            {{ commentaire.userID }}
                         </span>
+                        <span class="text-xs text-gray-400">{{ commentaire.creationDate|date('d/m/Y à H:i') }}</span>
                     </div>
-                    <p class="text-gray-800 whitespace-pre-line">{{ commentaire.contenu }}</p>
+                    
+                    <p class="text-gray-800 whitespace-pre-line mb-4">{{ commentaire.contenu }}</p>
+
+                    {% if commentaire.img %}
+                        <div class="mb-4">
+                            <img src="{{ asset('uploads/commentaires/photo/' ~ commentaire.img) }}"
+                                 alt="Image du commentaire"
+                                 class="w-full max-w-md rounded shadow">
+                        </div>
+                    {% endif %}
+
+                    {% if commentaire.video %}
+                        <div class="mb-4">
+                            <video controls class="w-full max-w-md rounded shadow">
+                                <source src="{{ asset('uploads/commentaires/video/' ~ commentaire.video) }}" type=" video/mp4">
+                                Votre navigateur ne supporte pas la lecture vidéo.
+                            </video>
+                        </div>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
     {% endif %}
+
+    <div class="text-right">
+        <a href="{{ path('commentaires_ajout', {'id': post.id}) }}"
+           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition">
+            + Ajouter un commentaire
+        </a>
+    </div>
 </div>
+
 {% endblock %}

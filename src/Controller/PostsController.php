@@ -22,7 +22,6 @@ final class PostsController extends AbstractController
         EntityManagerInterface $em,
         CategoriesRepository $categories_repository
     ): Response {
-        dump($id);
         $posts = new Posts();
         $cat = $categories_repository->find($id);
         $form = $this->createForm((PostsFromType::class), $posts);
