@@ -25,11 +25,11 @@ final class CommentairesController extends AbstractController
         EntityManagerInterface $em,
         PostsRepository $postsRepository,
     ): Response {
-        $com= new Commentaires();
+        $com = new Commentaires();
         $post = $postsRepository->find($id);
         $form = $this->createForm(ComFromType::class, $com);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $com = $form->getData();
             $file = $form->get('img')->getData();
             $video = $form->get('video')->getData();
@@ -53,7 +53,6 @@ final class CommentairesController extends AbstractController
             $em->persist($com);
             $em->flush();
             return $this->redirectToRoute('posts_detail', ['id' => $id]);
-            
         }
 
         return $this->render('commentaires/index.html.twig', [
