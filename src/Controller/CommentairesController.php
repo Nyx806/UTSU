@@ -35,14 +35,16 @@ final class CommentairesController extends AbstractController
             $video = $form->get('video')->getData();
             if ($video) {
                 $videoName = md5(uniqid()) . '.' . $video->guessExtension();
-                $video->move($this->getParameter('kernel.project_dir') . '/public/uploads/commentaires/video', $videoName);
+                $videoDir = $this->getParameter('kernel.project_dir') . '/public/uploads/commentaires/video';
+                $video->move($videoDir, $videoName);
                 $com->setVideo($videoName);
             } else {
                 $com->setVideo(null);
             }
             if ($file) {
                 $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-                $file->move($this->getParameter('kernel.project_dir') . '/public/uploads/commentaires/photo', $fileName);
+                $photoDir = $this->getParameter('kernel.project_dir') . '/public/uploads/commentaires/photo';
+                $file->move($photoDir, $fileName);
                 $com->setImg($fileName);
             } else {
                 $com->setImg(null);
