@@ -40,7 +40,7 @@
                         </span>
                         <span class="text-xs text-gray-400">{{ commentaire.creationDate|date('d/m/Y à H:i') }}</span>
                     </div>
-                    
+
                     <p class="text-gray-800 whitespace-pre-line mb-4">{{ commentaire.contenu }}</p>
 
                     {% if commentaire.img %}
@@ -54,22 +54,97 @@
                     {% if commentaire.video %}
                         <div class="mb-4">
                             <video controls class="w-full max-w-md rounded shadow">
-                                <source src="{{ asset('uploads/commentaires/video/' ~ commentaire.video) }}" type=" video/mp4">
+                                <source src="{{ asset('uploads/commentaires/video/' ~ commentaire.video) }}"
+                                        type="video/mp4">
                                 Votre navigateur ne supporte pas la lecture vidéo.
                             </video>
                         </div>
                     {% endif %}
+
+                    <div class="text-right">
+                        <a href="#"
+                           class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
+                            ↪ Répondre
+                        </a>
+                    </div>
                 </div>
             {% endfor %}
         </div>
     {% endif %}
 
+    <!-- BOUTON DÉPLIANT -->
     <div class="text-right">
-        <a href="{{ path('commentaires_ajout', {'id': post.id}) }}"
-           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition">
+        <button onclick="toggleCommentForm()"
+                class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition">
             + Ajouter un commentaire
-        </a>
+        </button>
+    </div>
+
+    <!-- FORMULAIRE DÉPLIABLE -->
+    <div id="commentForm" style="display: none;" class="mt-6">
+        {{ form_start(ComForm) }}
+
+        <!-- Champ contenu -->
+        <div class="mb-4">
+            {{ form_label(ComForm.contenu, null, {
+                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+            }) }}
+            {{ form_widget(ComForm.contenu, {
+                'attr': {
+                    'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                }
+            }) }}
+            {{ form_errors(ComForm.contenu) }}
+        </div>
+
+        <!-- Champ photo -->
+        <div class="mb-4">
+            {{ form_label(ComForm.img, null, {
+                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+            }) }}
+            {{ form_widget(ComForm.img, {
+                'attr': {
+                    'class': 'block w-full text-sm text-gray-700 border border-gray-300 rounded-lg file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 hover:file:bg-blue-700 transition'
+                }
+            }) }}
+            {{ form_errors(ComForm.img) }}
+        </div>
+
+        <!-- Champ vidéo -->
+        <div class="mb-4">
+            {{ form_label(ComForm.video, null, {
+                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+            }) }}
+            {{ form_widget(ComForm.video, {
+                'attr': {
+                    'class': 'block w-full text-sm text-gray-700 border border-gray-300 rounded-lg file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 hover:file:bg-blue-700 transition'
+                }
+            }) }}
+            {{ form_errors(ComForm.video) }}
+        </div>
+
+        <!-- Bouton de soumission -->
+        <div class="text-right">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                Envoyer le commentaire
+            </button>
+        </div>
+
+        {{ form_end(ComForm) }}
     </div>
 </div>
+
+<!-- Script JS pour déplier/replier -->
+<script>
+    function toggleCommentForm() {
+        const form = document.getElementById('commentForm');
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+            form.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            form.style.display = 'none';
+        }
+    }
+</script>
 
 {% endblock %}
