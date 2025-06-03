@@ -62,7 +62,7 @@
                     {% endif %}
 
                     <div class="text-right">
-                        <a href="#"
+                        <a href="#" data-reply data-id="{{ commentaire.id }}" data-user="{{ commentaire.userID }}"
                            class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
                             ↪ Répondre
                         </a>
@@ -72,7 +72,6 @@
         </div>
     {% endif %}
 
-    <!-- BOUTON DÉPLIANT -->
     <div class="text-right">
         <button onclick="toggleCommentForm()"
                 class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition">
@@ -82,6 +81,11 @@
 
     <!-- FORMULAIRE DÉPLIABLE -->
     <div id="commentForm" style="display: none;" class="mt-6">
+        <div id="replyToBox" class="hidden bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-2 rounded mb-4">
+            Réponse à <span id="replyToUser" class="font-semibold"></span>
+            <button type="button" onclick="cancelReply()" class="ml-4 text-sm text-red-600 hover:underline">Annuler</button>
+        </div>
+
         {{ form_start(ComForm) }}
 
         <!-- Champ contenu -->
@@ -123,6 +127,9 @@
             {{ form_errors(ComForm.video) }}
         </div>
 
+        <!-- Champ parent caché -->
+        <input type="hidden" id="comment_parent" name="comment_parent" value="0">
+
         <!-- Bouton de soumission -->
         <div class="text-right">
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
@@ -134,17 +141,61 @@
     </div>
 </div>
 
-<!-- Script JS pour déplier/replier -->
+<!-- Script JS pour déplier/replier et gérer la réponse -->
 <script>
     function toggleCommentForm() {
         const form = document.getElementById('commentForm');
-        if (form.style.display === 'none') {
-            form.style.display = 'block';
-            form.scrollIntoView({ behavior: 'smooth' });
-        } else {
-            form.style.display = 'none';
-        }
+        const parentInput = document.getElementById('comment_parent');
+        const replyBox = document.getElementById('replyToBox');
+        const replyToUser = document.getElementById('replyToUser');
+
+        parentInput.value = 0;
+        replyBox.classList.add('hidden');
+        replyToUser.innerText = "";
+
+        const base = document.querySelector('.text-right button');
+        base.parentNode.after(form);
+        form.style.display = 'block';
+        form.scrollIntoView({ behavior: 'smooth' });
     }
+
+    function cancelReply() {
+        const parentInput = document.getElementById('comment_parent');
+        const replyBox = document.getElementById('replyToBox');
+        const replyToUser = document.getElementById('replyToUser');
+
+        parentInput.value = 0;
+        replyBox.classList.add('hidden');
+        replyToUser.innerText = "";
+
+        const base = document.querySelector('.text-right button');
+        base.parentNode.after(document.getElementById('commentForm'));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-reply]').forEach(button => {
+            button.addEventListener('click', e => {
+                e.preventDefault();
+
+                const commentId = button.dataset.id;
+                const userName = button.dataset.user;
+
+                const form = document.getElementById('commentForm');
+                const parentInput = document.getElementById('comment_parent');
+                const replyBox = document.getElementById('replyToBox');
+                const replyToUser = document.getElementById('replyToUser');
+
+                parentInput.value = commentId;
+                replyToUser.innerText = userName;
+                replyBox.classList.remove('hidden');
+
+                const target = button.closest('.border');
+                target.after(form);
+                form.style.display = 'block';
+                form.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    });
 </script>
 
 {% endblock %}
