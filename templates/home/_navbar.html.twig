@@ -1,28 +1,293 @@
-
 {% block body %}
+<style>
+/* Navigation */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
 
-    <nav class="bg-white shadow px-6 py-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <!-- Logo -->
-            <a href="{{ path('home_index') }}" class="text-2xl font-bold text-blue-600">SocialCat</a>
-            
-            <!-- Navigation Links -->
-            <div class="flex space-x-6 items-center">
-                <a href="{{ path('home_index') }}" class="text-gray-700 hover:text-blue-600 transition">Accueil</a>
-                <a href="{{ path('categories_index') }}" class="text-gray-700 hover:text-blue-600 transition">Catégories</a>
+.navbar-container {
+  display: flex;
+  height: 4rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+}
 
-                {% if app.user %}
-                    <!-- Liens pour les utilisateurs connectés -->
-                    <a href="{{ path('account_index') }}" class="text-gray-700 hover:text-blue-600 transition">Mon Compte</a>
-                    <a href="{{ path('app_logout') }}" class="text-gray-700 hover:text-blue-600 transition">Log out</a>
-                {% else %}
-                    <!-- Bouton de connexion pour les utilisateurs non connectés -->
-                    <a href="{{ path('app_login') }}" class="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 transition">
-                        Se connecter
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
+.navbar-logo {
+  font-weight: bold;
+  font-size: 1.25rem;
+  color:#B87F59
+  text-decoration: none;
+}
+
+.navbar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.navbar-nav .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: #111827;
+  text-decoration: none;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.navbar-nav .nav-link:hover {
+  background-color: #f3f4f6;
+}
+
+.navbar-nav .nav-link .notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #ef4444;
+  border-radius: 50%;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+}
+
+.dropdown-trigger:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  min-width: 14rem;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 50;
+}
+
+.dropdown.open .dropdown-menu {
+  display: block;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  color: #111827;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f3f4f6;
+}
+
+
+.dropdown-separator {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 0.25rem 0;
+}
+
+.avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-fallback {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+
+.icon {
+  stroke: #111; /* noir */
+  vertical-align: middle;
+  margin-right: 0.4rem;
+}
+
+.text-red {
+  stroke: #ef4444; /* rouge pour logout */
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar-nav {
+    display: none;
+    flex-direction: column;
+    background: white;
+    position: absolute;
+    top: 4rem;
+    left: 0;
+    right: 0;
+    border-top: 1px solid #e5e7eb;
+    padding: 1rem;
+  }
+
+  .navbar-nav.show {
+    display: flex;
+  }
+
+  .navbar-toggle {
+    display: block;
+  }
+}
+</style>
+
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <a href="{{ path('home_index') }}" class="navbar-logo">UTSU</a>
+      </div>
+
+      <button class="navbar-toggle" onclick="toggleNav()">☰</button>
+
+      <div class="navbar-nav" id="mainNav">
+         <a href="{{ path('home_index') }}" class="nav-link" aria-label="Accueil">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7m-9 2v6m0 0h4m-4 0H7" />
+            </svg>
+            <span>Accueil</span>
+        </a>
+        <a href="{{ path('categories_index') }}" class="nav-link" aria-label="Catégories">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <circle cx="12" cy="12" r="3" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15A7.97 7.97 0 0017 9m-5 6a7.97 7.97 0 01-2.4-6" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v3m0 12v3m7.07-8.07l-2.12 2.12M6.05 6.05l2.12 2.12" />
+            </svg>
+            <span>Catégories</span>
+        </a>
+        <a href="{{ path('home_index') }}" class="nav-link" aria-label="Create">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Create</span>
+        </a>
+        <a href="{{ path('home_index') }}" class="nav-link" aria-label="Notifications">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span>Notifications</span>
+            <div class="notification-badge"></div>
+        </a>
+      </div>
+
+      <div class="navbar-user">
+        {% if app.user %}
+          <div class="dropdown" id="userDropdown">
+            <button class="dropdown-trigger" onclick="toggleDropdown()">
+              <div class="avatar">
+                <img src="{{ asset('uploads/pp/' ~ app.user.getPpImg) }}" alt="Photo de profil">
+                <div class="avatar-fallback">{{ app.user.username[:1]|upper }}</div>
+              </div>
+              <span>{{ app.user.username }}</span>
+            </button>
+            <div class="dropdown-menu">
+                <a href="{{ path('account_index') }}" class="dropdown-item" aria-label="Mon Compte">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A9.003 9.003 0 0112 15c2.5 0 4.8 1 6.364 2.636M12 12a5 5 0 100-10 5 5 0 000 10z" />
+                    </svg>
+                    <span>Mon Compte</span>
+                </a>
+                <div class="dropdown-separator"></div>
+                <a href="{{ path('app_logout') }}" class="dropdown-item text-red" aria-label="Log out">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon text-red" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 11-6 0v-1m6-10V5a3 3 0 00-6 0v1" />
+                    </svg>
+                    <span>Log out</span>
+                </a>
+                </div>
+          </div>
+        {% else %}
+          <a href="{{ path('app_login') }}" class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition text-sm">
+            Se connecter
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    dropdown.classList.toggle('open');
+  }
+
+  document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('userDropdown');
+    if (!dropdown.contains(event.target)) {
+      dropdown.classList.remove('open');
+    }
+  });
+
+  function toggleNav() {
+    const nav = document.getElementById('mainNav');
+    nav.classList.toggle('show');
+  }
+</script>
+
+{% block javascripts %}{% endblock %}
 {% endblock %}
