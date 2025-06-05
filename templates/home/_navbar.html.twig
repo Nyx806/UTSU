@@ -1,23 +1,27 @@
 
 {% block body %}
+
     <nav class="bg-white shadow px-6 py-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-        
-        <!-- Logo -->
-        <a href="{{ path('home_index') }}" class="text-2xl font-bold text-blue-600">SocialCat</a>
-        
-        <!-- Navigation Links -->
-        <div class="flex space-x-6 items-center">
-            <a href="{{ path('home_index') }}" class="text-gray-700 hover:text-blue-600 transition">Accueil</a>
-            <a href="{{ path('categories_index') }}" class="text-gray-700 hover:text-blue-600 transition">Catégories</a>
-            <a href="{{ path('account_index') }}" class="text-gray-700 hover:text-blue-600 transition">Mon Compte</a>
-            <a href="{{ path('app_logout') }}" class="text-gray-700 hover:text-blue-600 transition">Log out</a>
+            <!-- Logo -->
+            <a href="{{ path('home_index') }}" class="text-2xl font-bold text-blue-600">SocialCat</a>
+            
+            <!-- Navigation Links -->
+            <div class="flex space-x-6 items-center">
+                <a href="{{ path('home_index') }}" class="text-gray-700 hover:text-blue-600 transition">Accueil</a>
+                <a href="{{ path('categories_index') }}" class="text-gray-700 hover:text-blue-600 transition">Catégories</a>
 
-            <!-- Connexion Button -->
-            <a href="#" class="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 transition">
-            Se connecter
-            </a>
-        </div>
+                {% if app.user %}
+                    <!-- Liens pour les utilisateurs connectés -->
+                    <a href="{{ path('account_index') }}" class="text-gray-700 hover:text-blue-600 transition">Mon Compte</a>
+                    <a href="{{ path('app_logout') }}" class="text-gray-700 hover:text-blue-600 transition">Log out</a>
+                {% else %}
+                    <!-- Bouton de connexion pour les utilisateurs non connectés -->
+                    <a href="{{ path('app_login') }}" class="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 transition">
+                        Se connecter
+                    </a>
+                {% endif %}
+            </div>
         </div>
     </nav>
 

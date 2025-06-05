@@ -18,10 +18,6 @@ final class HomeController extends AbstractController
         PostsRepository $postsRepository,
         UserRepository $userRepository
     ): Response {
-
-        if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
-            return new Response('Vous n\'avez pas accès à cette page.');
-        }
         if ($this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('admin_index');
         }
