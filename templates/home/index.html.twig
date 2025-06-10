@@ -319,6 +319,26 @@
       color: #6b7280;
     }
 
+    .safe-icon {
+        width: 16px;
+        height: 16px;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .danger-icon {
+        width: 16px;
+        height: 16px;
+        transition: transform 0.1s ease-in-out;
+      }
+
+    @keyframes shake {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(1px, -1px); }
+      50% { transform: translate(-1px, 1px); }
+      75% { transform: translate(1px, 1px); }
+      100% { transform: translate(0, 0); }
+    }
+
     .filter-active {
       background-color: #dbeafe;
       color: #1e40af;
@@ -382,28 +402,6 @@
 
     .success-card .card-content span {
       color: #15803d;
-    }
-
-    .premium-card {
-      background: linear-gradient(to bottom right, #fff7ed, #fed7aa);
-      border-color: #fdba74;
-    }
-
-    .premium-card .card-title {
-      color: #9a3412;
-    }
-
-    .premium-card .card-content {
-      color: #c2410c;
-    }
-
-    .premium-card .btn-outline {
-      border-color: #fdba74;
-      color: #c2410c;
-    }
-
-    .premium-card .btn-outline:hover {
-      background-color: #fff7ed;
     }
 
     .ranking-item {
@@ -526,6 +524,14 @@
         flex-wrap: wrap;
       }
     }
+
+    .safe-icon:hover {
+        transform: scale(1.2);
+    }
+
+    .danger-icon:hover {
+        transform: rotate(15deg);
+    }
   </style>
 </head>
 <body class="bg-gray-100">
@@ -567,16 +573,19 @@
                                 <div class="flex items-center gap-2">
                                     <div class="flex items-center gap-2">
                                         <button class="btn btn-ghost" style="padding: 0.25rem;">
-                                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                           <svg class="safe-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="16" height="16">
+                                              <path d="M12 2L4 5v6c0 5.55 3.84 10.74 8 11 4.16-.26 8-5.45 8-11V5l-8-3z"/>
+                                              <path fill="white" d="M10.5 14.5l-2.5-2.5 1.41-1.41L10.5 11.67l4.59-4.59L16.5 8.5z"/>
                                             </svg>
-                                        </button>
-                                        <span class="text-sm" style="font-weight: 600;">{{ post.likes|length }}</span>
+                                          </button>
+                                        <span id="safe-likes-{{ post.id }}" class="text-sm" style="font-weight: 600;">{{post.countSafeLikes() }}</span>
                                         <button class="btn btn-ghost" style="padding: 0.25rem;">
-                                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                            <svg class="danger-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="16" height="16">
+                                                <path d="M1 21h22L12 2 1 21z"/>
+                                                <path fill="white" d="M13 16h-2v2h2v-2zm0-6h-2v4h2v-4z"/>
                                             </svg>
                                         </button>
+                                        <span id="dangerous-likes-{{ post.id }}" class="text-sm" style="font-weight: 600;">{{ post.countDangerousLikes() }}</span>
                                     </div>
                                     <button class="btn btn-ghost text-sm">
                                         <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -596,7 +605,44 @@
                         {% endfor %}
                     </div>
                 </div>
+                <script>
+                  document.querySelectorAll('.btn-ghost').forEach(button => {
+                    button.addEventListener('click', function () {
+                      const postId = this.nextElementSibling.id.split('-')[2]; // Extract post ID from span ID
+                      const type = this.querySelector('svg').classList.contains('safe-icon') ? 0 : 1; // Determine like type
 
+                      fetch(`/posts/${postId}/toggle-like`, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        body: JSON.stringify({ type }),
+                      })
+                        .then(response => {
+                          if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                          }
+                          return response.json();
+                        })
+                        .then(data => {
+                          if (data.message === 'Like toggled successfully') {
+                            const safeLikesSpan = document.getElementById(`safe-likes-${postId}`);
+                            const dangerousLikesSpan = document.getElementById(`dangerous-likes-${postId}`);
+
+                            if (type === 0) {
+                              safeLikesSpan.textContent = parseInt(safeLikesSpan.textContent) + (data.action === 'added' ? 1 : -1);
+                            } else {
+                              dangerousLikesSpan.textContent = parseInt(dangerousLikesSpan.textContent) + (data.action === 'added' ? 1 : -1);
+                            }
+                          }
+                        })
+                        .catch(error => {
+                          console.error('There was a problem with the fetch operation:', error);
+                        });
+                    });
+                  });
+                </script>
                 <!-- Sidebar -->
                 <div class="sidebar">
                     <!-- Popular Communities -->
@@ -736,18 +782,6 @@
                             Your personal UTSU frontpage. Come here to check in with your favorite communities.
                         </div>
                     </div>
-
-                    <!-- Premium -->
-                    <div class="card premium-card">
-                        <div class="card-content">
-                            <div class="text-sm" style="font-weight: 500; margin-bottom: 0.5rem;">UTSU Premium</div>
-                            <div class="text-xs" style="margin-bottom: 0.75rem;">
-                                The best UTSU experience, with monthly perks
-                            </div>
-                            <button class="btn btn-outline btn-sm w-full">
-                                Try Now
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
