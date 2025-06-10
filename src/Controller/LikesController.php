@@ -28,7 +28,7 @@ class LikesController extends AbstractController
         // Log the received data for debugging
             error_log('Received data: ' . $request->getContent());
 
-        // Validate the 'type' parameter ajout
+        // Validate the 'type' parameter
         if (!in_array($type, ['safe', 'dangerous'], true)) {
             return $this->json([
                 'error' => 'Invalid like type provided.'], Response::HTTP_BAD_REQUEST);
