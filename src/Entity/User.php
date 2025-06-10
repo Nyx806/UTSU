@@ -70,7 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Commentaires::class, mappedBy: 'userID', orphanRemoval: true)]
     private Collection $commentaires;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::INTEGER, nullable: false)]
     private ?int $dangerous = null;
 
     public function __construct()
