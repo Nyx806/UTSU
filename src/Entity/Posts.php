@@ -190,4 +190,14 @@ class Posts
 
         return $this;
     }
+
+    public function countSafeLikes(): int
+    {
+        return $this->likes->filter(fn(Likes $like) => $like->isSafe())->count();
+    }
+
+    public function countDangerousLikes(): int
+    {
+        return $this->likes->filter(fn(Likes $like) => $like->isDangerous())->count();
+    }
 }

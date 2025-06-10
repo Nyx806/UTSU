@@ -11,53 +11,785 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Utsu</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --background: #ffffff;
+      --foreground: #0f172a;
+      --card: #ffffff;
+      --card-foreground: #0f172a;
+      --primary: #1e293b;
+      --primary-foreground: #f8fafc;
+      --secondary: #f1f5f9;
+      --secondary-foreground: #1e293b;
+      --muted: #f1f5f9;
+      --muted-foreground: #64748b;
+      --accent: #f1f5f9;
+      --accent-foreground: #1e293b;
+      --destructive: #ef4444;
+      --destructive-foreground: #f8fafc;
+      --border: #e2e8f0;
+      --input: #e2e8f0;
+      --ring: #0f172a;
+      --radius: 0.5rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--primary-foreground);
+      padding: 0.5rem 1rem;
+    }
+
+    .btn-primary:hover {
+      background-color: #334155;
+    }
+
+    .btn-ghost {
+      background-color: transparent;
+      color: var(--foreground);
+      padding: 0.5rem 1rem;
+    }
+
+    .btn-ghost:hover {
+      background-color: var(--accent);
+      color: var(--accent-foreground);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--border);
+      color: var(--foreground);
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    .btn-outline:hover {
+      background-color: var(--accent);
+    }
+
+    .btn-sm {
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    .btn-lg {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+    }
+
+    .card {
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      padding: 1.5rem 1.5rem 0;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--card-foreground);
+    }
+
+    .card-content {
+      padding: 1.5rem;
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      width: 100%;
+      border-bottom: 1px solid var(--border);
+      background-color: white;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-container {
+      display: flex;
+      height: 4rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .navbar-logo {
+      font-weight: bold;
+      font-size: 1.25rem;
+      color: #ea580c;
+      text-decoration: none;
+    }
+
+    .navbar-nav {
+      display: none;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .navbar-nav .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      color: var(--foreground);
+      text-decoration: none;
+      border-radius: var(--radius);
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .navbar-nav .nav-link:hover {
+      background-color: var(--accent);
+    }
+
+    .navbar-nav .nav-link .notification-badge {
+      position: absolute;
+      top: -0.25rem;
+      right: -0.25rem;
+      width: 0.5rem;
+      height: 0.5rem;
+      background-color: #ef4444;
+      border-radius: 50%;
+    }
+
+    .navbar-user {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-trigger {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: var(--radius);
+    }
+
+    .dropdown-trigger:hover {
+      background-color: var(--accent);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5rem;
+      min-width: 14rem;
+      background-color: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      display: none;
+      z-index: 50;
+    }
+
+    .dropdown.open .dropdown-menu {
+      display: block;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      color: var(--foreground);
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--accent);
+    }
+
+    .dropdown-item.text-red {
+      color: #ef4444;
+    }
+
+    .dropdown-separator {
+      height: 1px;
+      background-color: var(--border);
+      margin: 0.25rem 0;
+    }
+
+    .avatar {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background-color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .avatar-fallback {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted-foreground);
+    }
+
+    .main-layout {
+      min-height: 100vh;
+      background-color: #f9fafb;
+    }
+
+    .content-wrapper {
+      padding: 1.5rem 0;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .main-content {
+      /* Styles pour le contenu principal */
+    }
+
+    .posts-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .posts-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .posts-filters {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    .safe-icon {
+        width: 16px;
+        height: 16px;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .danger-icon {
+        width: 16px;
+        height: 16px;
+        transition: transform 0.1s ease-in-out;
+      }
+
+    @keyframes shake {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(1px, -1px); }
+      50% { transform: translate(-1px, 1px); }
+      75% { transform: translate(1px, 1px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .filter-active {
+      background-color: #dbeafe;
+      color: #1e40af;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+    }
+
+    .filter-inactive {
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .filter-inactive:hover {
+      background-color: #f3f4f6;
+    }
+
+    .posts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .danger-card {
+      background: linear-gradient(to bottom right, #fef2f2, #fee2e2);
+      border-color: #fecaca;
+    }
+
+    .danger-card .card-title {
+      color: #991b1b;
+    }
+
+    .danger-card .card-content span {
+      color: #b91c1c;
+    }
+
+    .danger-card .btn-outline {
+      border-color: #fca5a5;
+      color: #b91c1c;
+    }
+
+    .danger-card .btn-outline:hover {
+      background-color: #fef2f2;
+    }
+
+    .success-card {
+      background: linear-gradient(to bottom right, #f0fdf4, #dcfce7);
+      border-color: #bbf7d0;
+    }
+
+    .success-card .card-title {
+      color: #166534;
+    }
+
+    .success-card .card-content span {
+      color: #15803d;
+    }
+
+    .ranking-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .ranking-number {
+      font-size: 0.875rem;
+      font-weight: bold;
+      color: #15803d;
+    }
+
+    .avatar-sm {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .avatar-sm .avatar-fallback {
+      font-size: 0.625rem;
+      background-color: #bbf7d0;
+    }
+
+    .points {
+      font-size: 0.75rem;
+      color: #16a34a;
+      margin-left: auto;
+    }
+
+    .trend-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .trend-title {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .trend-participants {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    .icon {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .text-sm {
+      font-size: 0.875rem;
+    }
+
+    .text-xs {
+      font-size: 0.75rem;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .justify-between {
+      justify-content: space-between;
+    }
+
+    .gap-2 {
+      gap: 0.5rem;
+    }
+
+    .space-y-2 > * + * {
+      margin-top: 0.5rem;
+    }
+
+    .space-y-3 > * + * {
+      margin-top: 0.75rem;
+    }
+
+    .space-x-2 > * + * {
+      margin-left: 0.5rem;
+    }
+
+    .ml-auto {
+      margin-left: auto;
+    }
+
+    .w-full {
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .navbar-nav {
+        display: flex;
+      }
+
+      .content-grid {
+        grid-template-columns: 2fr 1fr;
+      }
+
+      .container {
+        padding: 0 2rem;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .navbar-user .dropdown-trigger span {
+        display: none;
+      }
+
+      .sidebar {
+        order: -1;
+      }
+
+      .posts-filters {
+        flex-wrap: wrap;
+      }
+    }
+
+    .safe-icon:hover {
+        transform: scale(1.2);
+    }
+
+    .danger-icon:hover {
+        transform: rotate(15deg);
+    }
+  </style>
 </head>
 <body class="bg-gray-100">
 
-  {% include 'home/_navbar.html.twig' %}
-  <!-- Main content -->
-  <div class="flex p-6 space-x-6">
+{% include 'home/_navbar.html.twig' %}
 
-    <!-- Sidebar: Categories -->
-    <aside class="w-1/4 bg-white rounded shadow p-4">
-      <h2 class="text-xl font-semibold mb-4"><a href="{{ path('categories_index')}}" class="block px-3 py-2 hover:bg-blue-100 rounded">Catégories</a></h2>
-      <ul class="space-y-2">
-        {% for category in categories %}
-        <li><a href="{{ path('categories_posts', {'id': category.id}) }}" class="block px-3 py-2 hover:bg-blue-100 rounded">{{ category.name }}</a></li>
-        {% endfor %}
-        
-      </ul>
-      
-    </aside>
-
-    <!-- Posts Feed -->
-    <main class="flex-1">
-      <h2 class="text-2xl font-semibold mb-4">Posts récents</h2>
-
-      <div class="space-y-4">
-            {% for post in posts %}
-                <div class="bg-white p-4 rounded shadow">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-gray-400">il y a {{ post.date|date('d/m/Y H:i') }}</span>
-                        <span class="text-xs text-gray-400">Catégorie: {{ post.getCat.name }}</span>
+<div class="main-layout">
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="content-grid">
+                <!-- Main Content -->
+                <div class="main-content">
+                    <div class="posts-header">
+                        <h1 class="posts-title">Popular posts</h1>
+                        <div class="posts-filters">
+                            <span class="filter-active">Hot</span>
+                            <span class="filter-inactive">New</span>
+                            <span class="filter-inactive">Top</span>
+                        </div>
                     </div>
-                    <h3 class="text-lg font-bold mb-1">{{ post.title }}</h3>
-                    <p class="text-gray-700">{{ post.contenu }}</p>
-                    <div class="mt-2 flex justify-between items-center">
-                        <span class="text-sm text-gray-500">Auteur: {{ post.getUserID.username }}</span>
-                        <a href="{{ path('posts_detail', {'id': post.id}) }}" class="text-blue-600 hover:underline">Lire la suite</a>
+
+                    <div class="posts-list">
+                        {% for post in posts %}
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="flex items-center gap-2 text-xs" style="color: #6b7280; margin-bottom: 0.5rem;">
+                                    <span>r/{{ post.cat.name }}</span>
+                                    <span>•</span>
+                                    <span>Posted by u/{{ post.userID.username }}</span>
+                                    <span>•</span>
+                                    <span>{{ post.date|date('d/m/Y') }}</span>
+                                </div>
+                                <h2 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: #111827;">
+                                    {{ post.title }}
+                                </h2>
+                                <p style="color: #374151; margin-bottom: 1rem;">
+                                    {{ post.contenu }}
+                                </p>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex items-center gap-2">
+                                        <button class="btn btn-ghost" style="padding: 0.25rem;">
+                                           <svg class="safe-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="16" height="16">
+                                              <path d="M12 2L4 5v6c0 5.55 3.84 10.74 8 11 4.16-.26 8-5.45 8-11V5l-8-3z"/>
+                                              <path fill="white" d="M10.5 14.5l-2.5-2.5 1.41-1.41L10.5 11.67l4.59-4.59L16.5 8.5z"/>
+                                            </svg>
+                                          </button>
+                                        <span id="safe-likes-{{ post.id }}" class="text-sm" style="font-weight: 600;">{{post.countSafeLikes() }}</span>
+                                        <button class="btn btn-ghost" style="padding: 0.25rem;">
+                                            <svg class="danger-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="16" height="16">
+                                                <path d="M1 21h22L12 2 1 21z"/>
+                                                <path fill="white" d="M13 16h-2v2h2v-2zm0-6h-2v4h2v-4z"/>
+                                            </svg>
+                                        </button>
+                                        <span id="dangerous-likes-{{ post.id }}" class="text-sm" style="font-weight: 600;">{{ post.countDangerousLikes() }}</span>
+                                    </div>
+                                    <button class="btn btn-ghost text-sm">
+                                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                        </svg>
+                                        {{ post.commentaires|length }} Comments
+                                    </button>
+                                    <button class="btn btn-ghost text-sm">
+                                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                        </svg>
+                                        Share
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
-                </div> 
-            {% endfor %}
-       </div>
+                </div>
+                <script>
+                  document.querySelectorAll('.btn-ghost').forEach(button => {
+                    button.addEventListener('click', function () {
+                      const postId = this.nextElementSibling.id.split('-')[2]; // Extract post ID from span ID
+                      const type = this.querySelector('svg').classList.contains('safe-icon') ? 0 : 1; // Determine like type
 
+                      fetch(`/posts/${postId}/toggle-like`, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        body: JSON.stringify({ type }),
+                      })
+                        .then(response => {
+                          if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                          }
+                          return response.json();
+                        })
+                        .then(data => {
+                          if (data.message === 'Like toggled successfully') {
+                            const safeLikesSpan = document.getElementById(`safe-likes-${postId}`);
+                            const dangerousLikesSpan = document.getElementById(`dangerous-likes-${postId}`);
 
-    </main>
+                            if (type === 0) {
+                              safeLikesSpan.textContent = parseInt(safeLikesSpan.textContent) + (data.action === 'added' ? 1 : -1);
+                            } else {
+                              dangerousLikesSpan.textContent = parseInt(dangerousLikesSpan.textContent) + (data.action === 'added' ? 1 : -1);
+                            }
+                          }
+                        })
+                        .catch(error => {
+                          console.error('There was a problem with the fetch operation:', error);
+                        });
+                    });
+                  });
+                </script>
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Popular Communities -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Popular Communities</h3>
+                        </div>
+                        <div class="card-content space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm">r/announcements</span>
+                                <button class="btn btn-outline btn-sm">Join</button>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm">r/funny</span>
+                                <button class="btn btn-outline btn-sm">Join</button>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm">r/AskReddit</span>
+                                <button class="btn btn-outline btn-sm">Join</button>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm">r/gaming</span>
+                                <button class="btn btn-outline btn-sm">Join</button>
+                            </div>
+                        </div>
+                    </div>
 
-  </div>
+                    <!-- Most dangerous Community -->
+                    <div class="card danger-card">
+                        <div class="card-header">
+                            <h3 class="card-title flex items-center gap-2">
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                </svg>
+                                Most dangerous Community
+                            </h3>
+                        </div>
+                        <div class="card-content space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm">r/conspiracy</span>
+                                <button class="btn btn-outline btn-sm">View</button>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm">r/controversial</span>
+                                <button class="btn btn-outline btn-sm">View</button>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm">r/debate</span>
+                                <button class="btn btn-outline btn-sm">View</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trend Debats -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title flex items-center gap-2">
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
+                                Trend Debats
+                            </h3>
+                        </div>
+                        <div class="card-content space-y-3">
+                            <div class="trend-item">
+                                <div class="trend-title">Climate Change Solutions</div>
+                                <div class="trend-participants">1.2k participants</div>
+                            </div>
+                            <div class="trend-item">
+                                <div class="trend-title">AI Ethics Discussion</div>
+                                <div class="trend-participants">896 participants</div>
+                            </div>
+                            <div class="trend-item">
+                                <div class="trend-title">Education Reform</div>
+                                <div class="trend-participants">743 participants</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Classement a model citizen -->
+                    <div class="card success-card">
+                        <div class="card-header">
+                          <h3 class="card-title flex items-center gap-2">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-crown">
+                                  <path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"></path>
+                                  <path d="M5 21h14"></path>
+                              </svg>
+                              Classement a model citizen
+                          </h3>
+                        </div>
+                        <div class="card-content space-y-3">
+                            <div class="ranking-item">
+                                <div class="ranking-number">1.</div>
+                                <div class="avatar avatar-sm">
+                                    <div class="avatar-fallback">JD</div>
+                                </div>
+                                <span class="text-sm">john_doe</span>
+                                <span class="points">2,450 pts</span>
+                            </div>
+                            <div class="ranking-item">
+                                <div class="ranking-number">2.</div>
+                                <div class="avatar avatar-sm">
+                                    <div class="avatar-fallback">AS</div>
+                                </div>
+                                <span class="text-sm">alice_smith</span>
+                                <span class="points">2,180 pts</span>
+                            </div>
+                            <div class="ranking-item">
+                                <div class="ranking-number">3.</div>
+                                <div class="avatar avatar-sm">
+                                    <div class="avatar-fallback">MB</div>
+                                </div>
+                                <span class="text-sm">mike_brown</span>
+                                <span class="points">1,895 pts</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Create Post -->
+                    <div class="card">
+                        <div class="card-content">
+                            <button class="btn btn-primary btn-lg w-full">
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Create Post
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Home -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Home</h3>
+                        </div>
+                        <div class="card-content text-sm" style="color: #6b7280;">
+                            Your personal UTSU frontpage. Come here to check in with your favorite communities.
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
-</html> 
-
+</html>
 
 {% endblock %}

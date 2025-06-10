@@ -61,7 +61,16 @@ class Likes
     public function setType(int $type): static
     {
         $this->type = $type;
-
         return $this;
+    }
+
+    public function isSafe(): bool
+    {
+        return $this->type === 0;
+    }
+
+    public function isDangerous(): bool
+    {
+        return $this->type === 1;
     }
 }
