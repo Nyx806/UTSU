@@ -19,7 +19,7 @@ class LikesController extends AbstractController
 
             // Vérifier si l'utilisateur a déjà liké ce post
             $existingLike = $post->getLikes()->filter(
-                fn(Likes $like) => $like->getUserID() === $user 
+                fn(Likes $like) => $like->getUserID() === $user
                 && $like->getType() === (int)$type
             )->first();
 
