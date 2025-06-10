@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Likes;
@@ -49,15 +50,13 @@ class LikesController extends AbstractController
             $like->setType($type);
             $like->setPost($post);
             $like->setUserID($user);
-
             $post->addLike($like);
             $em->persist($like);
             $action = 'added';
         }
 
             $em->flush();
-
-            return $this->json([
+        return $this->json([
                 'message' => 'Like toggled successfully',
                 'action' => $action,
                 'safeLikes' => $post->countSafeLikes(),

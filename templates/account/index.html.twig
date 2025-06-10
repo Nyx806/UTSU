@@ -1,46 +1,119 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}UTSU{% endblock %}
+{% block title %}Mon Compte{% endblock %}
 
 {% block body %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mon Compte</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+<div class="min-h-screen bg-gray-100 py-10">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow p-6">
+        <h1 class="text-2xl font-bold text-blue-600 mb-6">Mon compte</h1>
 
- {{ include('home/_navbar.html.twig') }}
+        {# Affichage des informations du compte #}
+        <div class="space-y-6">
+            {# Photo de profil #}
+            <div class="flex items-center space-x-4">
+                <div class="w-24 h-24 rounded-full overflow-hidden">
+                    <img src="{{ asset('uploads/pp/' ~ app.user.getPpImg()) }}" 
+                         alt="Photo de profil" 
+                         class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-800">{{ app.user.username }}</h2>
+                    <p class="text-gray-600">{{ app.user.email }}</p>
+                </div>
+            </div>
 
-  <!-- Main Content -->
-  <main class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded shadow">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Mon compte</h2>
-      <div>
-        <img src="{{ asset('uploads/pp/' ~ user.getPpImg) }}" alt="Photo de profil">
-        <span class="text-gray-500 text-sm">Nom d'utilisateur</span>
-        <p class="text-lg font-medium">{{ user.username }}</p>
-      </div>
-      <div>
-        <span class="text-gray-500 text-sm">Adresse e-mail</span>
-        <p class="text-lg font-medium">{{ user.email }}</p>
-      </div>
-      <div>
-        
-      </div>
+            {# Description #} 
+
+            {# Statistiques #}
+            <div class="grid grid-cols-3 gap-4 py-4 border-t border-b">
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-blue-600">{{ app.user.posts|length }}</p>
+                    <p class="text-sm text-gray-600">Posts</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-blue-600">{{ app.user.commentaires|length }}</p>
+                    <p class="text-sm text-gray-600">Commentaires</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-blue-600">{{ app.user.abonnements|length }}</p>
+                    <p class="text-sm text-gray-600">Abonnements</p>
+                </div>
+            </div>
+
+            {# Bouton de modification #}
+            <div class="text-right">
+                <button onclick="toggleEditForm()" 
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    Modifier mon profil
+                </button>
+            </div>
+        </div>
+
+        {# Formulaire de modification (caché par défaut) #}
+        <div id="editForm" class="hidden mt-6 pt-6 border-t">
+            {{ form_start(accountForm) }}
+                <div class="space-y-4">
+                    {# Email #}
+                    <div class="form-group">
+                        {{ form_label(accountForm.email, 'Email', {
+                            'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}
+                        }) }}
+                        {{ form_widget(accountForm.email, {
+                            'attr': {
+                                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                            }
+                        }) }}
+                        {{ form_errors(accountForm.email) }}
+                    </div>
+
+                    {# Username #}
+                    <div class="form-group">
+                        {{ form_label(accountForm.username, 'Nom d\'utilisateur', {
+                            'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}
+                        }) }}
+                        {{ form_widget(accountForm.username, {
+                            'attr': {
+                                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                            }
+                        }) }}
+                        {{ form_errors(accountForm.username) }}
+                    </div>
+
+                    {# Photo de profil #}
+                    <div class="form-group">
+                        {{ form_label(accountForm.pp_img, 'Photo de profil', {
+                            'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}
+                        }) }}
+                        {{ form_widget(accountForm.pp_img, {
+                            'attr': {
+                                'class': 'block w-full text-sm text-gray-700 border border-gray-300 rounded-lg file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 hover:file:bg-blue-700 transition'
+                            }
+                        }) }}
+                        {{ form_errors(accountForm.pp_img) }}
+                    </div>
+
+                    {# Boutons #}
+                    <div class="flex justify-end space-x-4">
+                        <button type="button" 
+                                onclick="toggleEditForm()" 
+                                class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                            Annuler
+                        </button>
+                        <button type="submit" 
+                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                            Enregistrer
+                        </button>
+                    </div>
+                </div>
+            {{ form_end(accountForm) }}
+        </div>
     </div>
+</div>
 
-    <div class="mt-6">
-      <a href="#"
-         class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-        Modifier mon profil
-      </a>
-    </div>
-  </main>
-
-</body>
-</html>
-
+<script>
+function toggleEditForm() {
+    const form = document.getElementById('editForm');
+    form.classList.toggle('hidden');
+}
+</script>
 {% endblock %}
