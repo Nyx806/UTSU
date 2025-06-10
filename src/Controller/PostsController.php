@@ -56,7 +56,8 @@ final class PostsController extends AbstractController
     }
 
     #[Route('/{id}', name: 'detail')]
-    public function details(int $id,
+    public function details(
+        int $id,
         PostsRepository $postsRepository,
         Request $request,
         EntityManagerInterface $em
@@ -68,9 +69,9 @@ final class PostsController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $com = $form->getData();
-            $file = $form->get('img')->getData(); 
+            $file = $form->get('img')->getData();
             $video = $form->get('video')->getData();
-            
+
             // Gestion du commentaire parent
             $parentId = $request->request->get('comment_parent');
             if ($parentId && $parentId != '0') {
