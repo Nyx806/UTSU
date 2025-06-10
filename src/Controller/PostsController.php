@@ -70,6 +70,16 @@ final class PostsController extends AbstractController
             $com = $form->getData();
             $file = $form->get('img')->getData(); 
             $video = $form->get('video')->getData();
+            
+            // Gestion du commentaire parent
+            $parentId = $request->request->get('comment_parent');
+            if ($parentId && $parentId != '0') {
+                $parentComment = $em->getRepository(Commentaires::class)->find($parentId);
+                if ($parentComment) {
+                    $com->setComParent($parentComment);
+                }
+            }
+
             if ($video) {
                 $videoName = md5(uniqid()) . '.' . $video->guessExtension();
                 $videoDir = $this->getParameter('kernel.project_dir') . '/public/uploads/commentaires/video';

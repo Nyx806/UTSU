@@ -33,41 +33,86 @@
     {% else %}
         <div class="space-y-4 mb-6">
             {% for commentaire in post.commentaires %}
-                <div class="border rounded p-4 bg-gray-50 shadow-sm">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-semibold text-gray-700">
-                            {{ commentaire.userID }}
-                        </span>
-                        <span class="text-xs text-gray-400">{{ commentaire.creationDate|date('d/m/Y à H:i') }}</span>
-                    </div>
-
-                    <p class="text-gray-800 whitespace-pre-line mb-4">{{ commentaire.contenu }}</p>
-
-                    {% if commentaire.img %}
-                        <div class="mb-4">
-                            <img src="{{ asset('uploads/commentaires/photo/' ~ commentaire.img) }}"
-                                 alt="Image du commentaire"
-                                 class="w-full max-w-md rounded shadow">
+                {% if commentaire.getComParent() is null %}
+                    <div class="border rounded p-4 bg-gray-50 shadow-sm">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-gray-700">
+                                {{ commentaire.userID }}
+                            </span>
+                            <span class="text-xs text-gray-400">{{ commentaire.creationDate|date('d/m/Y à H:i') }}</span>
                         </div>
-                    {% endif %}
 
-                    {% if commentaire.video %}
-                        <div class="mb-4">
-                            <video controls class="w-full max-w-md rounded shadow">
-                                <source src="{{ asset('uploads/commentaires/video/' ~ commentaire.video) }}"
-                                        type="video/mp4">
-                                Votre navigateur ne supporte pas la lecture vidéo.
-                            </video>
+                        <p class="text-gray-800 whitespace-pre-line mb-4">{{ commentaire.contenu }}</p>
+
+                        {% if commentaire.img %}
+                            <div class="mb-4">
+                                <img src="{{ asset('uploads/commentaires/photo/' ~ commentaire.img) }}"
+                                     alt="Image du commentaire"
+                                     class="w-full max-w-md rounded shadow">
+                            </div>
+                        {% endif %}
+
+                        {% if commentaire.video %}
+                            <div class="mb-4">
+                                <video controls class="w-full max-w-md rounded shadow">
+                                    <source src="{{ asset('uploads/commentaires/video/' ~ commentaire.video) }}"
+                                            type="video/mp4">
+                                    Votre navigateur ne supporte pas la lecture vidéo.
+                                </video>
+                            </div>
+                        {% endif %}
+
+                        <div class="text-right">
+                            <a href="#" data-reply data-id="{{ commentaire.id }}" data-user="{{ commentaire.userID }}"
+                               class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
+                                ↪ Répondre
+                            </a>
                         </div>
-                    {% endif %}
 
-                    <div class="text-right">
-                        <a href="#" data-reply data-id="{{ commentaire.id }}" data-user="{{ commentaire.userID }}"
-                           class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
-                            ↪ Répondre
-                        </a>
+                        {# Affichage des réponses #}
+                        {% if commentaire.commentaires|length > 0 %}
+                            <div class="ml-8 mt-4 space-y-4">
+                                {% for reply in commentaire.commentaires %}
+                                    <div class="border-l-2 border-gray-300 pl-4">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-sm font-semibold text-gray-700">
+                                                {{ reply.userID }}
+                                            </span>
+                                            <span class="text-xs text-gray-400">{{ reply.creationDate|date('d/m/Y à H:i') }}</span>
+                                        </div>
+
+                                        <p class="text-gray-800 whitespace-pre-line mb-4">{{ reply.contenu }}</p>
+
+                                        {% if reply.img %}
+                                            <div class="mb-4">
+                                                <img src="{{ asset('uploads/commentaires/photo/' ~ reply.img) }}"
+                                                     alt="Image de la réponse"
+                                                     class="w-full max-w-md rounded shadow">
+                                            </div>
+                                        {% endif %}
+
+                                        {% if reply.video %}
+                                            <div class="mb-4">
+                                                <video controls class="w-full max-w-md rounded shadow">
+                                                    <source src="{{ asset('uploads/commentaires/video/' ~ reply.video) }}"
+                                                            type="video/mp4">
+                                                    Votre navigateur ne supporte pas la lecture vidéo.
+                                                </video>
+                                            </div>
+                                        {% endif %}
+
+                                        <div class="text-right">
+                                            <a href="#" data-reply data-id="{{ commentaire.id }}" data-user="{{ reply.userID }}"
+                                               class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
+                                                ↪ Répondre
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
-                </div>
+                {% endif %}
             {% endfor %}
         </div>
     {% endif %}
