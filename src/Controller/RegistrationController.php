@@ -36,7 +36,7 @@ class RegistrationController extends AbstractController
             // Encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             $user->setType(0);
-
+            $user->setDangerous(0);
             // Gestion de l'upload de l'image de profil
             $ppImgFile = $form->get('pp_img')->getData();
             if ($ppImgFile) {
