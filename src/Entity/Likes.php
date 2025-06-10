@@ -22,7 +22,7 @@ class Likes
     private ?Posts $post = null;
 
     #[ORM\Column]
-    private ?int $type = null;
+    private ?string $type = null;
 
     public function getId(): ?int
     {
@@ -53,12 +53,12 @@ class Likes
         return $this;
     }
 
-    public function getType(): ?int
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    public function setType(int $type): static
+    public function setType(string $type): static
     {
         $this->type = $type;
         return $this;
@@ -66,11 +66,11 @@ class Likes
 
     public function isSafe(): bool
     {
-        return $this->type === 0;
+        return $this->type === 'safe';
     }
 
     public function isDangerous(): bool
     {
-        return $this->type === 1;
+        return $this->type === 'dangerous';
     }
 }

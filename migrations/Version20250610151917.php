@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250523122210 extends AbstractMigration
+final class Version20250610151917 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,6 +21,7 @@ final class Version20250523122210 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE commentaires ALTER img TYPE TEXT');
+        $this->addSql('ALTER TABLE likes ALTER type TYPE VARCHAR(255)');
     }
 
     public function down(Schema $schema): void
@@ -28,5 +29,6 @@ final class Version20250523122210 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE commentaires ALTER img TYPE BYTEA');
+        $this->addSql('ALTER TABLE likes ALTER type TYPE INT');
     }
 }

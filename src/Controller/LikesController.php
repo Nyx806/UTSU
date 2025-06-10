@@ -14,24 +14,39 @@ class LikesController extends AbstractController
     #[Route('/posts/{id}/toggle-like', name: 'post_toggle_like', methods: ['POST'])]
     public function toggleLike(Posts $post, Request $request, EntityManagerInterface $em): Response
     {
-            $type = $request->request->get('type'); // 0 for safe, 1 for dangerous
+            // Decode JSON body
+            $data = json_decode($request->getContent(), true);
+            $type = $data['type'] ?? null;
             $user = $this->getUser();
 
-            // Vérifier si l'utilisateur a déjà liké ce post
+            
             $existingLike = $post->getLikes()->filter(
                 fn(Likes $like) => $like->getUserID() === $user
-                && $like->getType() === (int)$type
             )->first();
 
+        // Log the received data for debugging
+            error_log('Received data: ' . $request->getContent());
+
+        // Validate the 'type' parameter
+        if (!in_array($type, ['safe', 'dangerous'], true)) {
+            return $this->json([
+                'error' => 'Invalid like type provided.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Modification de la logique pour utiliser des chaînes de caractères 'safe' et 'dangerous' pour le type de like
         if ($existingLike) {
-            // Supprimer le like existant
-            $post->removeLike($existingLike);
-            $em->remove($existingLike);
-            $action = 'removed';
+            if ($existingLike->getType() === $type) {
+                $post->removeLike($existingLike);
+                $em->remove($existingLike);
+                $action = 'removed';
+            } else {
+                $existingLike->setType($type);
+                $em->persist($existingLike);
+                $action = 'updated';
+            }
         } else {
-            // Ajouter un nouveau like
             $like = new Likes();
-            $like->setType((int)$type);
+            $like->setType($type);
             $like->setPost($post);
             $like->setUserID($user);
 
@@ -44,7 +59,9 @@ class LikesController extends AbstractController
 
             return $this->json([
                 'message' => 'Like toggled successfully',
-                'action' => $action
+                'action' => $action,
+                'safeLikes' => $post->countSafeLikes(),
+                'dangerousLikes' => $post->countDangerousLikes()
             ]);
     }
 }
