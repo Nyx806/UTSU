@@ -15,11 +15,11 @@ use App\Form\AccountFormType;
 final class AccountController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(UserRepository $userRepository,
-    Request $request,
-    EntityManagerInterface $em
-    ): Response
-    {
+    public function index(
+        UserRepository $userRepository,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
         // Récupérer l'utilisateur connecté
         $user = $this->getUser();
 
@@ -59,6 +59,4 @@ final class AccountController extends AbstractController
             'accountForm' => $accountForm->createView(),
         ]);
     }
-
-
 }
