@@ -648,26 +648,20 @@
                     <!-- Popular Communities -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Popular Communities</h3>
+                            <h3 class="card-title">
+                                <a href="{{ path('categories_index') }}" class="hover:text-blue-600 transition-colors">
+                                    Popular Communities
+                                </a>
+                            </h3>
                         </div>
-                        <div class="card-content space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm">r/announcements</span>
-                                <button class="btn btn-outline btn-sm">Join</button>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm">r/funny</span>
-                                <button class="btn btn-outline btn-sm">Join</button>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm">r/AskReddit</span>
-                                <button class="btn btn-outline btn-sm">Join</button>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm">r/gaming</span>
-                                <button class="btn btn-outline btn-sm">Join</button>
-                            </div>
-                        </div>
+                        {% for category in categories %}
+                          <div class="card-content space-y-2">
+                              <div class="flex items-center justify-between">
+                                  <span class="text-sm">r/{{category.name}}</span>
+                                  <button class="btn btn-outline btn-sm">  Join</button>
+                              </div>
+                          </div>
+                        {% endfor %}
                     </div>
 
                     <!-- Most dangerous Community -->
