@@ -26,6 +26,7 @@ class AppFixtures extends Fixture
             $user->setRoles(['ROLE_USER']);
             $user->setPpImg('https://picsum.photos/100/150');
             $user->setType('1');
+            $user->setDangerous(0);
             $manager->persist($user);
             $suers[] = $user;
         }

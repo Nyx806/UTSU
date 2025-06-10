@@ -70,6 +70,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Commentaires::class, mappedBy: 'userID', orphanRemoval: true)]
     private Collection $commentaires;
 
+    #[ORM\Column(type: Types::INTEGER, nullable: false)]
+    private ?int $dangerous = null;
+
     public function __construct()
     {
         $this->abonnements = new ArrayCollection();
@@ -312,5 +315,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString(): string
     {
         return $this->getUsername(); // ou email, ou nom complet, selon ce que tu veux afficher
+    }
+
+    public function getDangerous(): ?int
+    {
+        return $this->dangerous;
+    }
+
+    public function setDangerous(int $dangerous): static
+    {
+        $this->dangerous = $dangerous;
+
+        return $this;
     }
 }
