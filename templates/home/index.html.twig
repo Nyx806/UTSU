@@ -483,11 +483,8 @@
                     </div>
 
                     <div class="posts-list">
-
                         {% for post in posts %}
                         <div class="card clickable-card" data-href="{{ path('posts_detail', {'id': post.id}) }}">
-                      {% for post in posts %}
-                        <div class="card">
                             <div class="card-content">
                                 <div class="flex items-center gap-2 text-xs" style="color: #6b7280; margin-bottom: 0.5rem;">
                                     <a class="cat-post text-sm hover:underline" href="{{ path('categories_posts', {'id': post.cat.id}) }}">
@@ -535,105 +532,6 @@
                                         </svg>
                                         Share
                                     </button>
-                                </div>
-
-                                <!-- Section des commentaires -->
-                                <div id="comments-{{ post.id }}" class="mt-4 hidden" data-post-id="{{ post.id }}">
-                                    <div class="space-y-4">
-                                        {% if post.commentaires|length == 0 %}
-                                            <p class="text-gray-500">Aucun commentaire pour le moment.</p>
-                                        {% else %}
-                                            {% for commentaire in post.commentaires %}
-                                                {% if commentaire.getComParent() is null %}
-                                                    <div class="border rounded p-4 bg-gray-50 shadow-sm">
-                                                        <div class="flex justify-between items-center mb-2">
-                                                            <span class="text-sm font-semibold text-gray-700">
-                                                                {{ commentaire.userID }}
-                                                            </span>
-                                                            <span class="text-xs text-gray-400">{{ commentaire.creationDate|date('d/m/Y à H:i') }}</span>
-                                                        </div>
-
-                                                        <p class="text-gray-800 whitespace-pre-line mb-4">{{ commentaire.contenu }}</p>
-
-                                                        {% if commentaire.img %}
-                                                            <div class="mb-4">
-                                                                <img src="{{ asset('uploads/commentaires/photo/' ~ commentaire.img) }}"
-                                                                     alt="Image du commentaire"
-                                                                     class="w-full max-w-md rounded shadow">
-                                                            </div>
-                                                        {% endif %}
-
-                                                        {% if commentaire.video %}
-                                                            <div class="mb-4">
-                                                                <video controls class="w-full max-w-md rounded shadow">
-                                                                    <source src="{{ asset('uploads/commentaires/video/' ~ commentaire.video) }}"
-                                                                            type="video/mp4">
-                                                                    Votre navigateur ne supporte pas la lecture vidéo.
-                                                                </video>
-                                                            </div>
-                                                        {% endif %}
-
-                                                        <div class="text-right">
-                                                            <a href="#" data-reply data-id="{{ commentaire.id }}" data-user="{{ commentaire.userID }}"
-                                                               class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
-                                                                ↪ Répondre
-                                                            </a>
-                                                        </div>
-
-                                                        {# Affichage des réponses #}
-                                                        {% if commentaire.commentaires|length > 0 %}
-                                                            <div class="ml-8 mt-4 space-y-4">
-                                                                {% for reply in commentaire.commentaires %}
-                                                                    <div class="border-l-2 border-gray-300 pl-4">
-                                                                        <div class="flex justify-between items-center mb-2">
-                                                                            <span class="text-sm font-semibold text-gray-700">
-                                                                                {{ reply.userID }}
-                                                                            </span>
-                                                                            <span class="text-xs text-gray-400">{{ reply.creationDate|date('d/m/Y à H:i') }}</span>
-                                                                        </div>
-
-                                                                        <p class="text-gray-800 whitespace-pre-line mb-4">{{ reply.contenu }}</p>
-
-                                                                        {% if reply.img %}
-                                                                            <div class="mb-4">
-                                                                                <img src="{{ asset('uploads/commentaires/photo/' ~ reply.img) }}"
-                                                                                     alt="Image de la réponse"
-                                                                                     class="w-full max-w-md rounded shadow">
-                                                                            </div>
-                                                                        {% endif %}
-
-                                                                        {% if reply.video %}
-                                                                            <div class="mb-4">
-                                                                                <video controls class="w-full max-w-md rounded shadow">
-                                                                                    <source src="{{ asset('uploads/commentaires/video/' ~ reply.video) }}"
-                                                                                            type="video/mp4">
-                                                                                    Votre navigateur ne supporte pas la lecture vidéo.
-                                                                                </video>
-                                                                            </div>
-                                                                        {% endif %}
-
-                                                                        <div class="text-right">
-                                                                            <a href="#" data-reply data-id="{{ commentaire.id }}" data-user="{{ reply.userID }}"
-                                                                               class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
-                                                                                ↪ Répondre
-                                                                            </a>
-                                                                        </div>
-                                                                    </div>
-                                                                {% endfor %}
-                                                            </div>
-                                                        {% endif %}
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% endif %}
-
-                                        <div class="text-right mt-4">
-                                            <button onclick="toggleCommentForm({{ post.id }})" 
-                                                    class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition">
-                                                + Ajouter un commentaire
-                                            </button>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -948,7 +846,8 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Classement a model citizen   -->
+
+                    <!-- Classement a model citizen -->
                     <div class="card success-card">
                         <div class="card-header">
                           <h3 class="card-title flex items-center gap-2">
@@ -976,12 +875,12 @@
                     <!-- Create Post -->
                     <div class="card">
                         <div class="card-content">
-                            <a href="{{ path('posts_new') }}" class="btn btn-primary btn-lg w-full">
+                            <button class="btn btn-primary btn-lg w-full">
                                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
                                 Create Post
-                            </a>
+                            </button>
                         </div>
                     </div>
 
@@ -1051,7 +950,6 @@
     </div>
 </div>
 
-
 <script>
 document.querySelectorAll('.join-btn').forEach(button => {
     button.addEventListener('click', function() {
@@ -1080,183 +978,6 @@ document.querySelectorAll('.join-btn').forEach(button => {
         .catch(error => {
             console.error('Error:', error);
         });
-    });
-});
-
-<!-- Formulaire de commentaire unique -->
-<div id="commentForm" style="display: none;" class="mt-6">
-    <div id="replyToBox" class="hidden bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-2 rounded mb-4">
-        Réponse à <span id="replyToUser" class="font-semibold"></span>
-        <button type="button" onclick="cancelReply()" class="ml-4 text-sm text-red-600 hover:underline">Annuler</button>
-    </div>
-
-    {{ form_start(commentForm, {'action': path('home_index')}) }}
-    <input type="hidden" name="post_id" id="comment_post_id" value="">
-    <input type="hidden" id="comment_parent" name="comment_parent" value="0">
-
-    <!-- Champ contenu -->
-    <div class="mb-4">
-        {{ form_label(commentForm.contenu, null, {
-            'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
-        }) }}
-        {{ form_widget(commentForm.contenu, {
-            'attr': {
-                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
-            }
-        }) }}
-        {{ form_errors(commentForm.contenu) }}
-    </div>
-
-    <!-- Champ photo -->
-    <div class="mb-4">
-        {{ form_label(commentForm.img, null, {
-            'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
-        }) }}
-        {{ form_widget(commentForm.img, {
-            'attr': {
-                'class': 'block w-full text-sm text-gray-700 border border-gray-300 rounded-lg file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 hover:file:bg-blue-700 transition'
-            }
-        }) }}
-        {{ form_errors(commentForm.img) }}
-    </div>
-
-    <!-- Champ vidéo -->
-    <div class="mb-4">
-        {{ form_label(commentForm.video, null, {
-            'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
-        }) }}
-        {{ form_widget(commentForm.video, {
-            'attr': {
-                'class': 'block w-full text-sm text-gray-700 border border-gray-300 rounded-lg file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 hover:file:bg-blue-700 transition'
-            }
-        }) }}
-        {{ form_errors(commentForm.video) }}
-    </div>
-
-    <!-- Bouton de soumission -->
-    <div class="text-right">
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-            Envoyer le commentaire
-        </button>
-    </div>
-
-    {{ form_end(commentForm) }}
-</div>
-
-<script>
-document.querySelectorAll('.safe-like-btn, .dangerous-like-btn').forEach(button => {
-    button.addEventListener('click', function () {
-        const postId = this.dataset.postId;
-        const type = this.classList.contains('safe-like-btn') ? 'safe' : 'dangerous';
-
-        console.log(`Type envoyé: ${type}`);
-
-        fetch(`/posts/${postId}/toggle-like`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-            },
-            body: JSON.stringify({ type }),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log(data);
-            if (data.message === 'Like toggled successfully') {
-                const safeLikesSpan = document.getElementById(`safe-likes-${postId}`);
-                const dangerousLikesSpan = document.getElementById(`dangerous-likes-${postId}`);
-                if (!dangerousLikesSpan) {
-                    console.warn(`Element dangerous-likes-${postId} not found`);
-                } else {
-                    dangerousLikesSpan.textContent = data.dangerousLikes;
-                }
-                safeLikesSpan.textContent = data.safeLikes;
-            }
-        })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-        });
-    });
-});
-
-function toggleCommentForm(postId) {
-    const form = document.getElementById('commentForm');
-    const postIdInput = document.getElementById('comment_post_id');
-    const parentInput = document.getElementById('comment_parent');
-    const replyBox = document.getElementById('replyToBox');
-    const replyToUser = document.getElementById('replyToUser');
-
-    // Réinitialiser le formulaire
-    postIdInput.value = postId;
-    parentInput.value = 0;
-    replyBox.classList.add('hidden');
-    replyToUser.innerText = "";
-
-    // Afficher le formulaire
-    form.style.display = 'block';
-    form.scrollIntoView({ behavior: 'smooth' });
-}
-
-function cancelReply() {
-    const parentInput = document.getElementById('comment_parent');
-    const replyBox = document.getElementById('replyToBox');
-    const replyToUser = document.getElementById('replyToUser');
-    const form = document.getElementById('commentForm');
-
-    parentInput.value = 0;
-    replyBox.classList.add('hidden');
-    replyToUser.innerText = "";
-    form.style.display = 'none';
-}
-
-// Gestionnaire d'événements pour les liens de réponse
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('[data-reply]').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const commentId = this.dataset.id;
-            const userName = this.dataset.user;
-            
-            // Trouver le post ID à partir du conteneur de commentaires parent
-            const commentsContainer = this.closest('[data-post-id]');
-            if (!commentsContainer) {
-                console.error('Could not find post container');
-                return;
-            }
-            const postId = commentsContainer.dataset.postId;
-            
-            const form = document.getElementById('commentForm');
-            const parentInput = document.getElementById('comment_parent');
-            const replyBox = document.getElementById('replyToBox');
-            const replyToUser = document.getElementById('replyToUser');
-            const postIdInput = document.getElementById('comment_post_id');
-
-            parentInput.value = commentId;
-            postIdInput.value = postId;
-            replyToUser.innerText = userName;
-            replyBox.classList.remove('hidden');
-
-            // Insérer le formulaire après le commentaire
-            const commentContainer = this.closest('.border');
-            if (commentContainer) {
-                commentContainer.after(form);
-            }
-            form.style.display = 'block';
-            form.scrollIntoView({ behavior: 'smooth' });
-        });
-    });
-});
-
-document.querySelectorAll('.toggle-comments').forEach(button => {
-    button.addEventListener('click', function() {
-        const postId = this.dataset.postId;
-        const commentsSection = document.getElementById(`comments-${postId}`);
-        commentsSection.classList.toggle('hidden');
     });
 });
 </script>
