@@ -31,7 +31,7 @@ final class HomeController extends AbstractController
         
          $posts = $postsRepository->findAll();
 
-    $commentForm = null;
+
     $com = new Commentaires();
 
     // Vérifie si un commentaire est en train d'être soumis
