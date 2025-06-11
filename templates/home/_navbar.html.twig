@@ -1,262 +1,706 @@
 {% block body %}
 <style>
-/* Navigation */
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  width: 100%;
-  border-bottom: 1px solid #e5e7eb;
-  background-color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.navbar-container {
-  display: flex;
-  height: 4rem;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 1rem;
-}
-
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.navbar-logo {
-  font-weight: bold;
-  font-size: 1.25rem;
-  color:#B87F59
-  text-decoration: none;
-}
-
-.navbar-toggle {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-}
-
-.navbar-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.navbar-nav .nav-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  color: #111827;
-  text-decoration: none;
-  border-radius: 0.375rem;
-  transition: background-color 0.2s;
-  position: relative;
-}
-
-.navbar-nav .nav-link:hover {
-  background-color: #f3f4f6;
-}
-
-.navbar-nav .nav-link .notification-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 0.5rem;
-  height: 0.5rem;
-  background-color: #ef4444;
-  border-radius: 50%;
-}
-
-.navbar-user {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.dropdown {
-  position: relative;
-}
-
-.dropdown-trigger {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-}
-
-.dropdown-trigger:hover {
-  background-color: #f3f4f6;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 0.5rem;
-  min-width: 14rem;
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.375rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  display: none;
-  z-index: 50;
-}
-
-.dropdown.open .dropdown-menu {
-  display: block;
-}
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  color: #111827;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.dropdown-item:hover {
-  background-color: #f3f4f6;
-}
+  /* Navigation */
 
 
-.dropdown-separator {
-  height: 1px;
-  background-color: #e5e7eb;
-  margin: 0.25rem 0;
-}
+  .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      width: 100%;
+      border-bottom: 1px solid var(--border);
+      background-color: white;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
 
-.avatar {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background-color: #f9fafb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
+    .navbar-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      min-height: 4.5rem;
+    }
 
-.avatar img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+    .navbar-logo {
+      font-weight: bold;
+      font-size: 1.25rem;
+      color: #ea580c;
+      text-decoration: none;
+    }
 
-.avatar-fallback {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #6b7280;
-}
+    .navbar-nav {
+      display: none;
+      align-items: center;
+      gap: 0.25rem;
+    }
 
+    .navbar-nav .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      color: var(--foreground);
+      text-decoration: none;
+      border-radius: var(--radius);
+      transition: all 0.2s;
+      position: relative;
+    }
 
-.icon {
-  stroke: #111; /* noir */
-  vertical-align: middle;
-  margin-right: 0.4rem;
-}
+    .navbar-nav .nav-link:hover {
+      background-color: var(--accent);
+    }
 
-.text-red {
-  stroke: #ef4444; /* rouge pour logout */
-}
+    .navbar-nav .nav-link .notification-badge {
+      position: absolute;
+      top: -0.25rem;
+      right: -0.25rem;
+      width: 0.5rem;
+      height: 0.5rem;
+      background-color: #ef4444;
+      border-radius: 50%;
+    }
 
-
-/* Responsive */
-@media (max-width: 768px) {
-  .navbar-nav {
-    display: none;
-    flex-direction: column;
-    background: white;
-    position: absolute;
-    top: 4rem;
-    left: 0;
-    right: 0;
-    border-top: 1px solid #e5e7eb;
-    padding: 1rem;
+    .navbar-user {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
-  .navbar-nav.show {
+  .navbar-container {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    min-height: 4.5rem;
+  }
+
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-direction: row;
+  }
+
+  .navbar-logo {
+    /* Styles for the link only */
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .navbar-logo-img {
+    display: block;
+    height: 4rem;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .navbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
   }
 
   .navbar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+  }
+
+  .navbar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    color: #111827;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+    position: relative;
+  }
+
+  .navbar-nav .nav-link:hover {
+    background-color: #f3f4f6;
+  }
+
+  .navbar-nav .nav-link .notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: #ef4444;
+    border-radius: 50%;
+  }
+
+  .navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+  }
+
+  .dropdown-trigger:hover {
+    background-color: #f3f4f6;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    min-width: 14rem;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 50;
+  }
+
+  .dropdown.open .dropdown-menu {
     display: block;
   }
-}
-.navbar-search-form {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin-left: 1rem;
-}
 
-.navbar-search-input {
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-  background-color: #f9fafb;
-  color: #111827;
-  height: 2rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.navbar-search-input:focus {
-  outline: none;
-  border-color: #B87F59;
-  box-shadow: 0 0 0 2px rgba(184, 127, 89, 0.3);
-}
-
-.search-icon {
-  stroke: #111;
-  min-width: 18px;
-  min-height: 18px;
-}
-
-/* Responsive: cache la barre de recherche sur petits écrans */
-@media (max-width: 768px) {
-  .navbar-search-form {
-    display: none;
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: #111827;
+    text-decoration: none;
+    transition: background-color 0.2s;
   }
-}
+
+  .dropdown-item:hover {
+    background-color: #f3f4f6;
+  }
 
 
+  .dropdown-separator {
+    height: 1px;
+    background-color: #e5e7eb;
+    margin: 0.25rem 0;
+  }
+
+  .avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: #f9fafb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .avatar-fallback {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+  }
+
+
+  .icon {
+    stroke: #111; /* noir */
+    vertical-align: middle;
+    margin-right: 0.4rem;
+  }
+
+  .text-red {
+    stroke: #ef4444; /* rouge pour logout */
+  }
+
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hamburger-menu {
+        display: block;
+    }
+
+    .navbar-brand {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 0.5rem;
+    }
+
+    .navbar-logo-img {
+        height: 4rem;
+        width: auto;
+    }
+
+    /* La navbar-nav disparaît en mobile */
+    #mainNav {
+        display: none !important;
+    }
+
+    /* La barre de recherche reste visible et se centre */
+    .navbar-search-form {
+        position: static;
+        transform: none;
+        left: auto;
+        margin: 0;
+        width: 100%;
+        max-width: 100vw;
+        justify-content: center;
+    }
+
+    .navbar-brand {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .navbar-logo {
+        display: block;
+    }
+
+    .navigation-sidebar .navbar-nav {
+      display: flex !important;
+      flex-direction: column;
+      background: none;
+      position: static;
+      border-top: none;
+      padding: 0;
+    }
+
+    .navigation-sidebar .navbar-nav .nav-link {
+      padding: 0.75rem;
+      color: var(--foreground);
+    }
+
+    .navigation-sidebar .navbar-nav .nav-link:hover {
+      background-color: var(--accent);
+    }
+
+    /* Les liens de la sidebar deviennent visibles */
+    .nav-link-side {
+      display: flex !important;
+    }
+  }
+  .navbar-search-form {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: 0.5rem;
+    flex: 1 1 auto;
+    max-width: 350px;
+    width: 100%;
+  }
+
+  .navbar-search-input {
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    background-color: #f9fafb;
+    color: #111827;
+    height: 2rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .navbar-search-input:focus {
+    outline: none;
+    border-color: #B87F59;
+    box-shadow: 0 0 0 2px rgba(184, 127, 89, 0.3);
+  }
+
+  .search-icon {
+    stroke: #111;
+    min-width: 18px;
+    min-height: 18px;
+  }
+
+  /* Responsive: cache la barre de recherche sur petits écrans */
+  @media (max-width: 768px) {
+    .navbar-search-form {
+      display: flex !important;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      margin: 0;
+      width: 100%;
+      max-width: 100vw;
+      justify-content: center;
+    }
+  }
+
+
+    /* Hamburger Sidebar Styles */
+    .hamburger-menu {
+      display: block;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.75rem;
+      padding: 0.5rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: background 0.2s, box-shadow 0.2s;
+      margin-right: 0.75rem;
+    }
+
+    .hamburger-menu:hover {
+      background: #f3f4f6;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1001;
+      display: none;
+    }
+
+    .sidebar-overlay.active {
+      display: block;
+    }
+
+    .navigation-sidebar {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 320px;
+      height: 100vh;
+      background-color: var(--card);
+      border-right: 1px solid var(--border);
+      z-index: 1002;
+      transition: left 0.3s ease-in-out;
+      overflow-y: auto;
+    }
+
+    .navigation-sidebar.active {
+      left: 0;
+    }
+
+    .sidebar-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-content {
+      padding: 1rem;
+    }
+
+    .sidebar-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar-section-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--muted-foreground);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: var(--radius);
+      color: var(--foreground);
+      text-decoration: none;
+      transition: background-color 0.2s;
+      margin-bottom: 0.25rem;
+    }
+
+    .sidebar-item:hover {
+      background-color: var(--accent);
+    }
+
+    .sidebar-item.active {
+      background-color: var(--primary);
+      color: var(--primary-foreground);
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background-color: var(--border);
+      margin: 1rem 0;
+    }
+
+    .community-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius);
+      transition: background-color 0.2s;
+      margin-bottom: 0.25rem;
+    }
+
+    .community-item:hover {
+      background-color: var(--accent);
+    }
+
+    .community-avatar {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      background-color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted-foreground);
+    }
+
+    .close-sidebar {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: var(--radius);
+    }
+
+    .close-sidebar:hover {
+      background-color: var(--accent);
+    }
+
+    /* Style des liens de navigation dans la sidebar */
+    .nav-link-side {
+      display: none; /* Invisible par défaut en desktop */
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: var(--radius);
+      color: var(--foreground);
+      text-decoration: none;
+      transition: background-color 0.2s;
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-link-side:hover {
+      background-color: var(--accent);
+    }
+
+    .nav-link-side .icon {
+      stroke: currentColor;
+      vertical-align: middle;
+      margin-right: 0.4rem;
+    }
+
+    /* En mode mobile, les liens deviennent visibles */
+    @media (max-width: 768px) {
+      .nav-link-side {
+        display: flex !important;
+      }
+    }
+
+    /* Ajustement du style pour correspondre aux autres liens */
+    .nav-link-side {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .nav-link-side .notification-badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      width: 0.5rem;
+      height: 0.5rem;
+      background-color: #ef4444;
+      border-radius: 50%;
+    }
+
+    /* Styles pour le bouton Join */
+    .join-button {
+      margin-left: auto;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #e5e7eb;
+      background-color: white;
+      color: #374151;
+    }
+
+    .join-button:hover {
+      background-color: #f3f4f6;
+    }
+
+    .join-button.joined {
+      background-color: #ea580c;
+      color: white;
+      border-color: #ea580c;
+    }
+
+    .join-button.joined:hover {
+      background-color: #c2410c;
+    }
+
+    .community-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius);
+      transition: background-color 0.2s;
+      margin-bottom: 0.25rem;
+      position: relative;
+    }
 
 </style>
 
 <nav class="navbar">
-  <div class="container">
-    <div class="navbar-container">
-      <div class="navbar-brand">
-        <a href="{{ path('home_index') }}" class="navbar-logo">UTSU</a>
-        <form action="{{ path('home_index') }}" method="get" class="navbar-search-form">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z" />
+  <div class="navbar-container">
+    <!-- Hamburger Menu Button -->
+    <button class="hamburger-menu" onclick="toggleSidebar()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+    <a href="{{ path('home_index') }}" class="navbar-logo">
+      <img src="{{ asset('img/logo-title.png') }}" alt="UTSU Logo" class="navbar-logo-img">
+    </a>
+
+    <div class="navbar-brand">
+      <form action="{{ path('home_index') }}" method="get" class="navbar-search-form">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" name="q" placeholder="Search..." class="navbar-search-input">
+      </form>
+    </div>
+
+    <div class="navbar-nav" id="mainNav">
+       <a href="{{ path('home_index') }}" class="nav-link" aria-label="Accueil">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7m-9 2v6m0 0h4m-4 0H7" />
           </svg>
-          <input type="text" name="q" placeholder="Rechercher..." class="navbar-search-input">
-        </form>
-      </div>
+          <span>Accueil</span>
+      </a>
+      <a href="{{ path('categories_index') }}" class="nav-link" aria-label="Catégories">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <circle cx="12" cy="12" r="3" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15A7.97 7.97 0 0017 9m-5 6a7.97 7.97 0 01-2.4-6" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v3m0 12v3m7.07-8.07l-2.12 2.12M6.05 6.05l2.12 2.12" />
+          </svg>
+          <span>Community</span>
+      </a>
+      <a href="{{ path('home_index') }}" class="nav-link" aria-label="Create">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Create</span>
+      </a>
+      <a href="{{ path('home_index') }}" class="nav-link" aria-label="Notifications">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          <span>Notifications</span>
+          <div class="notification-badge"></div>
+      </a>
+    </div>
 
-      <button class="navbar-toggle" onclick="toggleNav()">☰</button>
-
-      <div class="navbar-nav" id="mainNav">
-         <a href="{{ path('home_index') }}" class="nav-link" aria-label="Accueil">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7m-9 2v6m0 0h4m-4 0H7" />
-            </svg>
-            <span>Accueil</span>
+    <div class="navbar-user">
+      {% if app.user %}
+        <div class="dropdown" id="userDropdown">
+          <button class="dropdown-trigger" onclick="toggleDropdown()">
+            <div class="avatar">
+              <img src="{{ asset('uploads/pp/' ~ app.user.getPpImg) }}" alt="Photo de profil">
+              <div class="avatar-fallback">{{ app.user.username[:1]|upper }}</div>
+            </div>
+            <span>{{ app.user.username }}</span>
+          </button>
+          <div class="dropdown-menu">
+              <a href="{{ path('account_index') }}" class="dropdown-item" aria-label="Mon Compte">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A9.003 9.003 0 0112 15c2.5 0 4.8 1 6.364 2.636M12 12a5 5 0 100-10 5 5 0 000 10z" />
+                  </svg>
+                  <span>Mon Compte</span>
+              </a>
+              <div class="dropdown-separator"></div>
+              <a href="{{ path('app_logout') }}" class="dropdown-item text-red" aria-label="Log out">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon text-red" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 11-6 0v-1m6-10V5a3 3 0 00-6 0v1" />
+                  </svg>
+                  <span>Log out</span>
+              </a>
+              </div>
+        </div>
+      {% else %}
+        <a href="{{ path('app_login') }}" class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition text-sm">
+          Se connecter
         </a>
-        <a href="{{ path('categories_index') }}" class="nav-link" aria-label="Catégories">
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Navigation Sidebar -->
+  <div class="navigation-sidebar">
+    <div class="sidebar-header">
+      <h2 style="font-size: 1.125rem; font-weight: 600;">UTSU</h2>
+      <button class="close-sidebar" onclick="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="sidebar-content">
+      <!-- Home Section -->
+      <div class="sidebar-section">
+        <a href="/" class="sidebar-item active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9,22 9,12 15,12 15,22"></polyline>
+          </svg>
+          Home
+        </a>
+
+        <a href="{{ path('categories_index') }}" class="nav-link-side" aria-label="Catégories">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
             <circle cx="12" cy="12" r="3" />
             <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15A7.97 7.97 0 0017 9m-5 6a7.97 7.97 0 01-2.4-6" />
@@ -264,60 +708,66 @@
             </svg>
             <span>Community</span>
         </a>
-        <a href="{{ path('home_index') }}" class="nav-link" aria-label="Create">
+        <a href="{{ path('home_index') }}" class="nav-link-side" aria-label="Create">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
             </svg>
             <span>Create</span>
         </a>
-        <a href="{{ path('home_index') }}" class="nav-link" aria-label="Notifications">
+        <a href="{{ path('home_index') }}" class="nav-link-side" aria-label="Notifications">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
             <span>Notifications</span>
             <div class="notification-badge"></div>
         </a>
-        {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('admin_index') }}" class="nav-link">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <span>Admin</span>
-            </a>
+
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- Recents Section -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Recents</div>
+        
+        {% if app.user %}
+          {% set recentAbonnements = app.user.abonnements|slice(0, 3)|sort((a, b) => b.id <=> a.id) %}
+          {% for abonnement in recentAbonnements %}
+            <div class="community-item">
+              <div class="community-avatar">{{ abonnement.category.name|first|upper }}</div>
+              <span style="font-size: 0.875rem;">r/{{ abonnement.category.name }}</span>
+            </div>
+          {% endfor %}
         {% endif %}
       </div>
 
-      <div class="navbar-user">
+      <div class="sidebar-divider"></div>
+
+      <!-- Communities Section -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Communities</div>
+        
+        <!-- Create Community Button -->
+        <a href="#" class="sidebar-item" style="color: var(--primary); font-weight: 500;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+          Create a Community
+        </a>
+
+        <!-- Subscribed Communities -->
         {% if app.user %}
-          <div class="dropdown" id="userDropdown">
-            <button class="dropdown-trigger" onclick="toggleDropdown()">
-              <div class="avatar">
-                <img src="{{ asset('uploads/pp/' ~ app.user.getPpImg) }}" alt="Photo de profil">
-                <div class="avatar-fallback">{{ app.user.username[:1]|upper }}</div>
-              </div>
-              <span>{{ app.user.username }}</span>
-            </button>
-            <div class="dropdown-menu">
-                <a href="{{ path('account_index') }}" class="dropdown-item" aria-label="Mon Compte">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A9.003 9.003 0 0112 15c2.5 0 4.8 1 6.364 2.636M12 12a5 5 0 100-10 5 5 0 000 10z" />
-                    </svg>
-                    <span>Mon Compte</span>
-                </a>
-                <div class="dropdown-separator"></div>
-                <a href="{{ path('app_logout') }}" class="dropdown-item text-red" aria-label="Log out">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon text-red" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 11-6 0v-1m6-10V5a3 3 0 00-6 0v1" />
-                    </svg>
-                    <span>Log out</span>
-                </a>
-                </div>
-          </div>
-        {% else %}
-          <a href="{{ path('app_login') }}" class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition text-sm">
-            Se connecter
-          </a>
+          {% for abonnement in app.user.abonnements %}
+            <div class="community-item" data-category-id="{{ abonnement.category.id }}">
+              <div class="community-avatar">{{ abonnement.category.name|first|upper }}</div>
+              <span style="font-size: 0.875rem;">r/{{ abonnement.category.name }}</span>
+              <button class="join-button joined" onclick="toggleSubscription({{ abonnement.category.id }}, this)">
+                Joined
+              </button>
+            </div>
+          {% endfor %}
         {% endif %}
       </div>
     </div>
@@ -340,6 +790,55 @@
   function toggleNav() {
     const nav = document.getElementById('mainNav');
     nav.classList.toggle('show');
+  }
+
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.navigation-sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+  }
+
+  async function toggleSubscription(categoryId, button) {
+    try {
+      const response = await fetch(`/api/category/${categoryId}/toggle-subscription`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      
+      if (data.subscribed) {
+        button.textContent = 'Joined';
+        button.classList.add('joined');
+        // Ajouter la communauté aux récents si elle n'y est pas déjà
+        const recentsSection = document.querySelector('.sidebar-section:first-child');
+        const communityItem = button.closest('.community-item').cloneNode(true);
+        const recentsList = recentsSection.querySelectorAll('.community-item');
+        if (recentsList.length >= 3) {
+          recentsList[recentsList.length - 1].remove();
+        }
+        recentsSection.insertBefore(communityItem, recentsSection.firstChild);
+      } else {
+        button.textContent = 'Join';
+        button.classList.remove('joined');
+        // Retirer la communauté des récents si elle y est
+        const recentsSection = document.querySelector('.sidebar-section:first-child');
+        const communityItem = recentsSection.querySelector(`[data-category-id="${categoryId}"]`);
+        if (communityItem) {
+          communityItem.remove();
+        }
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 </script>
 

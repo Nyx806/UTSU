@@ -1,246 +1,247 @@
 {% extends 'base.html.twig' %}
 
+
 {% block body %}
-<div class="max-w-4xl mx-auto mt-10 bg-white rounded-lg shadow p-6">
-    <div class="mb-4">
-        <h1 class="text-3xl font-bold text-blue-600">{{ post.title }}</h1>
-        <div class="flex justify-between items-center text-sm text-gray-500 mt-2">
-            <span>Publié le {{ post.date|date('d/m/Y à H:i') }}</span>
-            <span>Catégorie : {{ post.getCat.name }}</span>
+    {% include 'home/_navbar.html.twig' %}
+    <div class="max-w-4xl mx-auto mt-10 bg-white rounded-lg shadow p-6">
+        <div class="mb-4">
+            <h1 class="text-3xl font-bold text-blue-600">{{ post.title }}</h1>
+            <div class="flex justify-between items-center text-sm text-gray-500 mt-2">
+                <span>Publié le {{ post.date|date('d/m/Y à H:i') }}</span>
+                <span>Catégorie : {{ post.getCat.name }}</span>
+            </div>
+        </div>
+
+        {% if post.photo %}
+            <div class="mb-6">
+                <img src="{{ asset('uploads/posts/' ~ post.photo)}}" alt="Image du post" class="rounded w-full object-cover max-h-96">
+            </div>
+        {% endif %}
+
+        <div class="text-gray-800 leading-relaxed">
+            {{ post.contenu|nl2br }}
+        </div>
+
+        <div class="mt-6 text-sm text-gray-600">
+            Écrit par : <span class="font-semibold">{{ post.getUserID.username }}</span>
         </div>
     </div>
 
-    {% if post.photo %}
-        <div class="mb-6">
-            <img src="{{ asset('uploads/posts/' ~ post.photo)}}" alt="Image du post" class="rounded w-full object-cover max-h-96">
-        </div>
-    {% endif %}
+    <div class="max-w-4xl mx-auto mt-10 bg-white rounded-lg shadow p-6">
+        <h2 class="text-2xl font-semibold text-blue-600 mb-4">Commentaires</h2>
 
-    <div class="text-gray-800 leading-relaxed">
-        {{ post.contenu|nl2br }}
-    </div>
-
-    <div class="mt-6 text-sm text-gray-600">
-        Écrit par : <span class="font-semibold">{{ post.getUserID.username }}</span>
-    </div>
-</div>
-
-<div class="max-w-4xl mx-auto mt-10 bg-white rounded-lg shadow p-6">
-    <h2 class="text-2xl font-semibold text-blue-600 mb-4">Commentaires</h2>
-
-    {% if post.commentaires|length == 0 %}
-        <p class="text-gray-500">Aucun commentaire pour le moment.</p>
-    {% else %}
-        <div class="space-y-4 mb-6">
-            {% for commentaire in post.commentaires %}
-                {% if commentaire.getComParent() is null %}
-                    <div class="border rounded p-4 bg-gray-50 shadow-sm">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm font-semibold text-gray-700">
-                                {{ commentaire.userID }}
-                            </span>
-                            <span class="text-xs text-gray-400">{{ commentaire.creationDate|date('d/m/Y à H:i') }}</span>
-                        </div>
-
-                        <p class="text-gray-800 whitespace-pre-line mb-4">{{ commentaire.contenu }}</p>
-
-                        {% if commentaire.img %}
-                            <div class="mb-4">
-                                <img src="{{ asset('uploads/commentaires/photo/' ~ commentaire.img) }}"
-                                     alt="Image du commentaire"
-                                     class="w-full max-w-md rounded shadow">
+        {% if post.commentaires|length == 0 %}
+            <p class="text-gray-500">Aucun commentaire pour le moment.</p>
+        {% else %}
+            <div class="space-y-4 mb-6">
+                {% for commentaire in post.commentaires %}
+                    {% if commentaire.getComParent() is null %}
+                        <div class="border rounded p-4 bg-gray-50 shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm font-semibold text-gray-700">
+                                    {{ commentaire.userID }}
+                                </span>
+                                <span class="text-xs text-gray-400">{{ commentaire.creationDate|date('d/m/Y à H:i') }}</span>
                             </div>
-                        {% endif %}
 
-                        {% if commentaire.video %}
-                            <div class="mb-4">
-                                <video controls class="w-full max-w-md rounded shadow">
-                                    <source src="{{ asset('uploads/commentaires/video/' ~ commentaire.video) }}"
-                                            type="video/mp4">
-                                    Votre navigateur ne supporte pas la lecture vidéo.
-                                </video>
+                            <p class="text-gray-800 whitespace-pre-line mb-4">{{ commentaire.contenu }}</p>
+
+                            {% if commentaire.img %}
+                                <div class="mb-4">
+                                    <img src="{{ asset('uploads/commentaires/photo/' ~ commentaire.img) }}"
+                                         alt="Image du commentaire"
+                                         class="w-full max-w-md rounded shadow">
+                                </div>
+                            {% endif %}
+
+                            {% if commentaire.video %}
+                                <div class="mb-4">
+                                    <video controls class="w-full max-w-md rounded shadow">
+                                        <source src="{{ asset('uploads/commentaires/video/' ~ commentaire.video) }}"
+                                                type="video/mp4">
+                                        Votre navigateur ne supporte pas la lecture vidéo.
+                                    </video>
+                                </div>
+                            {% endif %}
+
+                            <div class="text-right">
+                                <a href="#" data-reply data-id="{{ commentaire.id }}" data-user="{{ commentaire.userID }}"
+                                   class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
+                                    ↪ Répondre
+                                </a>
                             </div>
-                        {% endif %}
 
-                        <div class="text-right">
-                            <a href="#" data-reply data-id="{{ commentaire.id }}" data-user="{{ commentaire.userID }}"
-                               class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
-                                ↪ Répondre
-                            </a>
-                        </div>
-
-                        {# Affichage des réponses #}
-                        {% if commentaire.commentaires|length > 0 %}
-                            <div class="ml-8 mt-4 space-y-4">
-                                {% for reply in commentaire.commentaires %}
-                                    <div class="border-l-2 border-gray-300 pl-4">
-                                        <div class="flex justify-between items-center mb-2">
-                                            <span class="text-sm font-semibold text-gray-700">
-                                                {{ reply.userID }}
-                                            </span>
-                                            <span class="text-xs text-gray-400">{{ reply.creationDate|date('d/m/Y à H:i') }}</span>
-                                        </div>
-
-                                        <p class="text-gray-800 whitespace-pre-line mb-4">{{ reply.contenu }}</p>
-
-                                        {% if reply.img %}
-                                            <div class="mb-4">
-                                                <img src="{{ asset('uploads/commentaires/photo/' ~ reply.img) }}"
-                                                     alt="Image de la réponse"
-                                                     class="w-full max-w-md rounded shadow">
+                            {# Affichage des réponses #}
+                            {% if commentaire.commentaires|length > 0 %}
+                                <div class="ml-8 mt-4 space-y-4">
+                                    {% for reply in commentaire.commentaires %}
+                                        <div class="border-l-2 border-gray-300 pl-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm font-semibold text-gray-700">
+                                                    {{ reply.userID }}
+                                                </span>
+                                                <span class="text-xs text-gray-400">{{ reply.creationDate|date('d/m/Y à H:i') }}</span>
                                             </div>
-                                        {% endif %}
 
-                                        {% if reply.video %}
-                                            <div class="mb-4">
-                                                <video controls class="w-full max-w-md rounded shadow">
-                                                    <source src="{{ asset('uploads/commentaires/video/' ~ reply.video) }}"
-                                                            type="video/mp4">
-                                                    Votre navigateur ne supporte pas la lecture vidéo.
-                                                </video>
+                                            <p class="text-gray-800 whitespace-pre-line mb-4">{{ reply.contenu }}</p>
+
+                                            {% if reply.img %}
+                                                <div class="mb-4">
+                                                    <img src="{{ asset('uploads/commentaires/photo/' ~ reply.img) }}"
+                                                         alt="Image de la réponse"
+                                                         class="w-full max-w-md rounded shadow">
+                                                </div>
+                                            {% endif %}
+
+                                            {% if reply.video %}
+                                                <div class="mb-4">
+                                                    <video controls class="w-full max-w-md rounded shadow">
+                                                        <source src="{{ asset('uploads/commentaires/video/' ~ reply.video) }}"
+                                                                type="video/mp4">
+                                                        Votre navigateur ne supporte pas la lecture vidéo.
+                                                    </video>
+                                                </div>
+                                            {% endif %}
+
+                                            <div class="text-right">
+                                                <a href="#" data-reply data-id="{{ commentaire.id }}" data-user="{{ reply.userID }}"
+                                                   class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
+                                                    ↪ Répondre
+                                                </a>
                                             </div>
-                                        {% endif %}
-
-                                        <div class="text-right">
-                                            <a href="#" data-reply data-id="{{ commentaire.id }}" data-user="{{ reply.userID }}"
-                                               class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
-                                                ↪ Répondre
-                                            </a>
                                         </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </div>
-    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
 
-    <div class="text-right">
-        <button onclick="toggleCommentForm()"
-                class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition">
-            + Ajouter un commentaire
-        </button>
-    </div>
-
-    <!-- FORMULAIRE DÉPLIABLE -->
-    <div id="commentForm" style="display: none;" class="mt-6">
-        <div id="replyToBox" class="hidden bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-2 rounded mb-4">
-            Réponse à <span id="replyToUser" class="font-semibold"></span>
-            <button type="button" onclick="cancelReply()" class="ml-4 text-sm text-red-600 hover:underline">Annuler</button>
-        </div>
-
-        {{ form_start(ComForm) }}
-
-        <!-- Champ contenu -->
-        <div class="mb-4">
-            {{ form_label(ComForm.contenu, null, {
-                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
-            }) }}
-            {{ form_widget(ComForm.contenu, {
-                'attr': {
-                    'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
-                }
-            }) }}
-            {{ form_errors(ComForm.contenu) }}
-        </div>
-
-        <!-- Champ photo -->
-        <div class="mb-4">
-            {{ form_label(ComForm.img, null, {
-                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
-            }) }}
-            {{ form_widget(ComForm.img, {
-                'attr': {
-                    'class': 'block w-full text-sm text-gray-700 border border-gray-300 rounded-lg file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 hover:file:bg-blue-700 transition'
-                }
-            }) }}
-            {{ form_errors(ComForm.img) }}
-        </div>
-
-        <!-- Champ vidéo -->
-        <div class="mb-4">
-            {{ form_label(ComForm.video, null, {
-                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
-            }) }}
-            {{ form_widget(ComForm.video, {
-                'attr': {
-                    'class': 'block w-full text-sm text-gray-700 border border-gray-300 rounded-lg file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 hover:file:bg-blue-700 transition'
-                }
-            }) }}
-            {{ form_errors(ComForm.video) }}
-        </div>
-
-        <!-- Champ parent caché -->
-        <input type="hidden" id="comment_parent" name="comment_parent" value="0">
-
-        <!-- Bouton de soumission -->
         <div class="text-right">
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                Envoyer le commentaire
+            <button onclick="toggleCommentForm()"
+                    class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition">
+                + Ajouter un commentaire
             </button>
         </div>
 
-        {{ form_end(ComForm) }}
+        <!-- FORMULAIRE DÉPLIABLE -->
+        <div id="commentForm" style="display: none;" class="mt-6">
+            <div id="replyToBox" class="hidden bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-2 rounded mb-4">
+                Réponse à <span id="replyToUser" class="font-semibold"></span>
+                <button type="button" onclick="cancelReply()" class="ml-4 text-sm text-red-600 hover:underline">Annuler</button>
+            </div>
+
+            {{ form_start(ComForm) }}
+
+            <!-- Champ contenu -->
+            <div class="mb-4">
+                {{ form_label(ComForm.contenu, null, {
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
+                {{ form_widget(ComForm.contenu, {
+                    'attr': {
+                        'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                    }
+                }) }}
+                {{ form_errors(ComForm.contenu) }}
+            </div>
+
+            <!-- Champ photo -->
+            <div class="mb-4">
+                {{ form_label(ComForm.img, null, {
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
+                {{ form_widget(ComForm.img, {
+                    'attr': {
+                        'class': 'block w-full text-sm text-gray-700 border border-gray-300 rounded-lg file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 hover:file:bg-blue-700 transition'
+                    }
+                }) }}
+                {{ form_errors(ComForm.img) }}
+            </div>
+
+            <!-- Champ vidéo -->
+            <div class="mb-4">
+                {{ form_label(ComForm.video, null, {
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
+                {{ form_widget(ComForm.video, {
+                    'attr': {
+                        'class': 'block w-full text-sm text-gray-700 border border-gray-300 rounded-lg file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 hover:file:bg-blue-700 transition'
+                    }
+                }) }}
+                {{ form_errors(ComForm.video) }}
+            </div>
+
+            <!-- Champ parent caché -->
+            <input type="hidden" id="comment_parent" name="comment_parent" value="0">
+
+            <!-- Bouton de soumission -->
+            <div class="text-right">
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                    Envoyer le commentaire
+                </button>
+            </div>
+
+            {{ form_end(ComForm) }}
+        </div>
     </div>
-</div>
 
-<!-- Script JS pour déplier/replier et gérer la réponse -->
-<script>
-    function toggleCommentForm() {
-        const form = document.getElementById('commentForm');
-        const parentInput = document.getElementById('comment_parent');
-        const replyBox = document.getElementById('replyToBox');
-        const replyToUser = document.getElementById('replyToUser');
+    <!-- Script JS pour déplier/replier et gérer la réponse -->
+    <script>
+        function toggleCommentForm() {
+            const form = document.getElementById('commentForm');
+            const parentInput = document.getElementById('comment_parent');
+            const replyBox = document.getElementById('replyToBox');
+            const replyToUser = document.getElementById('replyToUser');
 
-        parentInput.value = 0;
-        replyBox.classList.add('hidden');
-        replyToUser.innerText = "";
+            parentInput.value = 0;
+            replyBox.classList.add('hidden');
+            replyToUser.innerText = "";
 
-        const base = document.querySelector('.text-right button');
-        base.parentNode.after(form);
-        form.style.display = 'block';
-        form.scrollIntoView({ behavior: 'smooth' });
-    }
+            const base = document.querySelector('.text-right button');
+            base.parentNode.after(form);
+            form.style.display = 'block';
+            form.scrollIntoView({ behavior: 'smooth' });
+        }
 
-    function cancelReply() {
-        const parentInput = document.getElementById('comment_parent');
-        const replyBox = document.getElementById('replyToBox');
-        const replyToUser = document.getElementById('replyToUser');
+        function cancelReply() {
+            const parentInput = document.getElementById('comment_parent');
+            const replyBox = document.getElementById('replyToBox');
+            const replyToUser = document.getElementById('replyToUser');
 
-        parentInput.value = 0;
-        replyBox.classList.add('hidden');
-        replyToUser.innerText = "";
+            parentInput.value = 0;
+            replyBox.classList.add('hidden');
+            replyToUser.innerText = "";
 
-        const base = document.querySelector('.text-right button');
-        base.parentNode.after(document.getElementById('commentForm'));
-    }
+            const base = document.querySelector('.text-right button');
+            base.parentNode.after(document.getElementById('commentForm'));
+        }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('[data-reply]').forEach(button => {
-            button.addEventListener('click', e => {
-                e.preventDefault();
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-reply]').forEach(button => {
+                button.addEventListener('click', e => {
+                    e.preventDefault();
 
-                const commentId = button.dataset.id;
-                const userName = button.dataset.user;
+                    const commentId = button.dataset.id;
+                    const userName = button.dataset.user;
 
-                const form = document.getElementById('commentForm');
-                const parentInput = document.getElementById('comment_parent');
-                const replyBox = document.getElementById('replyToBox');
-                const replyToUser = document.getElementById('replyToUser');
+                    const form = document.getElementById('commentForm');
+                    const parentInput = document.getElementById('comment_parent');
+                    const replyBox = document.getElementById('replyToBox');
+                    const replyToUser = document.getElementById('replyToUser');
 
-                parentInput.value = commentId;
-                replyToUser.innerText = userName;
-                replyBox.classList.remove('hidden');
+                    parentInput.value = commentId;
+                    replyToUser.innerText = userName;
+                    replyBox.classList.remove('hidden');
 
-                const target = button.closest('.border');
-                target.after(form);
-                form.style.display = 'block';
-                form.scrollIntoView({ behavior: 'smooth' });
+                    const target = button.closest('.border');
+                    target.after(form);
+                    form.style.display = 'block';
+                    form.scrollIntoView({ behavior: 'smooth' });
+                });
             });
         });
-    });
-</script>
-
+    </script>
 {% endblock %}

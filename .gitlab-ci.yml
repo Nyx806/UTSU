@@ -36,6 +36,7 @@ phpstan:
     - phpstan analyse ./src
   allow_failure: false
 
+
 phpunit:
   stage: UnitTests
   script:
