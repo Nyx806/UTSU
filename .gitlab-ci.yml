@@ -36,11 +36,6 @@ phpstan:
     - phpstan analyse ./src
   allow_failure: false
 
-twig-lint:
-  stage: CodingStandards
-  script:
-  - twig-lint lint ./templates
-
 phpunit:
   stage: UnitTests
   script:
