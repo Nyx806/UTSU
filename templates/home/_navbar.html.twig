@@ -1,234 +1,261 @@
 {% block body %}
 <style>
-/* Navigation */
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  width: 100%;
-  border-bottom: 1px solid #e5e7eb;
-  background-color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.navbar-container {
-  display: flex;
-  height: 4rem;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 1rem;
-}
-
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.navbar-logo {
-  font-weight: bold;
-  font-size: 1.25rem;
-  color:#B87F59
-  text-decoration: none;
-}
-
-.navbar-toggle {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-}
-
-.navbar-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.navbar-nav .nav-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  color: #111827;
-  text-decoration: none;
-  border-radius: 0.375rem;
-  transition: background-color 0.2s;
-  position: relative;
-}
-
-.navbar-nav .nav-link:hover {
-  background-color: #f3f4f6;
-}
-
-.navbar-nav .nav-link .notification-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 0.5rem;
-  height: 0.5rem;
-  background-color: #ef4444;
-  border-radius: 50%;
-}
-
-.navbar-user {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.dropdown {
-  position: relative;
-}
-
-.dropdown-trigger {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-}
-
-.dropdown-trigger:hover {
-  background-color: #f3f4f6;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 0.5rem;
-  min-width: 14rem;
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.375rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  display: none;
-  z-index: 50;
-}
-
-.dropdown.open .dropdown-menu {
-  display: block;
-}
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  color: #111827;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.dropdown-item:hover {
-  background-color: #f3f4f6;
-}
-
-
-.dropdown-separator {
-  height: 1px;
-  background-color: #e5e7eb;
-  margin: 0.25rem 0;
-}
-
-.avatar {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background-color: #f9fafb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.avatar img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.avatar-fallback {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #6b7280;
-}
-
-
-.icon {
-  stroke: #111; /* noir */
-  vertical-align: middle;
-  margin-right: 0.4rem;
-}
-
-.text-red {
-  stroke: #ef4444; /* rouge pour logout */
-}
-
-
-/* Responsive */
-@media (max-width: 768px) {
-  .navbar-nav {
-    display: none;
-    flex-direction: column;
-    background: white;
-    position: absolute;
-    top: 4rem;
-    left: 0;
-    right: 0;
-    border-top: 1px solid #e5e7eb;
-    padding: 1rem;
+  /* Navigation */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
-  .navbar-nav.show {
+  .navbar-container {
     display: flex;
+    height: 4rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+  }
+
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .navbar-logo {
+    font-weight: bold;
+    font-size: 1.25rem;
+    color:#B87F59;
+    text-decoration: none;
+  }
+
+  .navbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
   }
 
   .navbar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+  }
+
+  .navbar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    color: #111827;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+    position: relative;
+  }
+
+  .navbar-nav .nav-link:hover {
+    background-color: #f3f4f6;
+  }
+
+  .navbar-nav .nav-link .notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: #ef4444;
+    border-radius: 50%;
+  }
+
+  .navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+  }
+
+  .dropdown-trigger:hover {
+    background-color: #f3f4f6;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    min-width: 14rem;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 50;
+  }
+
+  .dropdown.open .dropdown-menu {
     display: block;
   }
-}
-.navbar-search-form {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin-left: 1rem;
-}
 
-.navbar-search-input {
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-  background-color: #f9fafb;
-  color: #111827;
-  height: 2rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.navbar-search-input:focus {
-  outline: none;
-  border-color: #B87F59;
-  box-shadow: 0 0 0 2px rgba(184, 127, 89, 0.3);
-}
-
-.search-icon {
-  stroke: #111;
-  min-width: 18px;
-  min-height: 18px;
-}
-
-/* Responsive: cache la barre de recherche sur petits écrans */
-@media (max-width: 768px) {
-  .navbar-search-form {
-    display: none;
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: #111827;
+    text-decoration: none;
+    transition: background-color 0.2s;
   }
-}
+
+  .dropdown-item:hover {
+    background-color: #f3f4f6;
+  }
+
+
+  .dropdown-separator {
+    height: 1px;
+    background-color: #e5e7eb;
+    margin: 0.25rem 0;
+  }
+
+  .avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: #f9fafb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .avatar-fallback {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+  }
+
+
+  .icon {
+    stroke: #111; /* noir */
+    vertical-align: middle;
+    margin-right: 0.4rem;
+  }
+
+  .text-red {
+    stroke: #ef4444; /* rouge pour logout */
+  }
+
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    /* La navbar-nav disparaît en mobile */
+    #mainNav {
+      display: none !important;
+    }
+
+    /* La barre de recherche reste visible et se centre */
+    .navbar-search-form {
+      display: flex !important;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      margin: 0;
+      width: 80%;
+    }
+
+    .navbar-brand {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .navbar-logo {
+      display: none;
+    }
+
+    .navigation-sidebar .navbar-nav {
+      display: flex !important;
+      flex-direction: column;
+      background: none;
+      position: static;
+      border-top: none;
+      padding: 0;
+    }
+
+    .navigation-sidebar .navbar-nav .nav-link {
+      padding: 0.75rem;
+      color: var(--foreground);
+    }
+
+    .navigation-sidebar .navbar-nav .nav-link:hover {
+      background-color: var(--accent);
+    }
+
+    /* Les liens de la sidebar deviennent visibles */
+    .nav-link-side {
+      display: flex !important;
+    }
+  }
+  .navbar-search-form {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: 1rem;
+  }
+
+  .navbar-search-input {
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    background-color: #f9fafb;
+    color: #111827;
+    height: 2rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .navbar-search-input:focus {
+    outline: none;
+    border-color: #B87F59;
+    box-shadow: 0 0 0 2px rgba(184, 127, 89, 0.3);
+  }
+
+  .search-icon {
+    stroke: #111;
+    min-width: 18px;
+    min-height: 18px;
+  }
+
+  /* Responsive: cache la barre de recherche sur petits écrans */
+  @media (max-width: 768px) {
+    .navbar-search-form {
+      display: none;
+    }
+  }
 
 
     /* Hamburger Sidebar Styles */
@@ -372,6 +399,51 @@
       background-color: var(--accent);
     }
 
+    /* Style des liens de navigation dans la sidebar */
+    .nav-link-side {
+      display: none; /* Invisible par défaut en desktop */
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: var(--radius);
+      color: var(--foreground);
+      text-decoration: none;
+      transition: background-color 0.2s;
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-link-side:hover {
+      background-color: var(--accent);
+    }
+
+    .nav-link-side .icon {
+      stroke: currentColor;
+      vertical-align: middle;
+      margin-right: 0.4rem;
+    }
+
+    /* En mode mobile, les liens deviennent visibles */
+    @media (max-width: 768px) {
+      .nav-link-side {
+        display: flex !important;
+      }
+    }
+
+    /* Ajustement du style pour correspondre aux autres liens */
+    .nav-link-side {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .nav-link-side .notification-badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      width: 0.5rem;
+      height: 0.5rem;
+      background-color: #ef4444;
+      border-radius: 50%;
+    }
 
 </style>
 <!-- Hamburger Menu Button -->
@@ -408,6 +480,31 @@
           </svg>
           Home
         </a>
+
+        <a href="{{ path('categories_index') }}" class="nav-link-side" aria-label="Catégories">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <circle cx="12" cy="12" r="3" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15A7.97 7.97 0 0017 9m-5 6a7.97 7.97 0 01-2.4-6" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v3m0 12v3m7.07-8.07l-2.12 2.12M6.05 6.05l2.12 2.12" />
+            </svg>
+            <span>Community</span>
+        </a>
+        <a href="{{ path('home_index') }}" class="nav-link-side" aria-label="Create">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Create</span>
+        </a>
+        <a href="{{ path('home_index') }}" class="nav-link-side" aria-label="Notifications">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span>Notifications</span>
+            <div class="notification-badge"></div>
+        </a>
+
+
+
       </div>
 
       <div class="sidebar-divider"></div>
@@ -471,6 +568,8 @@
       </div>
     </div>
   </div>
+
+
 <nav class="navbar">
   <div class="container">
     <div class="navbar-container">
@@ -483,8 +582,6 @@
           <input type="text" name="q" placeholder="Search..." class="navbar-search-input">
         </form>
       </div>
-
-      <button class="navbar-toggle" onclick="toggleNav()">☰</button>
 
       <div class="navbar-nav" id="mainNav">
          <a href="{{ path('home_index') }}" class="nav-link" aria-label="Accueil">
