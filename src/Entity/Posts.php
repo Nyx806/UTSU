@@ -48,6 +48,9 @@ class Posts
     #[ORM\OneToMany(targetEntity: Commentaires::class, mappedBy: 'post')]
     private Collection $commentaires;
 
+    #[ORM\Column(type: Types::INTEGER, nullable: false)]
+    private ?int $dangerous = null;
+
     public function __construct()
     {
         $this->likes = new ArrayCollection();
@@ -199,5 +202,17 @@ class Posts
     public function countDangerousLikes(): int
     {
         return $this->likes->filter(fn(Likes $like) => $like->isDangerous())->count();
+    }
+
+    public function getDangerous(): ?int
+    {
+        return $this->dangerous;
+    }
+
+    public function setDangerous(int $dangerous): static
+    {
+        $this->dangerous = $dangerous;
+
+        return $this;
     }
 }

@@ -19,7 +19,7 @@ class Abonnement
 
     #[ORM\ManyToOne(inversedBy: 'abonnements')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $cible = null;
+    private ?Categories $category = null;
 
     public function getId(): ?int
     {
@@ -38,14 +38,14 @@ class Abonnement
         return $this;
     }
 
-    public function getCible(): ?User
+    public function getCategory(): ?Categories
     {
-        return $this->cible;
+        return $this->category;
     }
 
-    public function setCible(?User $cible): static
+    public function setCategory(?Categories $category): static
     {
-        $this->cible = $cible;
+        $this->category = $category;
 
         return $this;
     }

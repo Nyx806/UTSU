@@ -57,4 +57,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findTopThreeUsers(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->orderBy('u.dangerous', 'DESC')
+            ->addOrderBy('u.id', 'ASC')
+            ->setMaxResults(3)
+            ->getQuery()
+            ->getResult();
+    }
 }

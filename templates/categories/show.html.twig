@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ categorie.name }} - Posts{% endblock %}
 
 {% block body %}
-<div class="min-h-screen bg-gray-100 py-8">
+{% include 'home/_navbar.html.twig' %}
+<div class="bg-gray-100 py-8">
   <div class="max-w-5xl mx-auto px-4">
     
     <div class="flex items-center justify-between mb-6">

@@ -36,6 +36,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 2; $i++) {
             $category = new Categories();
             $category->setName($faker->word);
+            $category->setDangerous(0); // Set dangerous to 0 for categories
             $manager->persist($category);
             $categories[] = $category;
         }
@@ -50,7 +51,8 @@ class AppFixtures extends Fixture
             $post->setUserID($suers[array_rand($suers)]);
             $post->setCat($categories[array_rand($categories)]);
             $post->setContenu($faker->paragraph(3, true));
-            $post->setPhoto('https://picsum.photos/200/300'); // Random image URL);
+            $post->setPhoto('https://picsum.photos/200/300'); // Random image URL
+            $post->setDangerous(0); // Set dangerous to 0 for posts
             $manager->persist($post);
             $posts[] = $post;
         }

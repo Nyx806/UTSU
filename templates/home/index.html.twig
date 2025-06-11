@@ -12,40 +12,6 @@
   <title>Utsu</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root {
-      --background: #ffffff;
-      --foreground: #0f172a;
-      --card: #ffffff;
-      --card-foreground: #0f172a;
-      --primary: #1e293b;
-      --primary-foreground: #f8fafc;
-      --secondary: #f1f5f9;
-      --secondary-foreground: #1e293b;
-      --muted: #f1f5f9;
-      --muted-foreground: #64748b;
-      --accent: #f1f5f9;
-      --accent-foreground: #1e293b;
-      --destructive: #ef4444;
-      --destructive-foreground: #f8fafc;
-      --border: #e2e8f0;
-      --input: #e2e8f0;
-      --ring: #0f172a;
-      --radius: 0.5rem;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-color: var(--background);
-      color: var(--foreground);
-      line-height: 1.5;
-    }
-
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -127,74 +93,6 @@
 
     .card-content {
       padding: 1.5rem;
-    }
-
-    .navbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      width: 100%;
-      border-bottom: 1px solid var(--border);
-      background-color: white;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar-container {
-      display: flex;
-      height: 4rem;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .navbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .navbar-logo {
-      font-weight: bold;
-      font-size: 1.25rem;
-      color: #ea580c;
-      text-decoration: none;
-    }
-
-    .navbar-nav {
-      display: none;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    .navbar-nav .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      color: var(--foreground);
-      text-decoration: none;
-      border-radius: var(--radius);
-      transition: all 0.2s;
-      position: relative;
-    }
-
-    .navbar-nav .nav-link:hover {
-      background-color: var(--accent);
-    }
-
-    .navbar-nav .nav-link .notification-badge {
-      position: absolute;
-      top: -0.25rem;
-      right: -0.25rem;
-      width: 0.5rem;
-      height: 0.5rem;
-      background-color: #ef4444;
-      border-radius: 50%;
-    }
-
-    .navbar-user {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
     }
 
     .dropdown {
@@ -284,6 +182,7 @@
     .main-layout {
       min-height: 100vh;
       background-color: #f9fafb;
+      overflow-y: auto;
     }
 
     .content-wrapper {
@@ -532,10 +431,40 @@
     .danger-icon:hover {
         transform: rotate(15deg);
     }
+
+    .card.clickable-card {
+      cursor: pointer;
+      transition: box-shadow 0.2s, background 0.2s;
+    }
+    .card.clickable-card:hover {
+      box-shadow: 0 4px 16px 0 rgba(0,0,0,0.12);
+      background: #f3f4f6;
+    }
+
+    .cat-post {
+      color: #B87F59;
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 600;
+    }
+    .cat-post:hover {
+      color: #8c5c36;
+      text-decoration: underline;
+    }
+
+    .cat-post-popular {
+      color: #000000;
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 600;
+    }
+    .cat-post-popular:hover {
+      color: #B87F59;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body class="bg-gray-100">
-
 {% include 'home/_navbar.html.twig' %}
 
 <div class="main-layout">
@@ -549,16 +478,21 @@
                         <div class="posts-filters">
                             <span class="filter-active">Hot</span>
                             <span class="filter-inactive">New</span>
-                            <span class="filter-inactive">Top</span>
+                            <span class="filter-inactive">Friends</span>
                         </div>
                     </div>
 
                     <div class="posts-list">
+
+                        {% for post in posts %}
+                        <div class="card clickable-card" data-href="{{ path('posts_detail', {'id': post.id}) }}">
                       {% for post in posts %}
                         <div class="card">
                             <div class="card-content">
                                 <div class="flex items-center gap-2 text-xs" style="color: #6b7280; margin-bottom: 0.5rem;">
-                                    <span>r/{{ post.cat.name }}</span>
+                                    <a class="cat-post text-sm hover:underline" href="{{ path('categories_posts', {'id': post.cat.id}) }}">
+                                      c/{{post.cat.name}}
+                                    </a>
                                     <span>•</span>
                                     <span>Posted by u/{{ post.userID.username }}</span>
                                     <span>•</span>
@@ -706,6 +640,57 @@
                       {% endfor %}
                     </div>
                 </div>
+                <script>
+                  document.querySelectorAll('.safe-like-btn, .dangerous-like-btn').forEach(button => {
+                  button.addEventListener('click', function () {
+                    const postId = this.dataset.postId;
+                    const type = this.classList.contains('safe-like-btn') ? 'safe' : 'dangerous';
+
+                    // Ajout d'un log pour vérifier la valeur de `type` envoyée au backend
+                    console.log(`Type envoyé: ${type}`);
+
+                    fetch(`/posts/${postId}/toggle-like`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                      },
+                      body: JSON.stringify({ type }),
+                    })
+                    .then(response => {
+                      if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                      }
+                      return response.json();
+                    })
+                    .then(data => {
+                      console.log(data); // <=== ajoute ça
+                      if (data.message === 'Like toggled successfully') {
+                        const safeLikesSpan = document.getElementById(`safe-likes-${postId}`);
+                        const dangerousLikesSpan = document.getElementById(`dangerous-likes-${postId}`);
+                        if (!dangerousLikesSpan) {
+                          console.warn(`Element dangerous-likes-${postId} not found`);
+                        } else {
+                          dangerousLikesSpan.textContent = data.dangerousLikes;
+                        }
+                        safeLikesSpan.textContent = data.safeLikes;
+                      }
+                    })
+                    .catch(error => {
+                      console.error('There was a problem with the fetch operation:', error);
+                    });
+                  });
+                });       
+                </script>
+                <script>
+                  document.querySelectorAll('.clickable-card').forEach(card => {
+                    card.addEventListener('click', function(e) {
+                      // Ne pas rediriger si on clique sur un lien ou un bouton à l'intérieur
+                      if (e.target.closest('a, button')) return;
+                      window.location = this.dataset.href;
+                    });
+                  });
+                </script>
                 <!-- Sidebar -->
                 <div class="sidebar">
                     <!-- Popular Communities -->
@@ -720,8 +705,12 @@
                         {% for category in categories %}
                           <div class="card-content space-y-2">
                               <div class="flex items-center justify-between">
-                                  <span class="text-sm">r/{{category.name}}</span>
-                                  <button class="btn btn-outline btn-sm">  Join</button>
+                                  <a class="cat-post-popular text-sm" href="{{ path('categories_posts', {'id': category.id}) }}">
+                                    c/{{category.name}}
+                                  </a>
+                                  <button class="btn btn-outline btn-sm join-btn {% if app.user and category in app.user.abonnements|map(a => a.category) %}bg-blue-100 text-blue-700{% endif %}" data-category-id="{{ category.id }}">
+                                    <span class="join-text">{% if app.user and category in app.user.abonnements|map(a => a.category) %}Joined{% else %}Join{% endif %}</span>
+                                  </button>
                               </div>
                           </div>
                         {% endfor %}
@@ -739,15 +728,15 @@
                         </div>
                         <div class="card-content space-y-2">
                             <div class="flex items-center justify-between">
-                                <span class="text-sm">r/conspiracy</span>
+                                <span class="text-sm">c/conspiracy</span>
                                 <button class="btn btn-outline btn-sm">View</button>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-sm">r/controversial</span>
+                                <span class="text-sm">c/controversial</span>
                                 <button class="btn btn-outline btn-sm">View</button>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-sm">r/debate</span>
+                                <span class="text-sm">c/debate</span>
                                 <button class="btn btn-outline btn-sm">View</button>
                             </div>
                         </div>
@@ -778,8 +767,7 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Classement a model citizen -->
+                    <!-- Classement a model citizen   -->
                     <div class="card success-card">
                         <div class="card-header">
                           <h3 class="card-title flex items-center gap-2">
@@ -791,30 +779,16 @@
                           </h3>
                         </div>
                         <div class="card-content space-y-3">
+                            {% for user in topUsers %}
                             <div class="ranking-item">
-                                <div class="ranking-number">1.</div>
+                                <div class="ranking-number">{{ loop.index }}.</div>
                                 <div class="avatar avatar-sm">
-                                    <div class="avatar-fallback">JD</div>
+                                    <div class="avatar-fallback">{{ user.username[:2]|upper }}</div>
                                 </div>
-                                <span class="text-sm">john_doe</span>
-                                <span class="points">2,450 pts</span>
+                                <span class="text-sm">{{ user.username }}</span>
+                                <span class="points">{{ user.dangerous }} pts</span>
                             </div>
-                            <div class="ranking-item">
-                                <div class="ranking-number">2.</div>
-                                <div class="avatar avatar-sm">
-                                    <div class="avatar-fallback">AS</div>
-                                </div>
-                                <span class="text-sm">alice_smith</span>
-                                <span class="points">2,180 pts</span>
-                            </div>
-                            <div class="ranking-item">
-                                <div class="ranking-number">3.</div>
-                                <div class="avatar avatar-sm">
-                                    <div class="avatar-fallback">MB</div>
-                                </div>
-                                <span class="text-sm">mike_brown</span>
-                                <span class="points">1,895 pts</span>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -835,8 +809,58 @@
                         <div class="card-header">
                             <h3 class="card-title">Home</h3>
                         </div>
-                        <div class="card-content text-sm" style="color: #6b7280;">
-                            Your personal UTSU frontpage. Come here to check in with your favorite communities.
+                        <div class="card-content">
+                            {% if app.user %}
+                                <div class="flex flex-col items-center space-y-4">
+                                    <!-- Photo de profil -->
+                                    <div class="w-24 h-24 rounded-full overflow-hidden border-2 {% if app.user.dangerous < 30 %}border-red-500{% elseif app.user.dangerous < 70 %}border-yellow-500{% else %}border-green-500{% endif %}">
+                                        <img src="{{ app.user.ppImg }}" alt="Profile picture" class="w-full h-full object-cover">
+                                    </div>
+                                    
+                                    <!-- Nom d'utilisateur -->
+                                    <div class="text-center">
+                                        <h4 class="font-semibold text-lg">{{ app.user.username }}</h4>
+                                        <div class="flex items-center justify-center space-x-2 mt-1">
+                                            <span class="text-sm {% if app.user.dangerous < 30 %}text-red-500{% elseif app.user.dangerous < 70 %}text-yellow-500{% else %}text-green-500{% endif %}">
+                                                {% if app.user.dangerous < 30 %}
+                                                    <svg class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/>
+                                                    </svg>
+                                                {% elseif app.user.dangerous < 70 %}
+                                                    <svg class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 102 0V6zm-1 8a1 1 0 100-2 1 1 0 000 2z"/>
+                                                    </svg>
+                                                {% else %}
+                                                    <svg class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                                                    </svg>
+                                                {% endif %}
+                                                {{ app.user.dangerous }}% Safe
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Statistiques -->
+                                    <div class="grid grid-cols-3 gap-4 w-full text-center">
+                                        <div>
+                                            <div class="font-semibold">{{ app.user.posts|length }}</div>
+                                            <div class="text-xs text-gray-500">Posts</div>
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold">{{ app.user.abonnements|length }}</div>
+                                            <div class="text-xs text-gray-500">Following</div>
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold">{{ app.user.abonnements|length }}</div>
+                                            <div class="text-xs text-gray-500">Followers</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="text-sm text-gray-500">
+                                    Your personal UTSU frontpage. Come here to check in with your favorite communities.
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                     </div>
@@ -845,6 +869,38 @@
         </div>
     </div>
 </div>
+
+
+<script>
+document.querySelectorAll('.join-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const categoryId = this.dataset.categoryId;
+        
+        fetch(`/categories/${categoryId}/toggle-subscription`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const joinText = this.querySelector('.join-text');
+            if (data.isSubscribed) {
+                joinText.textContent = 'Joined';
+                this.classList.add('bg-blue-100', 'text-blue-700');
+                this.classList.remove('btn-outline');
+            } else {
+                joinText.textContent = 'Join';
+                this.classList.remove('bg-blue-100', 'text-blue-700');
+                this.classList.add('btn-outline');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+});
 
 <!-- Formulaire de commentaire unique -->
 <div id="commentForm" style="display: none;" class="mt-6">
