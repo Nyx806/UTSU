@@ -39,6 +39,7 @@ phpstan:
 twig-lint:
   stage: CodingStandards
   script:
+    - composer global require friendsoftwig/twig-lint
     - twig-lint lint ./templates
   allow_failure: false
 
