@@ -30,7 +30,11 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string $plainPassword */
+            /**
+*
+             *
+ * @var string $plainPassword
+*/
             $plainPassword = $form->get('plainPassword')->getData();
 
             // Encode the plain password
@@ -69,8 +73,11 @@ class RegistrationController extends AbstractController
             );
         }
 
-        return $this->render('registration/register.html.twig', [
+        return $this->render(
+            'registration/register.html.twig',
+            [
             'registrationForm' => $form,
-        ]);
+            ]
+        );
     }
 }

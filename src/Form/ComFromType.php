@@ -17,29 +17,38 @@ class ComFromType extends AbstractType
     {
         $builder
             ->add('contenu')
-            ->add('img', FileType::class, [
+            ->add(
+                'img',
+                FileType::class,
+                [
                 'label' => 'Photo',
                 'mapped' => false,
                 'required' => false,
                 'attr' => [
                     'accept' => 'image/*',
                 ],
-            ])
-            ->add('video', FileType::class, [
+                ]
+            )
+            ->add(
+                'video',
+                FileType::class,
+                [
                 'label' => 'Video',
                 'mapped' => false,
                 'required' => false,
                 'attr' => [
                     'accept' => 'video/*',
                 ],
-            ])
-        ;
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
+        $resolver->setDefaults(
+            [
             'data_class' => Commentaires::class,
-        ]);
+            ]
+        );
     }
 }

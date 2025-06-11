@@ -17,10 +17,13 @@ final class CategoriesController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(CategoriesRepository $categoriesController): Response
     {
-        return $this->render('categories/index.html.twig', [
+        return $this->render(
+            'categories/index.html.twig',
+            [
             'controller_name' => 'categories',
             'categories' => $categoriesController->findBy([], ['id' => 'ASC']),
-        ]);
+            ]
+        );
     }
 
     #[Route('/{id}', name: 'posts')]
@@ -34,10 +37,13 @@ final class CategoriesController extends AbstractController
 
         $posts = $postRepo->findBy(['cat' => $categorie], ['id' => 'DESC']);
 
-        return $this->render('categories/show.html.twig', [
+        return $this->render(
+            'categories/show.html.twig',
+            [
             'categorie' => $categorie,
             'posts' => $posts,
-        ]);
+            ]
+        );
     }
 
     #[Route('/{id}/toggle-subscription', name: 'toggle_subscription', methods: ['POST'])]
@@ -58,10 +64,12 @@ final class CategoriesController extends AbstractController
         }
 
         // Vérifier si l'utilisateur est déjà abonné
-        $existingSubscription = $abonnementRepo->findOneBy([
+        $existingSubscription = $abonnementRepo->findOneBy(
+            [
             'userID' => $user,
             'category' => $category
-        ]);
+            ]
+        );
 
         if ($existingSubscription) {
             // Désabonner
@@ -80,9 +88,11 @@ final class CategoriesController extends AbstractController
 
         $em->flush();
 
-        return $this->json([
+        return $this->json(
+            [
             'message' => $message,
             'isSubscribed' => $isSubscribed
-        ]);
+            ]
+        );
     }
 }
