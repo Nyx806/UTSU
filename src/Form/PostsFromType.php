@@ -28,6 +28,11 @@ class PostsFromType extends AbstractType
                     'accept' => 'image/*',
                 ],
             ])
+            ->add('cat', EntityType::class, [
+                'class' => Categories::class,
+                'choice_label' => 'name',
+                'placeholder' => 'Sélectionnez une catégorie',
+            ])
 
 
         ;

@@ -1,0 +1,314 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create New Post{% endblock %}
+
+{% block body %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create New Post - Utsu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --background: #ffffff;
+      --foreground: #0f172a;
+      --card: #ffffff;
+      --card-foreground: #0f172a;
+      --primary: #1e293b;
+      --primary-foreground: #f8fafc;
+      --secondary: #f1f5f9;
+      --secondary-foreground: #1e293b;
+      --muted: #f1f5f9;
+      --muted-foreground: #64748b;
+      --accent: #f1f5f9;
+      --accent-foreground: #1e293b;
+      --destructive: #ef4444;
+      --destructive-foreground: #f8fafc;
+      --border: #e2e8f0;
+      --input: #e2e8f0;
+      --ring: #0f172a;
+      --radius: 0.5rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--primary-foreground);
+      padding: 0.5rem 1rem;
+    }
+
+    .btn-primary:hover {
+      background-color: #334155;
+    }
+
+    .btn-ghost {
+      background-color: transparent;
+      color: var(--foreground);
+      padding: 0.5rem 1rem;
+    }
+
+    .btn-ghost:hover {
+      background-color: var(--accent);
+      color: var(--accent-foreground);
+    }
+
+    .card {
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      padding: 1.5rem 1.5rem 0;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--card-foreground);
+    }
+
+    .card-content {
+      padding: 1.5rem;
+    }
+
+    .main-layout {
+      min-height: 100vh;
+      background-color: #f9fafb;
+    }
+
+    .content-wrapper {
+      padding: 1.5rem 0;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .space-y-2 > * + * {
+      margin-top: 0.5rem;
+    }
+
+    .space-y-4 > * + * {
+      margin-top: 1rem;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .gap-4 {
+      gap: 1rem;
+    }
+
+    .w-full {
+      width: 100%;
+    }
+
+    .text-sm {
+      font-size: 0.875rem;
+    }
+
+    .text-gray-600 {
+      color: #4b5563;
+    }
+
+    .text-gray-700 {
+      color: #374151;
+    }
+
+    .text-blue-600 {
+      color: #2563eb;
+    }
+
+    .hover\:underline:hover {
+      text-decoration: underline;
+    }
+
+    @media (min-width: 768px) {
+      .content-grid {
+        grid-template-columns: 2fr 1fr;
+      }
+
+      .container {
+        padding: 0 2rem;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .sidebar {
+        order: -1;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+{% include 'home/_navbar.html.twig' %}
+
+<div class="main-layout">
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="content-grid">
+                <!-- Main Content -->
+                <div class="main-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h1 class="card-title">Create New Post</h1>
+                        </div>
+                        <div class="card-content">
+                            {{ form_start(PostsForm, {'attr': {'class': 'space-y-4'}}) }}
+                                <div class="space-y-2">
+                                    {{ form_label(PostsForm.title, 'Title', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                                    {{ form_widget(PostsForm.title, {
+                                        'attr': {
+                                            'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                                            'placeholder': 'Give your post a title'
+                                        }
+                                    }) }}
+                                    {{ form_errors(PostsForm.title) }}
+                                </div>
+
+                                <div class="space-y-2">
+                                    {{ form_label(PostsForm.contenu, 'Content', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                                    {{ form_widget(PostsForm.contenu, {
+                                        'attr': {
+                                            'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                                            'rows': '6',
+                                            'placeholder': 'What\'s on your mind?'
+                                        }
+                                    }) }}
+                                    {{ form_errors(PostsForm.contenu) }}
+                                </div>
+
+                                <div class="space-y-2">
+                                    {{ form_label(PostsForm.cat, 'Community', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                                    {{ form_widget(PostsForm.cat, {
+                                        'attr': {
+                                            'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                                        }
+                                    }) }}
+                                    {{ form_errors(PostsForm.cat) }}
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-medium text-gray-700">Image</label>
+                                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                        <div class="space-y-1 text-center">
+                                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                            <div class="flex text-sm text-gray-600">
+                                                <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                    <span>Upload a file</span>
+                                                    {{ form_widget(PostsForm.photo, {
+                                                        'attr': {
+                                                            'class': 'sr-only',
+                                                            'id': 'file-upload',
+                                                            'accept': 'image/*'
+                                                        }
+                                                    }) }}
+                                                </label>
+                                                <p class="pl-1">or drag and drop</p>
+                                            </div>
+                                            <p class="text-xs text-gray-500">
+                                                PNG, JPG, GIF up to 10MB
+                                            </p>
+                                        </div>
+                                    </div>
+                                    {{ form_errors(PostsForm.photo) }}
+                                </div>
+
+                                <div class="flex items-center gap-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        Create Post
+                                    </button>
+                                    <a href="{{ path('home_index') }}" class="btn btn-ghost">
+                                        Cancel
+                                    </a>
+                                </div>
+                            {{ form_end(PostsForm) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Posting Rules -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Posting Rules</h3>
+                        </div>
+                        <div class="card-content space-y-2">
+                            <div class="text-sm text-gray-600">
+                                <p>1. Be respectful and civil</p>
+                                <p>2. No spam or self-promotion</p>
+                                <p>3. No hate speech or harassment</p>
+                                <p>4. Stay on topic</p>
+                                <p>5. Follow community guidelines</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Help -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Need Help?</h3>
+                        </div>
+                        <div class="card-content">
+                            <p class="text-sm text-gray-600">
+                                If you need help creating your post or have questions about the community guidelines, 
+                                please check our <a href="#" class="text-blue-600 hover:underline">FAQ</a> or 
+                                <a href="#" class="text-blue-600 hover:underline">contact support</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+{% endblock %}
