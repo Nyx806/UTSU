@@ -22,10 +22,12 @@ class CategorySubscriptionController extends AbstractController
         $abonnementRepository = $entityManager->getRepository(Abonnement::class);
         
         // Vérifier si l'utilisateur est déjà abonné
-        $existingAbonnement = $abonnementRepository->findOneBy([
+        $existingAbonnement = $abonnementRepository->findOneBy(
+            [
             'userID' => $user,
             'category' => $category
-        ]);
+            ]
+        );
 
         if ($existingAbonnement) {
             // Désabonner
@@ -42,8 +44,10 @@ class CategorySubscriptionController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->json([
+        return $this->json(
+            [
             'subscribed' => $subscribed
-        ]);
+            ]
+        );
     }
 } 

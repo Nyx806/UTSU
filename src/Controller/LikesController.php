@@ -30,8 +30,10 @@ class LikesController extends AbstractController
 
         // Validate the 'type' parameter ajout
         if (!in_array($type, ['safe', 'dangerous'], true)) {
-            return $this->json([
-                'error' => 'Invalid like type provided.'], Response::HTTP_BAD_REQUEST);
+            return $this->json(
+                [
+                'error' => 'Invalid like type provided.'], Response::HTTP_BAD_REQUEST
+            );
         }
 
         // Modification de la logique pour utiliser des chaînes de caractères 'safe' et 'dangerous' pour le type de like
@@ -56,11 +58,13 @@ class LikesController extends AbstractController
         }
 
             $em->flush();
-        return $this->json([
+        return $this->json(
+            [
                 'message' => 'Like toggled successfully',
                 'action' => $action,
                 'safeLikes' => $post->countSafeLikes(),
                 'dangerousLikes' => $post->countDangerousLikes()
-            ]);
+            ]
+        );
     }
 }

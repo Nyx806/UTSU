@@ -50,9 +50,11 @@ class LoginAuthenticator extends AbstractAuthenticator
 
         // Retourner un Passport avec les badges nécessaires
         return new Passport(
-            new UserBadge($username, function ($userIdentifier) {
-                return $this->userRepository->findOneBy(['username' => $userIdentifier]);
-            }),
+            new UserBadge(
+                $username, function ($userIdentifier) {
+                    return $this->userRepository->findOneBy(['username' => $userIdentifier]);
+                }
+            ),
             new PasswordCredentials($password)
         );
     }
@@ -65,9 +67,11 @@ class LoginAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        return new JsonResponse([
+        return new JsonResponse(
+            [
             'error' => 'Authentication failed',
             'message' => $exception->getMessage()
-        ], Response::HTTP_UNAUTHORIZED);
+            ], Response::HTTP_UNAUTHORIZED
+        );
     }
 }

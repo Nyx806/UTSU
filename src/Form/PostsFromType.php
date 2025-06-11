@@ -20,23 +20,24 @@ class PostsFromType extends AbstractType
         $builder
             ->add('title')
             ->add('contenu')
-            ->add('photo', FileType::class, [
+            ->add(
+                'photo', FileType::class, [
                 'label' => 'Photo',
                 'mapped' => false,
                 'required' => false,
                 'attr' => [
                     'accept' => 'image/*',
                 ],
-            ])
-
-
-        ;
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
+        $resolver->setDefaults(
+            [
             'data_class' => Posts::class,
-        ]);
+            ]
+        );
     }
 }

@@ -49,10 +49,12 @@ final class PostsController extends AbstractController
             return $this->redirectToRoute('home_index');
         }
 
-        return $this->render('posts/ajout.html.twig', [
+        return $this->render(
+            'posts/ajout.html.twig', [
             'controller_name' => 'PostsController',
             'PostsForm' => $form->createView(),
-        ]);
+            ]
+        );
     }
 
     #[Route('/{id}', name: 'detail')]
@@ -104,10 +106,12 @@ final class PostsController extends AbstractController
             $em->flush();
             return $this->redirectToRoute('posts_detail', ['id' => $id]);
         }
-        return $this->render('posts/details.html.twig', [
+        return $this->render(
+            'posts/details.html.twig', [
             'controller_name' => 'PostsController',
             'post' => $postsRepository->find($id),
             'ComForm' => $form->createView(),
-        ]);
+            ]
+        );
     }
 }
