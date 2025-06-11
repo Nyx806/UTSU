@@ -19,6 +19,9 @@ class Categories
     #[ORM\Column(type: Types::TEXT)]
     private ?string $name = null;
 
+    #[ORM\Column(type: Types::INTEGER, nullable: false)]
+    private ?int $dangerous = null;
+
     /**
      * @var Collection<int, Posts>
      */
@@ -43,6 +46,18 @@ class Categories
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getDangerous(): ?int
+    {
+        return $this->dangerous;
+    }
+
+    public function setDangerous(int $dangerous): static
+    {
+        $this->dangerous = $dangerous;
 
         return $this;
     }
