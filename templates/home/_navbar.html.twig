@@ -15,11 +15,10 @@
 
     .navbar-container {
       display: flex;
-      height: 4rem;
       align-items: center;
       justify-content: space-between;
       padding: 0 1rem;
-      position: relative;
+      min-height: 4.5rem;
     }
 
     .navbar-logo {
@@ -78,18 +77,17 @@
 
   .navbar-container {
     display: flex;
-    height: 4rem;
     align-items: center;
     justify-content: space-between;
     padding: 0 1rem;
+    min-height: 4.5rem;
   }
 
   .navbar-brand {
     display: flex;
     align-items: center;
     gap: 1rem;
-    position: relative;
-    left: 3rem;
+    flex-direction: row;
   }
 
   .navbar-logo {
@@ -100,9 +98,10 @@
   }
 
   .navbar-logo-img {
+    display: block;
     height: 4rem;
     width: auto;
-    display: block;
+    object-fit: contain;
   }
 
   .navbar-nav {
@@ -251,11 +250,10 @@
     }
 
     .navbar-brand {
-        margin-left: 0;
-        width: auto;
-        justify-content: flex-start;
-        position: relative;
-        left: 3rem;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 0.5rem;
     }
 
     .navbar-logo-img {
@@ -270,12 +268,13 @@
 
     /* La barre de recherche reste visible et se centre */
     .navbar-search-form {
-        display: flex !important;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
+        position: static;
+        transform: none;
+        left: auto;
         margin: 0;
-        width: 80%;
+        width: 100%;
+        max-width: 100vw;
+        justify-content: center;
     }
 
     .navbar-brand {
@@ -547,6 +546,45 @@
       border-radius: 50%;
     }
 
+    /* Styles pour le bouton Join */
+    .join-button {
+      margin-left: auto;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #e5e7eb;
+      background-color: white;
+      color: #374151;
+    }
+
+    .join-button:hover {
+      background-color: #f3f4f6;
+    }
+
+    .join-button.joined {
+      background-color: #ea580c;
+      color: white;
+      border-color: #ea580c;
+    }
+
+    .join-button.joined:hover {
+      background-color: #c2410c;
+    }
+
+    .community-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius);
+      transition: background-color 0.2s;
+      margin-bottom: 0.25rem;
+      position: relative;
+    }
+
 </style>
 
 <nav class="navbar">
@@ -684,8 +722,6 @@
             <div class="notification-badge"></div>
         </a>
 
-
-
       </div>
 
       <div class="sidebar-divider"></div>
@@ -694,19 +730,15 @@
       <div class="sidebar-section">
         <div class="sidebar-section-title">Recents</div>
         
-        <!-- Recent Communities (You can replace with dynamic data) -->
-        <div class="community-item">
-          <div class="community-avatar">T</div>
-          <span style="font-size: 0.875rem;">r/technology</span>
-        </div>
-        <div class="community-item">
-          <div class="community-avatar">P</div>
-          <span style="font-size: 0.875rem;">r/programming</span>
-        </div>
-        <div class="community-item">
-          <div class="community-avatar">S</div>
-          <span style="font-size: 0.875rem;">r/science</span>
-        </div>
+        {% if app.user %}
+          {% set recentAbonnements = app.user.abonnements|slice(0, 3)|sort((a, b) => b.id <=> a.id) %}
+          {% for abonnement in recentAbonnements %}
+            <div class="community-item">
+              <div class="community-avatar">{{ abonnement.category.name|first|upper }}</div>
+              <span style="font-size: 0.875rem;">r/{{ abonnement.category.name }}</span>
+            </div>
+          {% endfor %}
+        {% endif %}
       </div>
 
       <div class="sidebar-divider"></div>
@@ -726,26 +758,17 @@
         </a>
 
         <!-- Subscribed Communities -->
-        {% for category in categories %}
-        <div class="community-item">
-          <div class="community-avatar">{{ category.name|first|upper }}</div>
-          <span style="font-size: 0.875rem;">r/{{ category.name }}</span>
-        </div>
-        {% endfor %}
-
-        <!-- Additional static communities for demo -->
-        <div class="community-item">
-          <div class="community-avatar">A</div>
-          <span style="font-size: 0.875rem;">r/askreddit</span>
-        </div>
-        <div class="community-item">
-          <div class="community-avatar">N</div>
-          <span style="font-size: 0.875rem;">r/news</span>
-        </div>
-        <div class="community-item">
-          <div class="community-avatar">W</div>
-          <span style="font-size: 0.875rem;">r/worldnews</span>
-        </div>
+        {% if app.user %}
+          {% for abonnement in app.user.abonnements %}
+            <div class="community-item" data-category-id="{{ abonnement.category.id }}">
+              <div class="community-avatar">{{ abonnement.category.name|first|upper }}</div>
+              <span style="font-size: 0.875rem;">r/{{ abonnement.category.name }}</span>
+              <button class="join-button joined" onclick="toggleSubscription({{ abonnement.category.id }}, this)">
+                Joined
+              </button>
+            </div>
+          {% endfor %}
+        {% endif %}
       </div>
     </div>
   </div>
@@ -768,14 +791,55 @@
     const nav = document.getElementById('mainNav');
     nav.classList.toggle('show');
   }
-</script>
-<script>
-function toggleSidebar() {
-  const sidebar = document.querySelector('.navigation-sidebar');
-  const overlay = document.querySelector('.sidebar-overlay');
-  sidebar.classList.toggle('active');
-  overlay.classList.toggle('active');
-}
+
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.navigation-sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+  }
+
+  async function toggleSubscription(categoryId, button) {
+    try {
+      const response = await fetch(`/api/category/${categoryId}/toggle-subscription`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      
+      if (data.subscribed) {
+        button.textContent = 'Joined';
+        button.classList.add('joined');
+        // Ajouter la communauté aux récents si elle n'y est pas déjà
+        const recentsSection = document.querySelector('.sidebar-section:first-child');
+        const communityItem = button.closest('.community-item').cloneNode(true);
+        const recentsList = recentsSection.querySelectorAll('.community-item');
+        if (recentsList.length >= 3) {
+          recentsList[recentsList.length - 1].remove();
+        }
+        recentsSection.insertBefore(communityItem, recentsSection.firstChild);
+      } else {
+        button.textContent = 'Join';
+        button.classList.remove('joined');
+        // Retirer la communauté des récents si elle y est
+        const recentsSection = document.querySelector('.sidebar-section:first-child');
+        const communityItem = recentsSection.querySelector(`[data-category-id="${categoryId}"]`);
+        if (communityItem) {
+          communityItem.remove();
+        }
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 </script>
 
 {% block javascripts %}{% endblock %}

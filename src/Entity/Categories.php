@@ -28,9 +28,16 @@ class Categories
     #[ORM\OneToMany(targetEntity: Posts::class, mappedBy: 'cat', orphanRemoval: true)]
     private Collection $posts;
 
+    /**
+     * @var Collection<int, Abonnement>
+     */
+    #[ORM\OneToMany(targetEntity: Abonnement::class, mappedBy: 'category')]
+    private Collection $abonnements;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->abonnements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -86,6 +93,36 @@ class Categories
             // set the owning side to null (unless already changed)
             if ($post->getCat() === $this) {
                 $post->setCat(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Abonnement>
+     */
+    public function getAbonnements(): Collection
+    {
+        return $this->abonnements;
+    }
+
+    public function addAbonnement(Abonnement $abonnement): static
+    {
+        if (!$this->abonnements->contains($abonnement)) {
+            $this->abonnements->add($abonnement);
+            $abonnement->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAbonnement(Abonnement $abonnement): static
+    {
+        if ($this->abonnements->removeElement($abonnement)) {
+            // set the owning side to null (unless already changed)
+            if ($abonnement->getCategory() === $this) {
+                $abonnement->setCategory(null);
             }
         }
 

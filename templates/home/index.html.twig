@@ -182,6 +182,7 @@
     .main-layout {
       min-height: 100vh;
       background-color: #f9fafb;
+      overflow-y: auto;
     }
 
     .content-wrapper {
@@ -430,6 +431,37 @@
     .danger-icon:hover {
         transform: rotate(15deg);
     }
+
+    .card.clickable-card {
+      cursor: pointer;
+      transition: box-shadow 0.2s, background 0.2s;
+    }
+    .card.clickable-card:hover {
+      box-shadow: 0 4px 16px 0 rgba(0,0,0,0.12);
+      background: #f3f4f6;
+    }
+
+    .cat-post {
+      color: #B87F59;
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 600;
+    }
+    .cat-post:hover {
+      color: #8c5c36;
+      text-decoration: underline;
+    }
+
+    .cat-post-popular {
+      color: #000000;
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 600;
+    }
+    .cat-post-popular:hover {
+      color: #B87F59;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body class="bg-gray-100">
@@ -446,16 +478,18 @@
                         <div class="posts-filters">
                             <span class="filter-active">Hot</span>
                             <span class="filter-inactive">New</span>
-                            <span class="filter-inactive">Top</span>
+                            <span class="filter-inactive">Friends</span>
                         </div>
                     </div>
 
                     <div class="posts-list">
                         {% for post in posts %}
-                        <div class="card">
+                        <div class="card clickable-card" data-href="{{ path('posts_detail', {'id': post.id}) }}">
                             <div class="card-content">
                                 <div class="flex items-center gap-2 text-xs" style="color: #6b7280; margin-bottom: 0.5rem;">
-                                    <span>r/{{ post.cat.name }}</span>
+                                    <a class="cat-post text-sm hover:underline" href="{{ path('categories_posts', {'id': post.cat.id}) }}">
+                                      c/{{post.cat.name}}
+                                    </a>
                                     <span>•</span>
                                     <span>Posted by u/{{ post.userID.username }}</span>
                                     <span>•</span>
@@ -546,6 +580,15 @@
                   });
                 });       
                 </script>
+                <script>
+                  document.querySelectorAll('.clickable-card').forEach(card => {
+                    card.addEventListener('click', function(e) {
+                      // Ne pas rediriger si on clique sur un lien ou un bouton à l'intérieur
+                      if (e.target.closest('a, button')) return;
+                      window.location = this.dataset.href;
+                    });
+                  });
+                </script>
                 <!-- Sidebar -->
                 <div class="sidebar">
                     <!-- Popular Communities -->
@@ -560,8 +603,12 @@
                         {% for category in categories %}
                           <div class="card-content space-y-2">
                               <div class="flex items-center justify-between">
-                                  <span class="text-sm">r/{{category.name}}</span>
-                                  <button class="btn btn-outline btn-sm">  Join</button>
+                                  <a class="cat-post-popular text-sm" href="{{ path('categories_posts', {'id': category.id}) }}">
+                                    c/{{category.name}}
+                                  </a>
+                                  <button class="btn btn-outline btn-sm join-btn {% if app.user and category in app.user.abonnements|map(a => a.category) %}bg-blue-100 text-blue-700{% endif %}" data-category-id="{{ category.id }}">
+                                    <span class="join-text">{% if app.user and category in app.user.abonnements|map(a => a.category) %}Joined{% else %}Join{% endif %}</span>
+                                  </button>
                               </div>
                           </div>
                         {% endfor %}
@@ -579,15 +626,15 @@
                         </div>
                         <div class="card-content space-y-2">
                             <div class="flex items-center justify-between">
-                                <span class="text-sm">r/conspiracy</span>
+                                <span class="text-sm">c/conspiracy</span>
                                 <button class="btn btn-outline btn-sm">View</button>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-sm">r/controversial</span>
+                                <span class="text-sm">c/controversial</span>
                                 <button class="btn btn-outline btn-sm">View</button>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-sm">r/debate</span>
+                                <span class="text-sm">c/debate</span>
                                 <button class="btn btn-outline btn-sm">View</button>
                             </div>
                         </div>
@@ -631,30 +678,16 @@
                           </h3>
                         </div>
                         <div class="card-content space-y-3">
+                            {% for user in topUsers %}
                             <div class="ranking-item">
-                                <div class="ranking-number">1.</div>
+                                <div class="ranking-number">{{ loop.index }}.</div>
                                 <div class="avatar avatar-sm">
-                                    <div class="avatar-fallback">JD</div>
+                                    <div class="avatar-fallback">{{ user.username[:2]|upper }}</div>
                                 </div>
-                                <span class="text-sm">john_doe</span>
-                                <span class="points">2,450 pts</span>
+                                <span class="text-sm">{{ user.username }}</span>
+                                <span class="points">{{ user.dangerous }} pts</span>
                             </div>
-                            <div class="ranking-item">
-                                <div class="ranking-number">2.</div>
-                                <div class="avatar avatar-sm">
-                                    <div class="avatar-fallback">AS</div>
-                                </div>
-                                <span class="text-sm">alice_smith</span>
-                                <span class="points">2,180 pts</span>
-                            </div>
-                            <div class="ranking-item">
-                                <div class="ranking-number">3.</div>
-                                <div class="avatar avatar-sm">
-                                    <div class="avatar-fallback">MB</div>
-                                </div>
-                                <span class="text-sm">mike_brown</span>
-                                <span class="points">1,895 pts</span>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -675,8 +708,58 @@
                         <div class="card-header">
                             <h3 class="card-title">Home</h3>
                         </div>
-                        <div class="card-content text-sm" style="color: #6b7280;">
-                            Your personal UTSU frontpage. Come here to check in with your favorite communities.
+                        <div class="card-content">
+                            {% if app.user %}
+                                <div class="flex flex-col items-center space-y-4">
+                                    <!-- Photo de profil -->
+                                    <div class="w-24 h-24 rounded-full overflow-hidden border-2 {% if app.user.dangerous < 30 %}border-red-500{% elseif app.user.dangerous < 70 %}border-yellow-500{% else %}border-green-500{% endif %}">
+                                        <img src="{{ app.user.ppImg }}" alt="Profile picture" class="w-full h-full object-cover">
+                                    </div>
+                                    
+                                    <!-- Nom d'utilisateur -->
+                                    <div class="text-center">
+                                        <h4 class="font-semibold text-lg">{{ app.user.username }}</h4>
+                                        <div class="flex items-center justify-center space-x-2 mt-1">
+                                            <span class="text-sm {% if app.user.dangerous < 30 %}text-red-500{% elseif app.user.dangerous < 70 %}text-yellow-500{% else %}text-green-500{% endif %}">
+                                                {% if app.user.dangerous < 30 %}
+                                                    <svg class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/>
+                                                    </svg>
+                                                {% elseif app.user.dangerous < 70 %}
+                                                    <svg class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 102 0V6zm-1 8a1 1 0 100-2 1 1 0 000 2z"/>
+                                                    </svg>
+                                                {% else %}
+                                                    <svg class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                                                    </svg>
+                                                {% endif %}
+                                                {{ app.user.dangerous }}% Safe
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Statistiques -->
+                                    <div class="grid grid-cols-3 gap-4 w-full text-center">
+                                        <div>
+                                            <div class="font-semibold">{{ app.user.posts|length }}</div>
+                                            <div class="text-xs text-gray-500">Posts</div>
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold">{{ app.user.abonnements|length }}</div>
+                                            <div class="text-xs text-gray-500">Following</div>
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold">{{ app.user.abonnements|length }}</div>
+                                            <div class="text-xs text-gray-500">Followers</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="text-sm text-gray-500">
+                                    Your personal UTSU frontpage. Come here to check in with your favorite communities.
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                     </div>
@@ -685,6 +768,38 @@
         </div>
     </div>
 </div>
+
+<script>
+document.querySelectorAll('.join-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const categoryId = this.dataset.categoryId;
+        
+        fetch(`/categories/${categoryId}/toggle-subscription`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const joinText = this.querySelector('.join-text');
+            if (data.isSubscribed) {
+                joinText.textContent = 'Joined';
+                this.classList.add('bg-blue-100', 'text-blue-700');
+                this.classList.remove('btn-outline');
+            } else {
+                joinText.textContent = 'Join';
+                this.classList.remove('bg-blue-100', 'text-blue-700');
+                this.classList.add('btn-outline');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+});
+</script>
 
 </body>
 </html>
