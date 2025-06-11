@@ -51,7 +51,8 @@ class LoginAuthenticator extends AbstractAuthenticator
         // Retourner un Passport avec les badges nécessaires
         return new Passport(
             new UserBadge(
-                $username, function ($userIdentifier) {
+                $username,
+                function ($userIdentifier) {
                     return $this->userRepository->findOneBy(['username' => $userIdentifier]);
                 }
             ),
@@ -71,7 +72,8 @@ class LoginAuthenticator extends AbstractAuthenticator
             [
             'error' => 'Authentication failed',
             'message' => $exception->getMessage()
-            ], Response::HTTP_UNAUTHORIZED
+            ],
+            Response::HTTP_UNAUTHORIZED
         );
     }
 }

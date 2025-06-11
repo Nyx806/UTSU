@@ -19,7 +19,9 @@ class AccountFormType extends AbstractType
     {
         $builder
             ->add(
-                'email', EmailType::class, [
+                'email',
+                EmailType::class,
+                [
                 'constraints' => [
                     new NotBlank(['message' => 'Veuillez entrer un email']),
                     new Length(
@@ -32,7 +34,9 @@ class AccountFormType extends AbstractType
                 ]
             )
             ->add(
-                'username', TextType::class, [
+                'username',
+                TextType::class,
+                [
                 'constraints' => [
                     new NotBlank(['message' => 'Veuillez entrer un nom d\'utilisateur']),
                     new Length(
@@ -47,7 +51,9 @@ class AccountFormType extends AbstractType
                 ]
             )
             ->add(
-                'pp_img', FileType::class, [
+                'pp_img',
+                FileType::class,
+                [
                 'required' => false,
                 'mapped' => false,
                 'constraints' => [

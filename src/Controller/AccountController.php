@@ -54,7 +54,8 @@ final class AccountController extends AbstractController
             return $this->redirectToRoute('home_index');
         }
         return $this->render(
-            'account/index.html.twig', [
+            'account/index.html.twig',
+            [
             'controller_name' => 'AccountController',
             'user' => $user, // Passer l'utilisateur connecté à la vue
             'accountForm' => $accountForm->createView(),

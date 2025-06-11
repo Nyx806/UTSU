@@ -31,9 +31,9 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
-* 
+*
              *
- * @var string $plainPassword 
+ * @var string $plainPassword
 */
             $plainPassword = $form->get('plainPassword')->getData();
 
@@ -72,7 +72,8 @@ class RegistrationController extends AbstractController
         }
 
         return $this->render(
-            'registration/register.html.twig', [
+            'registration/register.html.twig',
+            [
             'registrationForm' => $form,
             ]
         );

@@ -81,7 +81,8 @@ final class HomeController extends AbstractController
         }
 
         return $this->render(
-            'home/index.html.twig', [
+            'home/index.html.twig',
+            [
             'categories' => $categoriesRepository->findBy([], ['id' => 'ASC']),
             'posts' => $postsRepository->findBy([], ['id' => 'ASC']),
             'topUsers' => $userRepository->findTopThreeUsers(),

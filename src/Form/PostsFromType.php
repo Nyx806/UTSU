@@ -21,7 +21,9 @@ class PostsFromType extends AbstractType
             ->add('title')
             ->add('contenu')
             ->add(
-                'photo', FileType::class, [
+                'photo',
+                FileType::class,
+                [
                 'label' => 'Photo',
                 'mapped' => false,
                 'required' => false,

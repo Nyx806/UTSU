@@ -50,7 +50,8 @@ final class PostsController extends AbstractController
         }
 
         return $this->render(
-            'posts/ajout.html.twig', [
+            'posts/ajout.html.twig',
+            [
             'controller_name' => 'PostsController',
             'PostsForm' => $form->createView(),
             ]
@@ -107,7 +108,8 @@ final class PostsController extends AbstractController
             return $this->redirectToRoute('posts_detail', ['id' => $id]);
         }
         return $this->render(
-            'posts/details.html.twig', [
+            'posts/details.html.twig',
+            [
             'controller_name' => 'PostsController',
             'post' => $postsRepository->find($id),
             'ComForm' => $form->createView(),

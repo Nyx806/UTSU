@@ -50,4 +50,4 @@ class CategorySubscriptionController extends AbstractController
             ]
         );
     }
-} 
+}

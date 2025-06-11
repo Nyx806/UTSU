@@ -18,7 +18,9 @@ class ComFromType extends AbstractType
         $builder
             ->add('contenu')
             ->add(
-                'img', FileType::class, [
+                'img',
+                FileType::class,
+                [
                 'label' => 'Photo',
                 'mapped' => false,
                 'required' => false,
@@ -28,7 +30,9 @@ class ComFromType extends AbstractType
                 ]
             )
             ->add(
-                'video', FileType::class, [
+                'video',
+                FileType::class,
+                [
                 'label' => 'Video',
                 'mapped' => false,
                 'required' => false,

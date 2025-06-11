@@ -18,7 +18,8 @@ final class CategoriesController extends AbstractController
     public function index(CategoriesRepository $categoriesController): Response
     {
         return $this->render(
-            'categories/index.html.twig', [
+            'categories/index.html.twig',
+            [
             'controller_name' => 'categories',
             'categories' => $categoriesController->findBy([], ['id' => 'ASC']),
             ]
@@ -37,7 +38,8 @@ final class CategoriesController extends AbstractController
         $posts = $postRepo->findBy(['cat' => $categorie], ['id' => 'DESC']);
 
         return $this->render(
-            'categories/show.html.twig', [
+            'categories/show.html.twig',
+            [
             'categorie' => $categorie,
             'posts' => $posts,
             ]

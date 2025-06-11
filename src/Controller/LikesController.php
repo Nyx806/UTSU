@@ -32,7 +32,8 @@ class LikesController extends AbstractController
         if (!in_array($type, ['safe', 'dangerous'], true)) {
             return $this->json(
                 [
-                'error' => 'Invalid like type provided.'], Response::HTTP_BAD_REQUEST
+                'error' => 'Invalid like type provided.'],
+                Response::HTTP_BAD_REQUEST
             );
         }
 
