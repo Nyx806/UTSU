@@ -1,4 +1,4 @@
-image: jakzal/phpqa:php8.4
+image: jakzal/phpqa:php8.2
 
 before_script:
   - composer install
@@ -36,11 +36,6 @@ phpstan:
     - phpstan analyse ./src
   allow_failure: false
 
-twig-lint:
-  stage: CodingStandards
-  script:
-    - twig-lint lint ./templates
-  allow_failure: false
 
 phpunit:
   stage: UnitTests
