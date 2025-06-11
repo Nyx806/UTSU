@@ -554,7 +554,7 @@
                     </div>
 
                     <div class="posts-list">
-                        {% for post in posts %}
+                      {% for post in posts %}
                         <div class="card">
                             <div class="card-content">
                                 <div class="flex items-center gap-2 text-xs" style="color: #6b7280; margin-bottom: 0.5rem;">
@@ -688,67 +688,24 @@
                                                                 {% endfor %}
                                                             </div>
                                                         {% endif %}
-
-                                        <div class="mt-6">
-                                            <button class="btn btn-primary w-full flex items-center justify-center gap-2">
-                                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                                </svg>
-                                                Ajouter un commentaire
-                                            </button>
-                                        </div>
-                                    </div>
+                                                    </div>
                                                 {% endif %}
                                             {% endfor %}
                                         {% endif %}
+
+                                        <div class="text-right mt-4">
+                                            <button onclick="toggleCommentForm('{{ post.id }}')"
+                                                    class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition">
+                                                + Ajouter un commentaire
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        {% endfor %}
+                      {% endfor %}
                     </div>
                 </div>
-                <script>
-                  document.querySelectorAll('.safe-like-btn, .dangerous-like-btn').forEach(button => {
-                  button.addEventListener('click', function () {
-                    const postId = this.dataset.postId;
-                    const type = this.classList.contains('safe-like-btn') ? 'safe' : 'dangerous';
-
-                    // Ajout d'un log pour vérifier la valeur de `type` envoyée au backend
-                    console.log(`Type envoyé: ${type}`);
-
-                    fetch(`/posts/${postId}/toggle-like`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                      },
-                      body: JSON.stringify({ type }),
-                    })
-                    .then(response => {
-                      if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                      }
-                      return response.json();
-                    })
-                    .then(data => {
-                      console.log(data); // <=== ajoute ça
-                      if (data.message === 'Like toggled successfully') {
-                        const safeLikesSpan = document.getElementById(`safe-likes-${postId}`);
-                        const dangerousLikesSpan = document.getElementById(`dangerous-likes-${postId}`);
-                        if (!dangerousLikesSpan) {
-                          console.warn(`Element dangerous-likes-${postId} not found`);
-                        } else {
-                          dangerousLikesSpan.textContent = data.dangerousLikes;
-                        }
-                        safeLikesSpan.textContent = data.safeLikes;
-                      }
-                    })
-                    .catch(error => {
-                      console.error('There was a problem with the fetch operation:', error);
-                    });
-                  });
-                });       
-                </script>
                 <!-- Sidebar -->
                 <div class="sidebar">
                     <!-- Popular Communities -->
@@ -882,10 +839,82 @@
                             Your personal UTSU frontpage. Come here to check in with your favorite communities.
                         </div>
                     </div>
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Formulaire de commentaire unique -->
+<div id="commentForm" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h4 class="text-lg font-semibold">Ajouter un commentaire</h4>
+            <button onclick="closeCommentForm()" class="text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div id="replyToBox" class="hidden bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-2 rounded mb-4">
+            Réponse à <span id="replyToUser" class="font-semibold"></span>
+            <button type="button" onclick="cancelReply()" class="ml-4 text-sm text-red-600 hover:underline">Annuler</button>
+        </div>
+
+        {{ form_start(commentForm) }}
+
+        <!-- Champ contenu -->
+        <div class="mb-4">
+            {{ form_label(commentForm.contenu, null, {
+                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+            }) }}
+            {{ form_widget(commentForm.contenu, {
+                'attr': {
+                    'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                }
+            }) }}
+            {{ form_errors(commentForm.contenu) }}
+        </div>
+
+        <!-- Champ photo -->
+        <div class="mb-4">
+            {{ form_label(commentForm.img, null, {
+                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+            }) }}
+            {{ form_widget(commentForm.img, {
+                'attr': {
+                    'class': 'block w-full text-sm text-gray-700 border border-gray-300 rounded-lg file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 hover:file:bg-blue-700 transition'
+                }
+            }) }}
+            {{ form_errors(commentForm.img) }}
+        </div>
+
+        <!-- Champ vidéo -->
+        <div class="mb-4">
+            {{ form_label(commentForm.video, null, {
+                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+            }) }}
+            {{ form_widget(commentForm.video, {
+                'attr': {
+                    'class': 'block w-full text-sm text-gray-700 border border-gray-300 rounded-lg file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 hover:file:bg-blue-700 transition'
+                }
+            }) }}
+            {{ form_errors(commentForm.video) }}
+        </div>
+
+        <!-- Champ parent caché -->
+        <input type="hidden" id="comment_parent" name="comment_parent" value="0">
+        <input type="hidden" id="post_id" name="post_id" value="">
+
+        <!-- Bouton de soumission -->
+        <div class="text-right">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                Envoyer le commentaire
+            </button>
+        </div>
+
+        {{ form_end(commentForm) }}
     </div>
 </div>
 
@@ -895,6 +924,61 @@ document.querySelectorAll('.toggle-comments').forEach(button => {
         const postId = this.dataset.postId;
         const commentsSection = document.getElementById(`comments-${postId}`);
         commentsSection.classList.toggle('hidden');
+    });
+});
+
+function toggleCommentForm(postId) {
+    const form = document.getElementById('commentForm');
+    const parentInput = document.getElementById('comment_parent');
+    const postIdInput = document.getElementById('post_id');
+    const replyBox = document.getElementById('replyToBox');
+    const replyToUser = document.getElementById('replyToUser');
+
+    parentInput.value = 0;
+    postIdInput.value = postId;
+    replyBox.classList.add('hidden');
+    replyToUser.innerText = "";
+
+    form.style.display = 'flex';
+}
+
+function closeCommentForm() {
+    const form = document.getElementById('commentForm');
+    form.style.display = 'none';
+}
+
+function cancelReply() {
+    const parentInput = document.getElementById('comment_parent');
+    const replyBox = document.getElementById('replyToBox');
+    const replyToUser = document.getElementById('replyToUser');
+
+    parentInput.value = 0;
+    replyBox.classList.add('hidden');
+    replyToUser.innerText = "";
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-reply]').forEach(button => {
+        button.addEventListener('click', e => {
+            e.preventDefault();
+
+            const commentId = button.dataset.id;
+            const userName = button.dataset.user;
+            const postId = button.closest('[data-post-id]').dataset.postId;
+
+            const form = document.getElementById('commentForm');
+            const parentInput = document.getElementById('comment_parent');
+            const postIdInput = document.getElementById('post_id');
+            const replyBox = document.getElementById('replyToBox');
+            const replyToUser = document.getElementById('replyToUser');
+
+            parentInput.value = commentId;
+            postIdInput.value = postId;
+            replyToUser.innerText = userName;
+            replyBox.classList.remove('hidden');
+
+            form.style.display = 'flex';
+        });
     });
 });
 </script>
