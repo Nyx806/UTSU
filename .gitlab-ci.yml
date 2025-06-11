@@ -1,4 +1,4 @@
-image: jakzal/phpqa:php8.2
+image: jakzal/phpqa:php8.8.3.13
 
 before_script:
   - composer install
