@@ -26,7 +26,9 @@ final class PostsController extends AbstractController
     ): Response {
         $posts = new Posts();
         $cat = $categories_repository->find($id);
-        $form = $this->createForm((PostsFromType::class), $posts);
+        $form = $this->createForm((PostsFromType::class), $posts, [
+            'show_category' => false, // Ne pas afficher le champ catégorie
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
