@@ -20,7 +20,7 @@ class LikesController extends AbstractController
             $type = $data['type'] ?? null;
             $user = $this->getUser();
 
-            
+
             $existingLike = $post->getLikes()->filter(
                 fn(Likes $like) => $like->getUserID() === $user
             )->first();

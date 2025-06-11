@@ -23,9 +23,7 @@ final class HomeController extends AbstractController
         EntityManagerInterface $em,
         UserRepository $userRepository
     ): Response {
-        if ($this->isGranted('ROLE_ADMIN')) {
-            return $this->redirectToRoute('admin_index');
-        }
+        $posts = $postsRepository->findAll();
 
         $posts = $postsRepository->findAll();
 

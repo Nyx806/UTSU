@@ -73,4 +73,9 @@ class Likes
     {
         return $this->type === 'dangerous';
     }
+
+    public function __toString(): string
+    {
+        return $this->type;
+    }
 }
