@@ -46,4 +46,4 @@ class CategorySubscriptionController extends AbstractController
             'subscribed' => $subscribed
         ]);
     }
-} 
+}

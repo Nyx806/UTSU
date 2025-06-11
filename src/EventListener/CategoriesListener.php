@@ -31,4 +31,4 @@ class CategoriesListener implements EventSubscriberInterface
             KernelEvents::CONTROLLER => 'onKernelController',
         ];
     }
-} 
+}
