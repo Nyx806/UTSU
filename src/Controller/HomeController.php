@@ -53,13 +53,19 @@ final class HomeController extends AbstractController
 
                     if ($file) {
                         $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-                        $file->move($this->getParameter('kernel.project_dir') . '/public/uploads/commentaires/photo', $fileName);
+                        $file->move(
+                            $this->getParameter('kernel.project_dir') . '/public/uploads/commentaires/photo',
+                            $fileName
+                        );
                         $com->setImg($fileName);
                     }
 
                     if ($video) {
                         $videoName = md5(uniqid()) . '.' . $video->guessExtension();
-                        $video->move($this->getParameter('kernel.project_dir') . '/public/uploads/commentaires/video', $videoName);
+                        $video->move(
+                            $this->getParameter('kernel.project_dir') . '/public/uploads/commentaires/video',
+                            $videoName
+                        );
                         $com->setVideo($videoName);
                     }
 
