@@ -969,10 +969,12 @@ function cancelReply() {
     const parentInput = document.getElementById('comment_parent');
     const replyBox = document.getElementById('replyToBox');
     const replyToUser = document.getElementById('replyToUser');
+    const form = document.getElementById('commentForm');
 
     parentInput.value = 0;
     replyBox.classList.add('hidden');
     replyToUser.innerText = "";
+    form.style.display = 'none';
 }
 
 // Gestionnaire d'événements pour les liens de réponse
@@ -1002,6 +1004,11 @@ document.addEventListener('DOMContentLoaded', function() {
             replyToUser.innerText = userName;
             replyBox.classList.remove('hidden');
 
+            // Insérer le formulaire après le commentaire
+            const commentContainer = this.closest('.border');
+            if (commentContainer) {
+                commentContainer.after(form);
+            }
             form.style.display = 'block';
             form.scrollIntoView({ behavior: 'smooth' });
         });
