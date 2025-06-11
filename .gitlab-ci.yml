@@ -37,10 +37,10 @@ phpstan:
   allow_failure: false
 
 twig-lint:
-stage: CodingStandards
-script:
-- twig-lint lint ./templates
-allow_failure: false
+  stage: CodingStandards
+  script:
+  - twig-lint lint ./templates
+  allow_failure: false
 
 phpunit:
   stage: UnitTests
