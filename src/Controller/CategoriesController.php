@@ -16,16 +16,58 @@ use App\Entity\Categories;
 final class CategoriesController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(CategoriesRepository $categoriesController): Response
+    public function index(Request $request, CategoriesRepository $categoriesController): Response
     {
+        $search = $request->query->get('search', '');
+        $page = max(1, (int) $request->query->get('page', 1));
+        $zone = $request->query->get('zone', ''); // Get the zone parameter
+        $limit = 9; // Number of categories per page
+
+        $queryBuilder = $categoriesController->createQueryBuilder('c');
+
+        if ($search) {
+            $queryBuilder
+                ->andWhere('c.name LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
+
+        // Add filtering based on the zone
+        if ($zone) {
+            switch ($zone) {
+                case 'safe':
+                    $queryBuilder->andWhere('c.dangerous >= 500');
+                    break;
+                case 'moderate':
+                    $queryBuilder->andWhere('c.dangerous > 0 AND c.dangerous < 500');
+                    break;
+                case 'danger':
+                    $queryBuilder->andWhere('c.dangerous <= 0');
+                    break;
+            }
+        }
+
+        $queryBuilder->orderBy('c.id', 'ASC');
+
+        $totalCategories = count($queryBuilder->getQuery()->getResult());
+        $totalPages = ceil($totalCategories / $limit);
+
+        $queryBuilder
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+
+        $categories = $queryBuilder->getQuery()->getResult();
         $mostDangerousCategories = $categoriesController->findBy([], ['dangerous' => 'DESC'], 3);
 
         return $this->render(
             'categories/index.html.twig',
             [
-            'controller_name' => 'categories',
-            'categories' => $categoriesController->findBy([], ['id' => 'ASC']),
-            'mostDangerousCategories' => $mostDangerousCategories,
+                'controller_name' => 'categories',
+                'categories' => $categories,
+                'mostDangerousCategories' => $mostDangerousCategories,
+                'currentPage' => $page,
+                'totalPages' => $totalPages,
+                'search' => $search,
+                'zone' => $zone // Pass the zone parameter to the template
             ]
         );
     }
@@ -79,53 +121,45 @@ final class CategoriesController extends AbstractController
         );
     }
 
-    #[Route('/{id}/toggle-subscription', name: 'toggle_subscription', methods: ['POST'])]
-    public function toggleSubscription(
-        int $id,
-        CategoriesRepository $catRepo,
-        AbonnementRepository $abonnementRepo,
-        EntityManagerInterface $em
-    ): Response {
+    #[Route('/{id}/join', name: 'join', methods: ['POST'])]
+    public function join(int $id, CategoriesRepository $catRepo, AbonnementRepository $abonnementRepo, EntityManagerInterface $em): Response
+    {
         $category = $catRepo->find($id);
         if (!$category) {
-            throw $this->createNotFoundException('Catégorie non trouvée');
+            throw $this->createNotFoundException('Category not found');
         }
 
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(['message' => 'Vous devez être connecté'], Response::HTTP_UNAUTHORIZED);
+            return $this->json(['message' => 'You must be logged in to join a category'], Response::HTTP_UNAUTHORIZED);
         }
 
-        // Vérifier si l'utilisateur est déjà abonné
-        $existingSubscription = $abonnementRepo->findOneBy(
-            [
+        // Check if user is already subscribed
+        $existingSubscription = $abonnementRepo->findOneBy([
             'userID' => $user,
             'category' => $category
-            ]
-        );
+        ]);
 
         if ($existingSubscription) {
-            // Désabonner
+            // Unsubscribe
             $em->remove($existingSubscription);
-            $message = 'Désabonné avec succès';
+            $message = 'Successfully unsubscribed';
             $isSubscribed = false;
         } else {
-            // Abonner
+            // Subscribe
             $subscription = new \App\Entity\Abonnement();
             $subscription->setUserID($user);
             $subscription->setCategory($category);
             $em->persist($subscription);
-            $message = 'Abonné avec succès';
+            $message = 'Successfully subscribed';
             $isSubscribed = true;
         }
 
         $em->flush();
 
-        return $this->json(
-            [
+        return $this->json([
             'message' => $message,
             'isSubscribed' => $isSubscribed
-            ]
-        );
+        ]);
     }
 }
