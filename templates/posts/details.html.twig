@@ -6,15 +6,15 @@
     <div class="min-h-screen bg-gray-100">
 
         <!-- Header avec flèche, nom communauté et bouton rejoindre -->
-        <header class="sticky top-0 z-50 bg-background border-b border-border">
+        <header class="sticky top-16 z-40 bg-background border-b border-border">
             <div class="max-w-5xl mx-auto px-4 py-2">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <button onclick="window.history.back()" class="p-2 hover:bg-accent rounded-full transition-colors">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
+                    <div class="flex items-center space-x-3 w-full sm:w-auto">
+                        <a href="{{ path('home_index') }}" class="p-2 hover:bg-accent rounded-full transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                             </svg>
-                        </button>
+                        </a>
                         <div class="flex items-center space-x-2">
                             <div class="w-8 h-8 bg-coffee-600 rounded-full flex items-center justify-center">
                                 <span class="text-white font-bold text-sm">r/</span>
@@ -25,9 +25,15 @@
                         </div>
                     </div>
                     
-                    <div class="flex items-center space-x-2">
-                        <button class="px-4 py-2 text-sm rounded-full border border-coffee-300 text-coffee-700 hover:bg-coffee-50 transition-colors">
-                            Rejoindre
+                    <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                        <button onclick="toggleSubscription({{ post.getCat.id }})" 
+                                id="joinButton"
+                                class="w-full sm:w-auto px-4 py-2 text-sm rounded-full border border-coffee-300 text-coffee-700 hover:bg-coffee-50 transition-colors">
+                            {% if app.user and post.getCat in app.user.abonnements|map(a => a.category) %}
+                                Se désabonner
+                            {% else %}
+                                Rejoindre
+                            {% endif %}
                         </button>
                     </div>
                 </div>
@@ -41,25 +47,25 @@
                     <div class="sticky top-20 space-y-3">
                         <div class="flex flex-col items-center space-y-2 p-2">
                             <!-- Safe Button -->
-                            <button class="p-1 hover:bg-coffee-100 text-coffee-800 flex flex-col items-center rounded transition-colors">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="black">
+                            <button class="safe-like-btn p-1 hover:bg-coffee-100 text-coffee-800 flex flex-col items-center rounded transition-colors" data-post-id="{{ post.id }}">
+                                <svg class="safe-icon w-4 h-4" viewBox="0 0 24 24" fill="black">
                                     <path d="M12 2L4 5v6c0 5.55 3.84 10.74 8 11 4.16-.26 8-5.45 8-11V5l-8-3z"/>
                                     <path fill="white" d="M10.5 14.5l-2.5-2.5 1.41-1.41L10.5 11.67l4.59-4.59L16.5 8.5z"/>
                                 </svg>
                             </button>
-                            <span class="text-sm font-medium text-coffee-800">1</span>
+                            <span id="safe-likes-{{ post.id }}" class="text-sm font-medium text-coffee-800">{{ post.countSafeLikes() }}</span>
                             
                             <!-- Separator -->
                             <div class="w-full h-px bg-coffee-200 my-2"></div>
                             
                             <!-- Danger Button -->
-                            <button class="p-1 hover:bg-coffee-100 text-coffee-800 flex flex-col items-center rounded transition-colors">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="black">
+                            <button class="dangerous-like-btn p-1 hover:bg-coffee-100 text-coffee-800 flex flex-col items-center rounded transition-colors" data-post-id="{{ post.id }}">
+                                <svg class="danger-icon w-4 h-4" viewBox="0 0 24 24" fill="black">
                                     <path d="M1 21h22L12 2 1 21z"/>
                                     <path fill="white" d="M13 16h-2v2h2v-2zm0-6h-2v4h2v-4z"/>
                                 </svg>
                             </button>
-                            <span class="text-sm font-medium text-coffee-800">0</span>
+                            <span id="dangerous-likes-{{ post.id }}" class="text-sm font-medium text-coffee-800">{{ post.countDangerousLikes() }}</span>
                         </div>
                     </div>
                 </div>
@@ -342,22 +348,22 @@
                             <div class="space-y-2 text-sm">
                                 <div class="flex justify-between">
                                     <span class="text-muted-foreground">Membres</span>
-                                    <span class="font-medium">1,2M</span>
+                                    <span class="font-medium">{{ post.getCat.abonnements|length }}</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-muted-foreground">En ligne</span>
-                                    <span class="font-medium">2,1k</span>
+                                    <span class="text-muted-foreground">Posts</span>
+                                    <span class="font-medium">{{ post.getCat.posts|length }}</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-muted-foreground">Créé</span>
-                                    <span class="font-medium">1 janv. 2008</span>
+                                    <span class="text-muted-foreground">Niveau de danger</span>
+                                    <span class="font-medium">{{ post.getCat.dangerous }}</span>
                                 </div>
                             </div>
                             
                             <div class="mt-4 pt-4 border-t border-border">
-                                <button class="w-full px-4 py-2 text-sm rounded-full bg-coffee-600 hover:bg-coffee-700 text-white transition-colors">
+                                <a href="{{ path('posts_new', {'category': post.getCat.id}) }}" class="block w-full px-4 py-2 text-sm text-center rounded-full bg-coffee-600 hover:bg-coffee-700 text-white transition-colors">
                                     Créer un post
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -513,6 +519,95 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             window.commentairesManager = new CommentairesManager();
+        });
+
+        function toggleSubscription(categoryId) {
+            fetch(`/categories/${categoryId}/join`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                const button = document.getElementById('joinButton');
+                if (data.isSubscribed) {
+                    button.textContent = 'Se désabonner';
+                } else {
+                    button.textContent = 'Rejoindre';
+                }
+                // Mettre à jour le nombre de membres
+                const membersCount = document.querySelector('.space-y-2 .flex:first-child .font-medium');
+                if (membersCount) {
+                    const currentCount = parseInt(membersCount.textContent);
+                    membersCount.textContent = data.isSubscribed ? currentCount + 1 : currentCount - 1;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                if (error.status === 401) {
+                    window.location.href = '/login';
+                }
+            });
+        }
+
+        // Gestion des likes
+        document.querySelectorAll('.safe-like-btn, .dangerous-like-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const postId = this.dataset.postId;
+                const type = this.classList.contains('safe-like-btn') ? 'safe' : 'dangerous';
+
+                fetch(`/posts/${postId}/toggle-like`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({ type }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.message === 'Like toggled successfully') {
+                        const safeLikesSpan = document.getElementById(`safe-likes-${postId}`);
+                        const dangerousLikesSpan = document.getElementById(`dangerous-likes-${postId}`);
+                        
+                        if (safeLikesSpan) {
+                            safeLikesSpan.textContent = data.safeLikes;
+                        }
+                        if (dangerousLikesSpan) {
+                            dangerousLikesSpan.textContent = data.dangerousLikes;
+                        }
+
+                        // Mise à jour visuelle des boutons
+                        const safeBtn = document.querySelector(`.safe-like-btn[data-post-id="${postId}"]`);
+                        const dangerBtn = document.querySelector(`.dangerous-like-btn[data-post-id="${postId}"]`);
+
+                        if (data.action === 'added' || data.action === 'updated') {
+                            if (type === 'safe') {
+                                safeBtn.classList.add('bg-coffee-100');
+                                dangerBtn.classList.remove('bg-coffee-100');
+                            } else {
+                                dangerBtn.classList.add('bg-coffee-100');
+                                safeBtn.classList.remove('bg-coffee-100');
+                            }
+                        } else if (data.action === 'removed') {
+                            safeBtn.classList.remove('bg-coffee-100');
+                            dangerBtn.classList.remove('bg-coffee-100');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                    if (error.status === 401) {
+                        window.location.href = '/login';
+                    }
+                });
+            });
         });
     </script>
 
