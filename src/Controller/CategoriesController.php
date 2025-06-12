@@ -17,11 +17,14 @@ final class CategoriesController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(CategoriesRepository $categoriesController): Response
     {
+        $mostDangerousCategories = $categoriesController->findBy([], ['dangerous' => 'DESC'], 3);
+
         return $this->render(
             'categories/index.html.twig',
             [
             'controller_name' => 'categories',
             'categories' => $categoriesController->findBy([], ['id' => 'ASC']),
+            'mostDangerousCategories' => $mostDangerousCategories,
             ]
         );
     }
