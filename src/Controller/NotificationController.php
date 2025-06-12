@@ -49,8 +49,10 @@ class NotificationController extends AbstractController
     }
 
     #[Route('/mark-all-as-read', name: 'app_notifications_mark_all_read', methods: ['POST'])]
-    public function markAllAsRead(NotificationRepository $notificationRepository, EntityManagerInterface $entityManager): JsonResponse
-    {
+    public function markAllAsRead(
+        NotificationRepository $notificationRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
         $notifications = $notificationRepository->findUnreadByUser($this->getUser());
 
         foreach ($notifications as $notification) {
