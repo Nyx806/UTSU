@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Partager - {{ post.title }}{% endblock %}
+
+{% block body %}
+{% include 'home/_navbar.html.twig' %}
+<div class="bg-gray-100 py-8">
+    <div class="max-w-2xl mx-auto px-4">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Partager ce post</h1>
+
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold text-gray-800 mb-2">{{ post.title }}</h2>
+                <p class="text-gray-600">{{ shareText }}</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Copier le lien -->
+                <div class="flex items-center space-x-2">
+                    <input type="text" value="{{ shareUrl }}" id="shareUrl" readonly
+                        class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button onclick="copyToClipboard()"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Copier
+                    </button>
+                </div>
+
+                <!-- Boutons de partage social -->
+                <div class="flex space-x-4">
+                    <!-- Facebook -->
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ shareUrl|url_encode }}"
+                        target="_blank"
+                        class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center">
+                        Facebook
+                    </a>
+
+                    <!-- Twitter -->
+                    <a href="https://twitter.com/intent/tweet?url={{ shareUrl|url_encode }}&text={{ shareTitle|url_encode }}"
+                        target="_blank"
+                        class="flex-1 px-4 py-2 bg-blue-400 text-white rounded-md hover:bg-blue-500 text-center">
+                        Twitter
+                    </a>
+
+                    <!-- LinkedIn -->
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ shareUrl|url_encode }}&title={{ shareTitle|url_encode }}"
+                        target="_blank"
+                        class="flex-1 px-4 py-2 bg-blue-700 text-white rounded-md hover:bg-blue-800 text-center">
+                        LinkedIn
+                    </a>
+                </div>
+
+                <!-- WhatsApp -->
+                <a href="https://wa.me/?text={{ shareTitle|url_encode }}%20{{ shareUrl|url_encode }}"
+                    target="_blank"
+                    class="block w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 text-center">
+                    WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard() {
+    const shareUrl = document.getElementById('shareUrl');
+    shareUrl.select();
+    document.execCommand('copy');
+    
+    // Feedback visuel
+    const button = document.querySelector('button');
+    const originalText = button.textContent;
+    button.textContent = 'Copié !';
+    button.classList.add('bg-green-600');
+    button.classList.remove('bg-blue-600');
+    
+    setTimeout(() => {
+        button.textContent = originalText;
+        button.classList.remove('bg-green-600');
+        button.classList.add('bg-blue-600');
+    }, 2000);
+}
+</script>
+{% endblock %} 
