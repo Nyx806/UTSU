@@ -38,10 +38,24 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        # Routes publiques
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/reset-password, roles: PUBLIC_ACCESS }
+        
+        # Routes protégées
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/posts/new, roles: ROLE_USER }
         - { path: ^/posts/\d+/edit, roles: ROLE_USER }
+        - { path: ^/posts/\d+/comment, roles: ROLE_USER }
+        - { path: ^/categories/new, roles: ROLE_USER }
+        - { path: ^/categories/\d+/edit, roles: ROLE_USER }
+        - { path: ^/notifications, roles: ROLE_USER }
+        
+        # Toutes les autres routes nécessitent une connexion
+        - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:
