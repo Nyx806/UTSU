@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Commentaires;
+use App\Entity\Notification;
 
 #[Route('/', name: 'home_')]
 final class HomeController extends AbstractController
@@ -69,6 +70,14 @@ final class HomeController extends AbstractController
                     $parent = $em->getRepository(Commentaires::class)->find($parentId);
                     if ($parent) {
                         $com->setComParent($parent);
+                        
+                        // Créer une notification pour l'auteur du commentaire parent
+                        if ($parent->getUserID() !== $this->getUser()) {
+                            $notification = new Notification();
+                            $notification->setUser($parent->getUserID());
+                            $notification->setComment($com);
+                            $em->persist($notification);
+                        }
                     }
                 }
 

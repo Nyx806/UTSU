@@ -631,12 +631,12 @@
           </svg>
           <span>Create</span>
       </a>
-      <a href="{{ path('home_index') }}" class="nav-link" aria-label="Notifications">
+      <a href="{{ path('app_notifications') }}" class="nav-link" aria-label="Notifications">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
           <span>Notifications</span>
-          <div class="notification-badge"></div>
+          <div class="notification-badge" style="display: none;"></div>
       </a>
     </div>
 
@@ -840,6 +840,27 @@
       console.error('Error:', error);
     }
   }
+
+  // Fonction pour mettre à jour le nombre de notifications
+  async function updateNotificationCount() {
+    try {
+      const response = await fetch('/notifications/count');
+      const data = await response.json();
+      
+      const badge = document.querySelector('.notification-badge');
+      if (badge) {
+        badge.style.display = data.count > 0 ? 'block' : 'none';
+      }
+    } catch (error) {
+      console.error('Error updating notification count:', error);
+    }
+  }
+
+  // Mettre à jour le compteur toutes les 30 secondes
+  setInterval(updateNotificationCount, 30000);
+
+  // Mettre à jour le compteur au chargement de la page
+  document.addEventListener('DOMContentLoaded', updateNotificationCount);
 </script>
 
 {% block javascripts %}{% endblock %}
