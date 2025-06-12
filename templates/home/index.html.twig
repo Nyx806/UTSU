@@ -807,7 +807,7 @@
                                 </a>
                             </h3>
                         </div>
-                        {% for category in categories %}
+                        {% for category in categories|slice(0, 3) %}
                           <div class="card-content space-y-2">
                               <div class="flex items-center justify-between">
                                   <a class="cat-post-popular text-sm" href="{{ path('categories_posts', {'id': category.id}) }}">

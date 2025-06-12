@@ -3,15 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Posts;
-use App\Repository\PostsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\Request;
 
 #[Route('/share', name: 'share_')]
 final class ShareController extends AbstractController
 {
+
     #[Route('/{id}', name: 'post')]
     public function sharePost(Posts $post): Response
     {
@@ -20,10 +19,10 @@ final class ShareController extends AbstractController
         $shareText = substr($post->getContenu(), 0, 100) . '...';
 
         return $this->render('share/index.html.twig', [
-            'post' => $post,
-            'shareUrl' => $shareUrl,
-            'shareTitle' => $shareTitle,
-            'shareText' => $shareText
+        'post' => $post,
+        'shareUrl' => $shareUrl,
+        'shareTitle' => $shareTitle,
+        'shareText' => $shareText,
         ]);
     }
 }

@@ -18,17 +18,19 @@ use App\Entity\Notification;
 #[Route('/posts', name: 'posts_')]
 final class PostsController extends AbstractController
 {
+
     #[Route('/ajout/{id}', name: 'ajout')]
     public function ajout(
         int $id,
         Request $request,
         EntityManagerInterface $em,
-        CategoriesRepository $categories_repository
+        CategoriesRepository $categories_repository,
     ): Response {
         $posts = new Posts();
         $cat = $categories_repository->find($id);
         $form = $this->createForm((PostsFromType::class), $posts, [
-            'show_category' => false, // Ne pas afficher le champ catégorie
+      // Ne pas afficher le champ catégorie.
+        'show_category' => false,
         ]);
 
         $form->handleRequest($request);
@@ -50,7 +52,7 @@ final class PostsController extends AbstractController
             $em->persist($posts);
             $em->flush();
 
-            return $this->redirectToRoute('home_index');
+            return $this->redirectToRoute('categories_posts', ['id' => $cat->getId()]);
         }
 
         return $this->render(
@@ -66,7 +68,7 @@ final class PostsController extends AbstractController
     public function new(
         Request $request,
         EntityManagerInterface $em,
-        CategoriesRepository $categories_repository
+        CategoriesRepository $categories_repository,
     ): Response {
         $posts = new Posts();
         $form = $this->createForm((PostsFromType::class), $posts);
@@ -89,12 +91,12 @@ final class PostsController extends AbstractController
             $em->persist($posts);
             $em->flush();
 
-            return $this->redirectToRoute('home_index');
+            return $this->redirectToRoute('categories_posts', ['id' => $posts->getCat()->getId()]);
         }
 
         return $this->render('posts/new.html.twig', [
-            'controller_name' => 'PostsController',
-            'PostsForm' => $form->createView(),
+        'controller_name' => 'PostsController',
+        'PostsForm' => $form->createView(),
         ]);
     }
 
@@ -103,7 +105,7 @@ final class PostsController extends AbstractController
         int $id,
         PostsRepository $postsRepository,
         Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
     ): Response {
         $post = $postsRepository->findOneByIdWithCommentsAndReplies($id);
 
@@ -111,7 +113,7 @@ final class PostsController extends AbstractController
             throw $this->createNotFoundException('Le post demandé n\'existe pas.');
         }
 
-        // Handle reply form submission (raw HTML form)
+      // Handle reply form submission (raw HTML form)
         if ($request->isMethod('POST') && $request->request->has('comment_parent') && $request->request->has('com')) {
             $comData = $request->request->all('com');
             $parentId = $request->request->get('comment_parent');
@@ -124,7 +126,7 @@ final class PostsController extends AbstractController
                 if ($parentComment) {
                     $replyCom->setComParent($parentComment);
 
-                    // Create notification for parent comment author
+                    // Create notification for parent comment author.
                     if ($parentComment->getUserID() !== $this->getUser()) {
                         $notification = new Notification();
                         $notification->setUser($parentComment->getUserID());
@@ -133,7 +135,7 @@ final class PostsController extends AbstractController
                     }
                 }
 
-                // Handle file uploads for reply
+              // Handle file uploads for reply.
                 $replyFiles = $request->files->get('com');
                 $replyImg = $replyFiles['img'] ?? null;
                 $replyVideo = $replyFiles['video'] ?? null;
@@ -173,14 +175,14 @@ final class PostsController extends AbstractController
             $file = $form->get('img')->getData();
             $video = $form->get('video')->getData();
 
-            // Gestion du commentaire parent
+          // Gestion du commentaire parent.
             $parentId = $request->request->get('comment_parent');
             if ($parentId && $parentId != '0') {
                 $parentComment = $em->getRepository(Commentaires::class)->find($parentId);
                 if ($parentComment) {
                     $com->setComParent($parentComment);
 
-                    // Créer une notification pour l'auteur du commentaire parent
+                    // Créer une notification pour l'auteur du commentaire parent.
                     if ($parentComment->getUserID() !== $this->getUser()) {
                         $notification = new Notification();
                         $notification->setUser($parentComment->getUserID());

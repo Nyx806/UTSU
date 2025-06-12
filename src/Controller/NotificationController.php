@@ -13,13 +13,14 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/notifications')]
 class NotificationController extends AbstractController
 {
+
     #[Route('/', name: 'app_notifications', methods: ['GET'])]
     public function index(NotificationRepository $notificationRepository): Response
     {
         $notifications = $notificationRepository->findUnreadByUser($this->getUser());
 
         return $this->render('notification/index.html.twig', [
-            'notifications' => $notifications
+        'notifications' => $notifications,
         ]);
     }
 
@@ -32,7 +33,7 @@ class NotificationController extends AbstractController
         }
 
         $count = $notificationRepository->countUnreadByUser($user);
-        return $this->json(['count' => (int)$count]);
+        return $this->json(['count' => (int) $count]);
     }
 
     #[Route('/mark-as-read/{id}', name: 'app_notifications_mark_read', methods: ['POST'])]
@@ -53,7 +54,7 @@ class NotificationController extends AbstractController
     #[Route('/mark-all-as-read', name: 'app_notifications_mark_all_read', methods: ['POST'])]
     public function markAllAsRead(
         NotificationRepository $notificationRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): JsonResponse {
         $notifications = $notificationRepository->findUnreadByUser($this->getUser());
 

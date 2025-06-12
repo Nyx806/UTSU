@@ -11,21 +11,84 @@ use App\Repository\AbonnementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Categories;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Entity\Abonnement;
 
 #[Route('/categories', name: 'categories_')]
 final class CategoriesController extends AbstractController
 {
+
     #[Route('/', name: 'index')]
-    public function index(CategoriesRepository $categoriesController): Response
-    {
+    public function index(
+        CategoriesRepository $categoriesController,
+        Request $request,
+        AbonnementRepository $abonnementRepository
+    ): Response {
+        $search = $request->query->get('search', '');
+        $zone = $request->query->get('zone', '');
+        $page = max(1, (int) $request->query->get('page', 1));
+        $limit = 5;
+
+      // Base query builder for total categories, including search filter.
+        $baseQueryBuilder = $categoriesController->createQueryBuilder('c');
+        if ($search) {
+            $baseQueryBuilder->andWhere('LOWER(c.name) LIKE LOWER(:search)')
+            ->setParameter('search', '%' . $search . '%');
+        }
+        $totalFilteredBySearchCount = count($baseQueryBuilder->getQuery()->getResult());
+
+      // Clone the base query builder for further filtering by zone.
+        $queryBuilder = clone $baseQueryBuilder;
+
+        if ($zone) {
+            switch ($zone) {
+                case 'safe':
+                    $queryBuilder->andWhere('c.dangerous >= :safeThreshold')
+                    ->setParameter('safeThreshold', 500);
+                    break;
+
+                case 'moderate':
+                    $queryBuilder->andWhere('c.dangerous >= :minModerate AND c.dangerous < :maxModerate')
+                    ->setParameter('minModerate', 0)
+                    ->setParameter('maxModerate', 500);
+                    break;
+
+                case 'danger':
+                    $queryBuilder->andWhere('c.dangerous < :dangerThreshold')
+                    ->setParameter('dangerThreshold', 0);
+                    break;
+            }
+        }
+
+        $totalCategories = count($queryBuilder->getQuery()->getResult());
+        $totalPages = ceil($totalCategories / $limit);
+
+        $categories = $queryBuilder
+        ->setFirstResult(($page - 1) * $limit)
+        ->setMaxResults($limit)
+        ->getQuery()
+        ->getResult();
+
         $mostDangerousCategories = $categoriesController->findBy([], ['dangerous' => 'DESC'], 3);
+
+        $userSubscriptions = [];
+        if ($this->isGranted('ROLE_USER')) {
+            $user = $this->getUser();
+            $userSubscriptions = $abonnementRepository->findBy(['userID' => $user]);
+        }
 
         return $this->render(
             'categories/index.html.twig',
             [
             'controller_name' => 'categories',
-            'categories' => $categoriesController->findBy([], ['id' => 'ASC']),
+            'categories' => $categories,
             'mostDangerousCategories' => $mostDangerousCategories,
+            'search' => $search,
+            'zone' => $zone,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalAllCategoriesCount' => $totalFilteredBySearchCount,
+            'userSubscriptions' => $userSubscriptions ?? [],
             ]
         );
     }
@@ -34,11 +97,31 @@ final class CategoriesController extends AbstractController
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         if (!$this->isGranted('ROLE_USER')) {
-            throw $this->createAccessDeniedException('Vous devez être connecté pour créer une catégorie');
+            throw $this->createAccessDeniedException(
+                'Vous devez être connecté pour créer une catégorie'
+            );
         }
+
+      // Liste des icônes disponibles.
+        $availableIcons = [
+        'fa-folder' => 'Dossier',
+        'fa-comments' => 'Discussion',
+        'fa-music' => 'Musique',
+        'fa-gamepad' => 'Jeux vidéo',
+        'fa-microchip' => 'Technologie',
+        'fa-book' => 'Littérature',
+        'fa-film' => 'Cinéma',
+        'fa-camera' => 'Photographie',
+        'fa-code' => 'Programmation',
+        'fa-palette' => 'Art',
+        'fa-utensils' => 'Cuisine',
+        'fa-futbol' => 'Sport',
+        ];
 
         if ($request->isMethod('POST')) {
             $name = $request->request->get('name');
+            $description = $request->request->get('description');
+            $icon = $request->request->get('icon');
 
             if (empty($name)) {
                 $this->addFlash('error', 'Le nom de la catégorie ne peut pas être vide');
@@ -47,6 +130,8 @@ final class CategoriesController extends AbstractController
 
             $category = new Categories();
             $category->setName($name);
+            $category->setDescription($description);
+            $category->setIcon($icon);
             $category->setDangerous(0);
 
             $em->persist($category);
@@ -56,7 +141,9 @@ final class CategoriesController extends AbstractController
             return $this->redirectToRoute('categories_index');
         }
 
-        return $this->render('categories/new.html.twig');
+        return $this->render('categories/new.html.twig', [
+        'availableIcons' => $availableIcons,
+        ]);
     }
 
     #[Route('/{id}', name: 'posts')]
@@ -82,50 +169,48 @@ final class CategoriesController extends AbstractController
     #[Route('/{id}/toggle-subscription', name: 'toggle_subscription', methods: ['POST'])]
     public function toggleSubscription(
         int $id,
-        CategoriesRepository $catRepo,
-        AbonnementRepository $abonnementRepo,
-        EntityManagerInterface $em
-    ): Response {
-        $category = $catRepo->find($id);
+        CategoriesRepository $categoriesRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $category = $categoriesRepository->find($id);
         if (!$category) {
-            throw $this->createNotFoundException('Catégorie non trouvée');
+            throw $this->createNotFoundException(
+                'Category not found'
+            );
         }
 
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(['message' => 'Vous devez être connecté'], Response::HTTP_UNAUTHORIZED);
+            return $this->json([
+                'error' => 'You must be logged in to join a category'
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
-        // Vérifier si l'utilisateur est déjà abonné
-        $existingSubscription = $abonnementRepo->findOneBy(
-            [
-            'userID' => $user,
-            'category' => $category
-            ]
-        );
+      // Utilisation du QueryBuilder pour éviter le warning SQL injection.
+        $qb = $entityManager->createQueryBuilder();
+        $qb->select('a')
+            ->from(Abonnement::class, 'a')
+            ->where('a.userID = :userId')
+            ->andWhere('a.category = :categoryId')
+            ->setParameter('userId', $user)
+            ->setParameter('categoryId', $category);
+        $existingAbonnement = $qb->getQuery()->getOneOrNullResult();
 
-        if ($existingSubscription) {
-            // Désabonner
-            $em->remove($existingSubscription);
-            $message = 'Désabonné avec succès';
+        if ($existingAbonnement) {
+            $entityManager->remove($existingAbonnement);
             $isSubscribed = false;
         } else {
-            // Abonner
-            $subscription = new \App\Entity\Abonnement();
-            $subscription->setUserID($user);
-            $subscription->setCategory($category);
-            $em->persist($subscription);
-            $message = 'Abonné avec succès';
+            $abonnement = new Abonnement();
+            $abonnement->setUserID($user);
+            $abonnement->setCategory($category);
+            $entityManager->persist($abonnement);
             $isSubscribed = true;
         }
 
-        $em->flush();
+        $entityManager->flush();
 
-        return $this->json(
-            [
-            'message' => $message,
-            'isSubscribed' => $isSubscribed
-            ]
-        );
+        return $this->json([
+        'isSubscribed' => $isSubscribed,
+        ]);
     }
 }

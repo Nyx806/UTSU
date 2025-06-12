@@ -1,7 +1,6 @@
 <?php
 
-// src/Form/PostsFromType.php
-
+// src/Form/PostsFromType.php.
 namespace App\Form;
 
 use App\Entity\Categories;
@@ -14,30 +13,31 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PostsFromType extends AbstractType
 {
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title')
-            ->add('contenu')
-            ->add(
-                'photo',
-                FileType::class,
-                [
+        ->add('title')
+        ->add('contenu')
+        ->add(
+            'photo',
+            FileType::class,
+            [
                 'label' => 'Photo',
                 'mapped' => false,
                 'required' => false,
                 'attr' => [
-                    'accept' => 'image/*',
+                  'accept' => 'image/*',
                 ],
-                ]
-            );
+              ]
+        );
 
-        // Ne montre la catégorie que si show_category vaut true
+      // Ne montre la catégorie que si show_category vaut true.
         if ($options['show_category']) {
             $builder->add('cat', EntityType::class, [
-                'class' => Categories::class,
-                'choice_label' => 'name',
-                'placeholder' => 'Sélectionnez une catégorie',
+            'class' => Categories::class,
+            'choice_label' => 'name',
+            'placeholder' => 'Sélectionnez une catégorie',
             ]);
         }
     }
@@ -47,7 +47,8 @@ class PostsFromType extends AbstractType
         $resolver->setDefaults(
             [
             'data_class' => Posts::class,
-            'show_category' => true, // valeur par défaut
+            // Valeur par défaut.
+            'show_category' => true,
             ]
         );
     }

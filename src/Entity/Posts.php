@@ -36,15 +36,15 @@ class Posts
     #[ORM\JoinColumn(nullable: false)]
     private ?Categories $cat = null;
 
-    /**
-     * @var Collection<int, Likes>
-     */
+  /**
+   * @var \Doctrine\Common\Collections\Collection<int, Likes>
+   */
     #[ORM\OneToMany(targetEntity: Likes::class, mappedBy: 'post', orphanRemoval: true)]
     private Collection $likes;
 
-    /**
-     * @var Collection<int, Commentaires>
-     */
+  /**
+   * @var \Doctrine\Common\Collections\Collection<int, Commentaires>
+   */
     #[ORM\OneToMany(targetEntity: Commentaires::class, mappedBy: 'post')]
     private Collection $commentaires;
 
@@ -134,9 +134,9 @@ class Posts
         return $this;
     }
 
-    /**
-     * @return Collection<int, Likes>
-     */
+  /**
+   * @return \Doctrine\Common\Collections\Collection<int, Likes>
+   */
     public function getLikes(): Collection
     {
         return $this->likes;
@@ -155,7 +155,7 @@ class Posts
     public function removeLike(Likes $like): static
     {
         if ($this->likes->removeElement($like)) {
-            // set the owning side to null (unless already changed)
+          // Set the owning side to null (unless already changed)
             if ($like->getPost() === $this) {
                 $like->setPost(null);
             }
@@ -164,9 +164,9 @@ class Posts
         return $this;
     }
 
-    /**
-     * @return Collection<int, Commentaires>
-     */
+  /**
+   * @return \Doctrine\Common\Collections\Collection<int, Commentaires>
+   */
     public function getCommentaires(): Collection
     {
         return $this->commentaires;
@@ -185,7 +185,7 @@ class Posts
     public function removeCommentaire(Commentaires $commentaire): static
     {
         if ($this->commentaires->removeElement($commentaire)) {
-            // set the owning side to null (unless already changed)
+          // Set the owning side to null (unless already changed)
             if ($commentaire->getPost() === $this) {
                 $commentaire->setPost(null);
             }
