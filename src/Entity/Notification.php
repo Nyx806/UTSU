@@ -82,4 +82,4 @@ class Notification
         $this->isRead = $isRead;
         return $this;
     }
-} 
+}

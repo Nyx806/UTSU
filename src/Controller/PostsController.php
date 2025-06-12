@@ -119,7 +119,7 @@ final class PostsController extends AbstractController
                 $parentComment = $em->getRepository(Commentaires::class)->find($parentId);
                 if ($parentComment) {
                     $com->setComParent($parentComment);
-                    
+
                     // Créer une notification pour l'auteur du commentaire parent
                     if ($parentComment->getUserID() !== $this->getUser()) {
                         $notification = new Notification();

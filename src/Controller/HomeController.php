@@ -34,7 +34,7 @@ final class HomeController extends AbstractController
         if ($request->isMethod('POST') && $request->request->has('post_id')) {
             $postId = $request->request->get('post_id');
             $post = $postsRepository->find($postId);
-            
+
             if ($post) {
                 $com = new Commentaires();
                 $com->setContenu($request->request->get('contenu'));
@@ -70,7 +70,7 @@ final class HomeController extends AbstractController
                     $parent = $em->getRepository(Commentaires::class)->find($parentId);
                     if ($parent) {
                         $com->setComParent($parent);
-                        
+
                         // Créer une notification pour l'auteur du commentaire parent
                         if ($parent->getUserID() !== $this->getUser()) {
                             $notification = new Notification();

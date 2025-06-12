@@ -17,7 +17,7 @@ class NotificationController extends AbstractController
     public function index(NotificationRepository $notificationRepository): Response
     {
         $notifications = $notificationRepository->findUnreadByUser($this->getUser());
-        
+
         return $this->render('notification/index.html.twig', [
             'notifications' => $notifications
         ]);
@@ -27,7 +27,7 @@ class NotificationController extends AbstractController
     public function count(NotificationRepository $notificationRepository): JsonResponse
     {
         $count = $notificationRepository->countUnreadByUser($this->getUser());
-        
+
         return $this->json([
             'count' => $count
         ]);
@@ -50,13 +50,13 @@ class NotificationController extends AbstractController
     public function markAllAsRead(NotificationRepository $notificationRepository, EntityManagerInterface $entityManager): JsonResponse
     {
         $notifications = $notificationRepository->findUnreadByUser($this->getUser());
-        
+
         foreach ($notifications as $notification) {
             $notification->setIsRead(true);
         }
-        
+
         $entityManager->flush();
 
         return $this->json(['success' => true]);
     }
-} 
+}

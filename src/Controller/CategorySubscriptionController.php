@@ -20,7 +20,7 @@ class CategorySubscriptionController extends AbstractController
     {
         $user = $this->getUser();
         $abonnementRepository = $entityManager->getRepository(Abonnement::class);
-        
+
         // Vérifier si l'utilisateur est déjà abonné
         $existingAbonnement = $abonnementRepository->findOneBy(
             [
