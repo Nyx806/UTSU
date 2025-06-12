@@ -35,13 +35,17 @@ final class CategoriesController extends AbstractController
         if ($zone) {
             switch ($zone) {
                 case 'safe':
-                    $queryBuilder->andWhere('c.dangerous >= 500');
+                    $queryBuilder->andWhere('c.dangerous >= :safeThreshold')
+                        ->setParameter('safeThreshold', 500);
                     break;
                 case 'moderate':
-                    $queryBuilder->andWhere('c.dangerous > 0 AND c.dangerous < 500');
+                    $queryBuilder->andWhere('c.dangerous > :minModerate AND c.dangerous < :maxModerate')
+                        ->setParameter('minModerate', 0)
+                        ->setParameter('maxModerate', 500);
                     break;
                 case 'danger':
-                    $queryBuilder->andWhere('c.dangerous <= 0');
+                    $queryBuilder->andWhere('c.dangerous <= :dangerThreshold')
+                        ->setParameter('dangerThreshold', 0);
                     break;
             }
         }
