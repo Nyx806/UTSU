@@ -129,7 +129,7 @@ final class CategoriesController extends AbstractController
     public function join(int $id, CategoriesRepository $catRepo, AbonnementRepository $abonnementRepo, EntityManagerInterface $em): Response
     {
         // Validate that id is a positive integer
-        if ($id <= 0) {
+        if (!is_numeric($id) || $id <= 0) {
             throw $this->createNotFoundException('Invalid category ID');
         }
 
