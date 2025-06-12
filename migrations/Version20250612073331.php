@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250612064842 extends AbstractMigration
+final class Version20250612073331 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,16 +21,19 @@ final class Version20250612064842 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE abonnement ADD category_id INT DEFAULT NULL
+            CREATE TABLE notification (id SERIAL NOT NULL, user_id INT NOT NULL, comment_id INT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, is_read BOOLEAN NOT NULL, PRIMARY KEY(id))
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE abonnement ALTER followed_user_id DROP NOT NULL
+            CREATE INDEX IDX_BF5476CAA76ED395 ON notification (user_id)
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE abonnement ADD CONSTRAINT FK_351268BB12469DE2 FOREIGN KEY (category_id) REFERENCES categories (id) NOT DEFERRABLE INITIALLY IMMEDIATE
+            CREATE INDEX IDX_BF5476CAF8697D13 ON notification (comment_id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_351268BB12469DE2 ON abonnement (category_id)
+            ALTER TABLE notification ADD CONSTRAINT FK_BF5476CAA76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE notification ADD CONSTRAINT FK_BF5476CAF8697D13 FOREIGN KEY (comment_id) REFERENCES commentaires (id) NOT DEFERRABLE INITIALLY IMMEDIATE
         SQL);
     }
 
@@ -41,16 +44,13 @@ final class Version20250612064842 extends AbstractMigration
             CREATE SCHEMA public
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE abonnement DROP CONSTRAINT FK_351268BB12469DE2
+            ALTER TABLE notification DROP CONSTRAINT FK_BF5476CAA76ED395
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX IDX_351268BB12469DE2
+            ALTER TABLE notification DROP CONSTRAINT FK_BF5476CAF8697D13
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE abonnement DROP category_id
-        SQL);
-        $this->addSql(<<<'SQL'
-            ALTER TABLE abonnement ALTER followed_user_id SET NOT NULL
+            DROP TABLE notification
         SQL);
     }
 }
