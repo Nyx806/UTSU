@@ -165,9 +165,6 @@ final class PostsController extends AbstractController
             }
         }
 
-        // Clear the entity manager to ensure fresh data is fetched
-        $em->clear();
-
         $com = new Commentaires();
         $form = $this->createForm(ComFromType::class, $com);
         $form->handleRequest($request);
