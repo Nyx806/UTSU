@@ -122,7 +122,7 @@
               <!-- Content Section -->
               <div class="flex-1 p-4">
                 <div class="flex items-center text-xs mb-2" style="color: var(--coffee-600);">
-                  <span>Posté par u/<a href="{{ path('user_profile', {'id': post.getUserID.id}) }}" class="hover:underline" style="color: var(--coffee-600);">{{ post.getUserID.username }}</a></span>
+                  <a href="{{ path('user_profile', {'id': post.userID.id}) }}" class="hover:underline hover:text-blue-600 transition-colors">Posted by u/{{ post.userID.username }}</a>
                   <span class="mx-2">•</span>
                   <span>{{ post.date|date('G\\h i') }}</span>
                 </div>

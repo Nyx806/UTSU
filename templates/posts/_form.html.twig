@@ -1,149 +1,92 @@
 <div class="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-    <h2 class="text-2xl font-bold text-blue-600 mb-6">Créer un nouveau post</h2>
+    {{ form_start(PostsForm, {'attr': {'enctype': 'multipart/form-data'}}) }}
 
-    {{ form_start(PostsForm, {'attr': {'class': 'space-y-4'}}) }}
-        <div class="space-y-2">
-            {{ form_label(PostsForm.title, 'Titre', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-            {{ form_widget(PostsForm.title, {
-                'attr': {
-                    'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
-                    'placeholder': 'Donnez un titre à votre post'
-                }
-            }) }}
-            {{ form_errors(PostsForm.title) }}
-        </div>
+    <!-- Titre -->
+    <div class="form-group">
+        <label class="form-label">Titre</label>
+        {{ form_widget(PostsForm.title, {'attr': {'class': 'form-input', 'placeholder': 'Un titre intéressant...', 'maxlength': '300'}}) }}
+        <div class="char-count">0/300 caractères</div>
+    </div>
 
-        <div class="space-y-2">
-            {{ form_label(PostsForm.contenu, 'Contenu', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-            {{ form_widget(PostsForm.contenu, {
-                'attr': {
-                    'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
-                    'rows': '6',
-                    'placeholder': 'Que voulez-vous partager ?'
-                }
-            }) }}
-            {{ form_errors(PostsForm.contenu) }}
-        </div>
+    <!-- Contenu -->
+    <div class="form-group">
+        <label class="form-label">Contenu</label>
+        {{ form_widget(PostsForm.contenu, {'attr': {'class': 'form-textarea', 'placeholder': 'Qu\'avez-vous en tête ? Partagez vos pensées...', 'rows': '6'}}) }}
+    </div>
 
-        <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">Image</label>
-            <div id="drop-zone" class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-blue-500 transition-colors">
-                <div class="space-y-1 text-center">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    <div class="flex text-sm text-gray-600">
-                        <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                            <span>Télécharger une image</span>
-                            {{ form_widget(PostsForm.photo, {
-                                'attr': {
-                                    'class': 'sr-only',
-                                    'id': 'file-upload',
-                                    'accept': 'image/*'
-                                }
-                            }) }}
-                        </label>
-                        <p class="pl-1">ou glisser-déposer</p>
-                    </div>
-                    <p class="text-xs text-gray-500">
-                        PNG, JPG, GIF jusqu'à 10MB
-                    </p>
-                    <p id="file-name" class="text-sm text-blue-600 mt-2"></p>
-                </div>
-            </div>
-            {{ form_errors(PostsForm.photo) }}
-        </div>
-
-        <div class="flex items-center gap-4">
-            <button type="submit" class="btn btn-primary">
-                Publier
+    <!-- Upload d'image -->
+    <div class="form-group">
+        <label class="form-label">Ajouter une image (optionnel)</label>
+        {{ form_widget(PostsForm.photo, {
+            'attr': {
+                'class': 'block w-full text-sm text-gray-700
+                         file:mr-4 file:py-2 file:px-4
+                         file:rounded-md file:border-0
+                         file:text-sm file:font-semibold
+                         file:bg-[#8a654c] file:text-white
+                         hover:file:bg-[#715344]
+                         cursor-pointer',
+                'accept': 'image/*'
+            }
+        }) }}
+        <div id="preview-container" class="mt-4 hidden">
+            <img id="image-preview" class="max-w-full h-auto rounded-lg shadow-lg" src="" alt="Aperçu">
+            <button type="button" onclick="removeImage()" class="mt-2 text-red-600 hover:text-red-800">
+                Supprimer l'image
             </button>
-            <a href="{{ path('home_index') }}" class="btn btn-ghost">
-                Annuler
-            </a>
         </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div style="padding-top: 1rem;">
+        <button type="submit" class="btn-primary">
+            Publier
+        </button>
+    </div>
+
     {{ form_end(PostsForm) }}
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const dropZone = document.getElementById('drop-zone');
-    const fileInput = document.getElementById('file-upload');
-    const fileNameDisplay = document.getElementById('file-name');
+// Mise à jour du compteur de caractères
+document.querySelector('input[name="posts[title]"]').addEventListener('input', function() {
+    const count = this.value.length;
+    document.querySelector('.char-count').textContent = `${count}/300 caractères`;
+});
 
-    // Empêcher le comportement par défaut pour ces événements
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, preventDefaults, false);
-        document.body.addEventListener(eventName, preventDefaults, false);
-    });
-
-    // Ajouter des effets visuels pendant le drag
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, highlight, false);
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, unhighlight, false);
-    });
-
-    // Gérer le drop
-    dropZone.addEventListener('drop', handleDrop, false);
-
-    // Gérer le changement de fichier via le bouton
-    fileInput.addEventListener('change', handleFileSelect, false);
-
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    function highlight(e) {
-        dropZone.classList.add('border-blue-500');
-    }
-
-    function unhighlight(e) {
-        dropZone.classList.remove('border-blue-500');
-    }
-
-    function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        handleFiles(files);
-    }
-
-    function handleFileSelect(e) {
-        const files = e.target.files;
-        handleFiles(files);
-    }
-
-    function handleFiles(files) {
-        if (files.length > 0) {
-            const file = files[0];
-            
-            // Vérifier le type de fichier
-            if (!file.type.match('image.*')) {
-                alert('Veuillez sélectionner une image valide (PNG, JPG, GIF)');
-                return;
-            }
-
-            // Vérifier la taille du fichier (10MB max)
-            if (file.size > 10 * 1024 * 1024) {
-                alert('L\'image ne doit pas dépasser 10MB');
-                return;
-            }
-
-            // Mettre à jour l'affichage du nom du fichier
-            fileNameDisplay.textContent = file.name;
-
-            // Mettre à jour le champ de fichier du formulaire
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
-
-            // Déclencher l'événement change pour que Symfony le détecte
-            const event = new Event('change', { bubbles: true });
-            fileInput.dispatchEvent(event);
+// Gestion de l'upload d'image
+document.getElementById('posts_photo').addEventListener('change', function(e) {
+    if (this.files && this.files[0]) {
+        const file = this.files[0];
+        
+        // Vérifier le type de fichier
+        if (!file.type.match('image.*')) {
+            alert('Veuillez sélectionner une image valide (PNG, JPG, GIF)');
+            this.value = '';
+            return;
         }
+
+        // Vérifier la taille du fichier (10MB max)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('L\'image ne doit pas dépasser 10MB');
+            this.value = '';
+            return;
+        }
+
+        // Afficher la prévisualisation
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('image-preview').src = e.target.result;
+            document.getElementById('preview-container').classList.remove('hidden');
+        }
+        reader.readAsDataURL(file);
     }
 });
+
+// Suppression de l'image
+function removeImage() {
+    document.getElementById('posts_photo').value = '';
+    document.getElementById('image-preview').src = '';
+    document.getElementById('preview-container').classList.add('hidden');
+}
 </script>
