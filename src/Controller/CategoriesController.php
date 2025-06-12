@@ -36,7 +36,7 @@ final class CategoriesController extends AbstractController
 
         if ($request->isMethod('POST')) {
             $name = $request->request->get('name');
-            
+
             if (empty($name)) {
                 $this->addFlash('error', 'Le nom de la catégorie ne peut pas être vide');
                 return $this->redirectToRoute('categories_new');
