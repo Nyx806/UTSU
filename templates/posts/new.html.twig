@@ -1,37 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Create New Post{% endblock %}
-
 {% block body %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create New Post - Utsu</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+{% include 'home/_navbar.html.twig' %}
   <style>
-    :root {
-      --background: #ffffff;
-      --foreground: #0f172a;
-      --card: #ffffff;
-      --card-foreground: #0f172a;
-      --primary: #1e293b;
-      --primary-foreground: #f8fafc;
-      --secondary: #f1f5f9;
-      --secondary-foreground: #1e293b;
-      --muted: #f1f5f9;
-      --muted-foreground: #64748b;
-      --accent: #f1f5f9;
-      --accent-foreground: #1e293b;
-      --destructive: #ef4444;
-      --destructive-foreground: #f8fafc;
-      --border: #e2e8f0;
-      --input: #e2e8f0;
-      --ring: #0f172a;
-      --radius: 0.5rem;
-    }
-
     * {
       margin: 0;
       padding: 0;
@@ -40,250 +11,374 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-color: var(--background);
-      color: var(--foreground);
       line-height: 1.5;
+    }
+
+    .main-layout {
+      min-height: 100vh;
+      background: linear-gradient(to bottom right, #faf8f5, #f4efe6, #e8dcc9);
+    }
+
+    .header {
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: linear-gradient(to right, #faf8f5, #f4efe6);
+      border-bottom: 1px solid #c4a47c;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      color: #715344;
+      background-color: #e8dcc9;
+      border: 1px solid #c4a47c;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background-color: #d7c2a3;
     }
 
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 1rem;
+      padding: 2rem 1rem;
     }
 
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius);
-      font-size: 0.875rem;
-      font-weight: 500;
-      transition: all 0.2s;
-      border: none;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      background-color: var(--primary);
-      color: var(--primary-foreground);
-      padding: 0.5rem 1rem;
-    }
-
-    .btn-primary:hover {
-      background-color: #334155;
-    }
-
-    .btn-ghost {
-      background-color: transparent;
-      color: var(--foreground);
-      padding: 0.5rem 1rem;
-    }
-
-    .btn-ghost:hover {
-      background-color: var(--accent);
-      color: var(--accent-foreground);
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
     }
 
     .card {
-      background-color: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-    }
-
-    .card-header {
-      padding: 1.5rem 1.5rem 0;
-    }
-
-    .card-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--card-foreground);
+      backdrop-filter: blur(8px);
+      background: linear-gradient(to bottom right, #faf8f5, #f4efe6);
+      border: 1px solid #b5906a;
+      border-radius: 0.5rem;
+      box-shadow: 0 25px 50px -12px rgba(196, 164, 124, 0.5);
     }
 
     .card-content {
       padding: 1.5rem;
     }
 
-    .main-layout {
-      min-height: 100vh;
-      background-color: #f9fafb;
-    }
-
-    .content-wrapper {
-      padding: 1.5rem 0;
-    }
-
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    .space-y-2 > * + * {
-      margin-top: 0.5rem;
-    }
-
-    .space-y-4 > * + * {
-      margin-top: 1rem;
-    }
-
-    .flex {
+    .form-header {
       display: flex;
-    }
-
-    .items-center {
       align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
     }
 
-    .gap-4 {
-      gap: 1rem;
+    .form-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #5d4439;
     }
 
-    .w-full {
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #715344;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
       width: 100%;
-    }
-
-    .text-sm {
+      padding: 0.5rem 0.75rem;
+      background-color: #f4efe6;
+      border: 1px solid #c4a47c;
+      border-radius: 0.375rem;
+      color: #5d4439;
       font-size: 0.875rem;
     }
 
-    .text-gray-600 {
-      color: #4b5563;
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: #a67c5a;
+      box-shadow: 0 0 0 2px rgba(166, 124, 90, 0.2);
     }
 
-    .text-gray-700 {
-      color: #374151;
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
     }
 
-    .text-blue-600 {
-      color: #2563eb;
+    .char-count {
+      font-size: 0.75rem;
+      color: #8a654c;
+      margin-top: 0.25rem;
     }
 
-    .hover\:underline:hover {
-      text-decoration: underline;
+    .upload-area {
+      border: 2px dashed #b5906a;
+      border-radius: 0.5rem;
+      padding: 2rem;
+      text-align: center;
+      background-color: #f4efe6;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
-    @media (min-width: 768px) {
+    .upload-area:hover {
+      border-color: #a67c5a;
+      background-color: #e8dcc9;
+    }
+
+    .upload-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background-color: #e8dcc9;
+      border: 1px solid #c4a47c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 0.75rem;
+    }
+
+    .upload-text {
+      font-weight: 500;
+      color: #715344;
+    }
+
+    .upload-subtext {
+      font-size: 0.875rem;
+      color: #8a654c;
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #8a654c, #a67c5a);
+      color: #faf8f5;
+      border: 1px solid #715344;
+      padding: 0.5rem 2rem;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(to right, #715344, #8a654c);
+    }
+
+    .sidebar-card {
+      backdrop-filter: blur(8px);
+      background: linear-gradient(to bottom right, #faf8f5, #f4efe6);
+      border: 1px solid #b5906a;
+      border-radius: 0.5rem;
+      box-shadow: 0 25px 50px -12px rgba(196, 164, 124, 0.5);
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .sidebar-title {
+      font-weight: 600;
+      color: #5d4439;
+    }
+
+    .rules-list {
+      color: #715344;
+      font-size: 0.875rem;
+    }
+
+    .rule-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .rule-number {
+      font-weight: 700;
+      color: #8a654c;
+    }
+
+    .help-text {
+      font-size: 0.875rem;
+      color: #715344;
+      margin-bottom: 1rem;
+    }
+
+    .help-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .btn-ghost {
+      width: 100%;
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      color: #715344;
+      background-color: transparent;
+      border: 1px solid #d7c2a3;
+      border-radius: 0.375rem;
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .btn-ghost:hover {
+      background-color: #e8dcc9;
+    }
+
+    @media (min-width: 1024px) {
       .content-grid {
         grid-template-columns: 2fr 1fr;
       }
-
-      .container {
-        padding: 0 2rem;
-      }
-    }
-
-    @media (max-width: 767px) {
-      .sidebar {
-        order: -1;
-      }
     }
   </style>
-</head>
-<body class="bg-gray-100">
-
-{% include 'home/_navbar.html.twig' %}
 
 <div class="main-layout">
+    <!-- Header simplifié -->
+    <header class="header">
+        <div class="header-content">
+            <a href="{{ path('home_index') }}" class="back-btn">
+                ← Retour
+            </a>
+        </div>
+    </header>
+
     <div class="container">
-        <div class="content-wrapper">
-            <div class="content-grid">
-                <!-- Main Content -->
-                <div class="main-content">
-                    <div class="card">
-                        <div class="card-header">
-                            <h1 class="card-title">Create New Post</h1>
+        <div class="content-grid">
+            <!-- Formulaire principal -->
+            <div>
+                <div class="card">
+                    <div class="card-content">
+                        <div class="form-header">
+                            <span style="color: #715344;">✚</span>
+                            <h2 class="form-title">Créer un nouveau post</h2>
                         </div>
-                        <div class="card-content">
-                            {{ form_start(PostsForm, {'attr': {'class': 'space-y-4'}}) }}
-                                <div class="space-y-2">
-                                    {{ form_label(PostsForm.title, 'Title', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-                                    {{ form_widget(PostsForm.title, {
-                                        'attr': {
-                                            'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
-                                            'placeholder': 'Give your post a title'
-                                        }
-                                    }) }}
-                                    {{ form_errors(PostsForm.title) }}
-                                </div>
 
-                                <div class="space-y-2">
-                                    {{ form_label(PostsForm.contenu, 'Content', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-                                    {{ form_widget(PostsForm.contenu, {
-                                        'attr': {
-                                            'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
-                                            'rows': '6',
-                                            'placeholder': 'What\'s on your mind?'
-                                        }
-                                    }) }}
-                                    {{ form_errors(PostsForm.contenu) }}
-                                </div>
+                        {{ form_start(PostsForm, {'attr': {'enctype': 'multipart/form-data'}}) }}
+                        
+                        <!-- Sélection de catégorie -->
+                        <div class="form-group">
+                            <label class="form-label">Choisir une communauté</label>
+                            {{ form_widget(PostsForm.cat, {'attr': {'class': 'form-select'}}) }}
+                        </div>
 
-                                <div class="space-y-2">
-                                    {{ form_label(PostsForm.cat, 'Community', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-                                    {{ form_widget(PostsForm.cat, {
-                                        'attr': {
-                                            'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-                                        }
-                                    }) }}
-                                    {{ form_errors(PostsForm.cat) }}
-                                </div>
+                        <!-- Titre -->
+                        <div class="form-group">
+                            <label class="form-label">Titre</label>
+                            {{ form_widget(PostsForm.title, {'attr': {'class': 'form-input', 'placeholder': 'Un titre intéressant...', 'maxlength': '300'}}) }}
+                            <div class="char-count">0/300 caractères</div>
+                        </div>
 
-                                <div class="space-y-2">
-                                    <label class="block text-sm font-medium text-gray-700">Image</label>
-                                    {{ form_widget(PostsForm.photo, {
-                                        'attr': {
-                                            'class': 'block w-full text-sm text-gray-700 border border-gray-300 rounded-lg file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 hover:file:bg-blue-700 transition',
-                                            'accept': 'image/*'
-                                        }
-                                    }) }}
-                                    {{ form_errors(PostsForm.photo) }}
-                                </div>
+                        <!-- Contenu -->
+                        <div class="form-group">
+                            <label class="form-label">Contenu</label>
+                            {{ form_widget(PostsForm.contenu, {'attr': {'class': 'form-textarea', 'placeholder': 'Qu\'avez-vous en tête ? Partagez vos pensées...', 'rows': '6'}}) }}
+                        </div>
 
-                                <div class="flex items-center gap-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        Create Post
-                                    </button>
-                                    <a href="{{ path('home_index') }}" class="btn btn-ghost">
-                                        Cancel
-                                    </a>
-                                </div>
-                            {{ form_end(PostsForm) }}
+                        <!-- Upload d'image -->
+                        <div class="form-group">
+                            <label class="form-label">Ajouter une image (optionnel)</label>
+                            {{ form_widget(PostsForm.photo, {
+                                'attr': {
+                                    'class': 'block w-full text-sm text-gray-700
+                                             file:mr-4 file:py-2 file:px-4
+                                             file:rounded-md file:border-0
+                                             file:text-sm file:font-semibold
+                                             file:bg-[#8a654c] file:text-white
+                                             hover:file:bg-[#715344]
+                                             cursor-pointer',
+                                    'accept': 'image/*'
+                                }
+                            }) }}
+                            <div id="preview-container" class="mt-4 hidden">
+                                <img id="image-preview" class="max-w-full h-auto rounded-lg shadow-lg" src="" alt="Aperçu">
+                                <button type="button" onclick="removeImage()" class="mt-2 text-red-600 hover:text-red-800">
+                                    Supprimer l'image
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Boutons d'action -->
+                        <div style="padding-top: 1rem;">
+                            <button type="submit" class="btn-primary">
+                                Publier
+                            </button>
+                        </div>
+
+                        {{ form_end(PostsForm) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div>
+                <!-- Règles de publication -->
+                <div class="sidebar-card">
+                    <div class="card-content">
+                        <div class="sidebar-header">
+                            <span style="color: #715344;">ℹ️</span>
+                            <h3 class="sidebar-title">Règles de publication</h3>
+                        </div>
+                        <div class="rules-list">
+                            <div class="rule-item">
+                                <span class="rule-number">1.</span>
+                                <span>Soyez respectueux et civil dans les discussions</span>
+                            </div>
+                            <div class="rule-item">
+                                <span class="rule-number">2.</span>
+                                <span>Pas de spam ou d'autopromotion excessive</span>
+                            </div>
+                            <div class="rule-item">
+                                <span class="rule-number">3.</span>
+                                <span>Pas de discours haineux ou de harcèlement</span>
+                            </div>
+                            <div class="rule-item">
+                                <span class="rule-number">4.</span>
+                                <span>Restez dans le sujet de votre communauté choisie</span>
+                            </div>
+                            <div class="rule-item">
+                                <span class="rule-number">5.</span>
+                                <span>Utilisez des avertissements de contenu appropriés</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Sidebar -->
-                <div class="sidebar">
-                    <!-- Posting Rules -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Posting Rules</h3>
-                        </div>
-                        <div class="card-content space-y-2">
-                            <div class="text-sm text-gray-600">
-                                <p>1. Be respectful and civil</p>
-                                <p>2. No spam or self-promotion</p>
-                                <p>3. No hate speech or harassment</p>
-                                <p>4. Stay on topic</p>
-                                <p>5. Follow community guidelines</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Help -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Need Help?</h3>
-                        </div>
-                        <div class="card-content">
-                            <p class="text-sm text-gray-600">
-                                If you need help creating your post or have questions about the community guidelines, 
-                                please check our <a href="#" class="text-blue-600 hover:underline">FAQ</a> or 
-                                <a href="#" class="text-blue-600 hover:underline">contact support</a>.
-                            </p>
+                <!-- Aide -->
+                <div class="sidebar-card">
+                    <div class="card-content">
+                        <h3 class="sidebar-title" style="margin-bottom: 0.75rem;">Besoin d'aide ?</h3>
+                        <p class="help-text">
+                            Nouveau dans notre communauté ? Consultez nos ressources pour commencer.
+                        </p>
+                        <div class="help-buttons">
+                            <a href="{{ path('categories_index') }}" class="btn-ghost">Directives de la communauté</a>
+                            <a href="{{ path('app_search') }}" class="btn-ghost">FAQ</a>
+                            <a href="{{ path('account_index') }}" class="btn-ghost">Contacter le support</a>
                         </div>
                     </div>
                 </div>
@@ -293,88 +388,47 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const dropZone = document.getElementById('drop-zone');
-    const fileInput = document.getElementById('file-upload');
-    const fileNameDisplay = document.getElementById('file-name');
+// Mise à jour du compteur de caractères
+document.querySelector('input[name="posts[title]"]').addEventListener('input', function() {
+    const count = this.value.length;
+    document.querySelector('.char-count').textContent = `${count}/300 caractères`;
+});
 
-    // Empêcher le comportement par défaut pour ces événements
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, preventDefaults, false);
-        document.body.addEventListener(eventName, preventDefaults, false);
-    });
-
-    // Ajouter des effets visuels pendant le drag
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, highlight, false);
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, unhighlight, false);
-    });
-
-    // Gérer le drop
-    dropZone.addEventListener('drop', handleDrop, false);
-
-    // Gérer le changement de fichier via le bouton
-    fileInput.addEventListener('change', handleFileSelect, false);
-
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    function highlight(e) {
-        dropZone.classList.add('border-blue-500');
-    }
-
-    function unhighlight(e) {
-        dropZone.classList.remove('border-blue-500');
-    }
-
-    function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        handleFiles(files);
-    }
-
-    function handleFileSelect(e) {
-        const files = e.target.files;
-        handleFiles(files);
-    }
-
-    function handleFiles(files) {
-        if (files.length > 0) {
-            const file = files[0];
-            
-            // Vérifier le type de fichier
-            if (!file.type.match('image.*')) {
-                alert('Please select a valid image file (PNG, JPG, GIF)');
-                return;
-            }
-
-            // Vérifier la taille du fichier (10MB max)
-            if (file.size > 10 * 1024 * 1024) {
-                alert('Image size must not exceed 10MB');
-                return;
-            }
-
-            // Mettre à jour l'affichage du nom du fichier
-            fileNameDisplay.textContent = file.name;
-
-            // Mettre à jour le champ de fichier du formulaire
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
-
-            // Déclencher l'événement change pour que Symfony le détecte
-            const event = new Event('change', { bubbles: true });
-            fileInput.dispatchEvent(event);
+// Gestion de l'upload d'image
+document.getElementById('posts_photo').addEventListener('change', function(e) {
+    if (this.files && this.files[0]) {
+        const file = this.files[0];
+        
+        // Vérifier le type de fichier
+        if (!file.type.match('image.*')) {
+            alert('Veuillez sélectionner une image valide (PNG, JPG, GIF)');
+            this.value = '';
+            return;
         }
+
+        // Vérifier la taille du fichier (10MB max)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('L\'image ne doit pas dépasser 10MB');
+            this.value = '';
+            return;
+        }
+
+        // Afficher la prévisualisation
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('image-preview').src = e.target.result;
+            document.getElementById('preview-container').classList.remove('hidden');
+        }
+        reader.readAsDataURL(file);
     }
 });
+
+// Suppression de l'image
+function removeImage() {
+    document.getElementById('posts_photo').value = '';
+    document.getElementById('image-preview').src = '';
+    document.getElementById('preview-container').classList.add('hidden');
+}
 </script>
 
-</body>
-</html>
 {% endblock %}

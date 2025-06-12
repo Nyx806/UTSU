@@ -975,7 +975,7 @@ document.querySelectorAll('.join-btn').forEach(button => {
     button.addEventListener('click', function() {
         const categoryId = this.dataset.categoryId;
         
-        fetch(`/categories/${categoryId}/toggle-subscription`, {
+        fetch(`/api/category/${categoryId}/toggle-subscription`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -985,7 +985,7 @@ document.querySelectorAll('.join-btn').forEach(button => {
         .then(response => response.json())
         .then(data => {
             const joinText = this.querySelector('.join-text');
-            if (data.isSubscribed) {
+            if (data.subscribed) {
                 joinText.textContent = 'Joined';
                 this.classList.add('bg-blue-100', 'text-blue-700');
                 this.classList.remove('btn-outline');
