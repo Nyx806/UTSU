@@ -40,4 +40,18 @@ class PostsRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function search(string $query): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.userID', 'u')
+            ->leftJoin('p.cat', 'c')
+            ->where('p.contenu LIKE :query')
+            ->orWhere('u.username LIKE :query')
+            ->orWhere('c.name LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('p.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
