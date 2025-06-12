@@ -614,6 +614,9 @@
             <form action="{{ path('app_search') }}" method="GET" class="w-full">
               <input id="search" name="q" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Search posts, comments, users..." type="search">
             </form>
+            <div id="search-suggestions" class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md hidden">
+              <!-- Les suggestions seront ajoutées ici dynamiquement -->
+            </div>
           </div>
         </div>
       </div>
@@ -870,6 +873,60 @@
 
   // Mettre à jour le compteur au chargement de la page
   document.addEventListener('DOMContentLoaded', updateNotificationCount);
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search');
+    const suggestionsContainer = document.getElementById('search-suggestions');
+    let timeoutId;
+
+    searchInput.addEventListener('input', function() {
+      clearTimeout(timeoutId);
+      const query = this.value.trim();
+
+      if (query.length < 2) {
+        suggestionsContainer.classList.add('hidden');
+        return;
+      }
+
+      timeoutId = setTimeout(() => {
+        fetch(`/search/suggestions?q=${encodeURIComponent(query)}`)
+          .then(response => response.json())
+          .then(suggestions => {
+            if (suggestions.length > 0) {
+              suggestionsContainer.innerHTML = suggestions.map(suggestion => `
+                <a href="${suggestion.url}" class="block px-4 py-2 hover:bg-gray-100 text-sm">
+                  <div class="flex items-center">
+                    <span class="text-gray-900">${suggestion.text}</span>
+                    <span class="ml-2 text-xs text-gray-500">${suggestion.type}</span>
+                  </div>
+                </a>
+              `).join('');
+              suggestionsContainer.classList.remove('hidden');
+            } else {
+              suggestionsContainer.classList.add('hidden');
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching suggestions:', error);
+            suggestionsContainer.classList.add('hidden');
+          });
+      }, 300);
+    });
+
+    // Cacher les suggestions quand on clique en dehors
+    document.addEventListener('click', function(event) {
+      if (!searchInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
+        suggestionsContainer.classList.add('hidden');
+      }
+    });
+
+    // Cacher les suggestions quand on appuie sur Échap
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        suggestionsContainer.classList.add('hidden');
+      }
+    });
+  });
 </script>
 
 {% block javascripts %}{% endblock %}
