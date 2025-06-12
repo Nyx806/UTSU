@@ -35,4 +35,4 @@ class UserProfileController extends AbstractController
             'stats' => $stats
         ]);
     }
-} 
+}
