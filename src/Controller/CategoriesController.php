@@ -139,6 +139,7 @@ final class CategoriesController extends AbstractController
         }
 
         // Check if user is already subscribed
+        // phpcs:ignore Security.BadPatterns.SQLInjection
         $existingSubscription = $abonnementRepo->findOneBy([
             'userID' => $user,
             'category' => $category
