@@ -1,0 +1,168 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil de {{ user.username }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+    :root {
+        --background: #f5f5f5;
+        --foreground: #4a4a4a;
+        --card: #ffffff;
+        --card-foreground: #4a4a4a;
+        --primary: #8b7355;
+        --primary-foreground: #ffffff;
+        --secondary: #d2c4b6;
+        --secondary-foreground: #4a4a4a;
+        --muted: #e8e0d9;
+        --muted-foreground: #8b7355;
+        --accent: #d2c4b6;
+        --accent-foreground: #4a4a4a;
+        --destructive: #ef4444;
+        --destructive-foreground: #ffffff;
+        --border: #e8e0d9;
+        --input: #e8e0d9;
+        --ring: #8b7355;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+    {% include 'home/_navbar.html.twig' %}
+    
+    <div class="min-h-screen bg-[var(--background)] py-10">
+        <div class="max-w-4xl mx-auto">
+            <!-- En-tête du profil -->
+            <div class="bg-[var(--card)] rounded-lg shadow-lg p-6 mb-6">
+                <div class="flex items-center space-x-6">
+                    <div class="w-32 h-32 rounded-full overflow-hidden">
+                        <img src="{{ asset('uploads/pp/' ~ user.ppImg) }}" 
+                             alt="Photo de profil de {{ user.username }}" 
+                             class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1">
+                        <h1 class="text-3xl font-bold text-[var(--primary)]">{{ user.username }}</h1>
+                        <p class="text-[var(--muted-foreground)]">{{ user.email }}</p>
+                        
+                        <!-- Statistiques -->
+                        <div class="grid grid-cols-4 gap-4 mt-4">
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-[var(--primary)]">{{ stats.posts }}</p>
+                                <p class="text-sm text-[var(--muted-foreground)]">Posts</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-[var(--primary)]">{{ stats.followers }}</p>
+                                <p class="text-sm text-[var(--muted-foreground)]">Abonnés</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-[var(--primary)]">{{ stats.following }}</p>
+                                <p class="text-sm text-[var(--muted-foreground)]">Abonnements</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-[var(--primary)]">{{ stats.dangerous }}</p>
+                                <p class="text-sm text-[var(--muted-foreground)]">Dangerosité</p>
+                            </div>
+                        </div>
+
+                        <!-- Bouton d'abonnement -->
+                        {% if app.user and app.user != user %}
+                            <button class="mt-4 px-6 py-2 rounded-full text-white bg-[var(--primary)] hover:bg-[var(--ring)] transition-colors"
+                                    onclick="toggleSubscription({{ user.id }}, this)">
+                                {% if user in app.user.abonnements|map(a => a.followedUser) %}
+                                    Se désabonner
+                                {% else %}
+                                    S'abonner
+                                {% endif %}
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Posts -->
+            <div class="space-y-6">
+                {% for post in posts %}
+                    <div class="bg-[var(--card)] rounded-lg shadow-lg p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h2 class="text-xl font-semibold text-[var(--primary)]">
+                                    <a href="{{ path('posts_detail', {'id': post.id}) }}" class="hover:text-[var(--ring)]">
+                                        {{ post.title }}
+                                    </a>
+                                </h2>
+                                <p class="text-sm text-[var(--muted-foreground)]">
+                                    Publié le {{ post.date|date('d/m/Y à H:i') }}
+                                </p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-sm font-medium
+                                {% if post.dangerous > 50 %}
+                                    bg-red-100 text-red-800
+                                {% elseif post.dangerous > 20 %}
+                                    bg-yellow-100 text-yellow-800
+                                {% else %}
+                                    bg-green-100 text-green-800
+                                {% endif %}">
+                                Dangerosité: {{ post.dangerous }}
+                            </span>
+                        </div>
+                        
+                        {% if post.photo %}
+                            <div class="mb-4">
+                                <img src="{{ asset('uploads/posts/' ~ post.photo) }}" 
+                                     alt="Image du post" 
+                                     class="rounded-lg w-full object-cover max-h-96">
+                            </div>
+                        {% endif %}
+                        
+                        <p class="text-[var(--foreground)]">{{ post.contenu|slice(0, 200) }}{% if post.contenu|length > 200 %}...{% endif %}</p>
+                        
+                        <div class="mt-4 flex justify-between items-center">
+                            <a href="{{ path('posts_detail', {'id': post.id}) }}" 
+                               class="text-[var(--primary)] hover:text-[var(--ring)]">
+                                Lire la suite →
+                            </a>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-[var(--muted-foreground)]">
+                                    {{ post.likes|length }} likes
+                                </span>
+                                <span class="text-[var(--muted-foreground)]">
+                                    {{ post.commentaires|length }} commentaires
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleSubscription(userId, button) {
+        fetch(`/api/user/${userId}/toggle-subscription`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            
+            // Mettre à jour le texte du bouton
+            button.textContent = data.subscribed ? 'Se désabonner' : 'S\'abonner';
+            
+            // Mettre à jour le compteur d'abonnés
+            const followersCount = document.querySelector('.text-2xl.font-bold:nth-child(2)');
+            if (followersCount) {
+                followersCount.textContent = data.followersCount;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Une erreur est survenue');
+        });
+    }
+    </script>
+{% endblock %} 

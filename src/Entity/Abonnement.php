@@ -17,8 +17,12 @@ class Abonnement
     #[ORM\JoinColumn(nullable: false)]
     private ?User $userID = null;
 
+    #[ORM\ManyToOne(inversedBy: 'followers')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $followedUser = null;
+
     #[ORM\ManyToOne(inversedBy: 'abonnements')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Categories $category = null;
 
     public function getId(): ?int
@@ -34,6 +38,18 @@ class Abonnement
     public function setUserID(?User $userID): static
     {
         $this->userID = $userID;
+
+        return $this;
+    }
+
+    public function getFollowedUser(): ?User
+    {
+        return $this->followedUser;
+    }
+
+    public function setFollowedUser(?User $followedUser): static
+    {
+        $this->followedUser = $followedUser;
 
         return $this;
     }
