@@ -174,4 +174,18 @@ class PostsRepository extends ServiceEntityRepository
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
+
+    public function findOneByIdWithCommentsAndReplies(int $id): ?Posts
+    {
+        return $this->createQueryBuilder('p')
+            ->addSelect('c', 'r')
+            ->leftJoin('p.commentaires', 'c')
+            ->leftJoin('c.commentaires', 'r')
+            ->where('p.id = :id')
+            ->setParameter('id', $id)
+            ->orderBy('c.creation_date', 'ASC') // Order top-level comments
+            ->addOrderBy('r.creation_date', 'ASC') // Order replies
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

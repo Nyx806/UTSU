@@ -105,9 +105,70 @@ final class PostsController extends AbstractController
         Request $request,
         EntityManagerInterface $em
     ): Response {
+        $post = $postsRepository->findOneByIdWithCommentsAndReplies($id);
+
+        if (!$post) {
+            throw $this->createNotFoundException('Le post demandé n\'existe pas.');
+        }
+
+        // Handle reply form submission (raw HTML form)
+        if ($request->isMethod('POST') && $request->request->has('comment_parent') && $request->request->has('com')) {
+            $comData = $request->request->all('com');
+            $parentId = $request->request->get('comment_parent');
+
+            if ($parentId && $parentId != '0' && !empty($comData['contenu'])) {
+                $replyCom = new Commentaires();
+                $replyCom->setContenu($comData['contenu']);
+
+                $parentComment = $em->getRepository(Commentaires::class)->find($parentId);
+                if ($parentComment) {
+                    $replyCom->setComParent($parentComment);
+
+                    // Create notification for parent comment author
+                    if ($parentComment->getUserID() !== $this->getUser()) {
+                        $notification = new Notification();
+                        $notification->setUser($parentComment->getUserID());
+                        $notification->setComment($replyCom);
+                        $em->persist($notification);
+                    }
+                }
+
+                // Handle file uploads for reply
+                $replyFiles = $request->files->get('com');
+                $replyImg = $replyFiles['img'] ?? null;
+                $replyVideo = $replyFiles['video'] ?? null;
+
+                if ($replyVideo) {
+                    $videoName = md5(uniqid()) . '.' . $replyVideo->guessExtension();
+                    $videoDir = $this->getParameter('kernel.project_dir') . '/public/uploads/commentaires/video';
+                    $replyVideo->move($videoDir, $videoName);
+                    $replyCom->setVideo($videoName);
+                } else {
+                    $replyCom->setVideo(null);
+                }
+                if ($replyImg) {
+                    $fileName = md5(uniqid()) . '.' . $replyImg->guessExtension();
+                    $photoDir = $this->getParameter('kernel.project_dir') . '/public/uploads/commentaires/photo';
+                    $replyImg->move($photoDir, $fileName);
+                    $replyCom->setImg($fileName);
+                } else {
+                    $replyCom->setImg(null);
+                }
+
+                $replyCom->setCreationDate(new \DateTimeImmutable());
+                $replyCom->setUserID($this->getUser());
+                $replyCom->setPost($post);
+                $em->persist($replyCom);
+                $em->flush();
+
+                return $this->redirectToRoute('posts_detail', ['id' => $id]);
+            }
+        }
+
+        // Clear the entity manager to ensure fresh data is fetched
+        $em->clear();
 
         $com = new Commentaires();
-        $post = $postsRepository->find($id);
         $form = $this->createForm(ComFromType::class, $com);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -159,7 +220,7 @@ final class PostsController extends AbstractController
             'posts/details.html.twig',
             [
             'controller_name' => 'PostsController',
-            'post' => $postsRepository->find($id),
+            'post' => $post,
             'ComForm' => $form->createView(),
             ]
         );
