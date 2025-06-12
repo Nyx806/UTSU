@@ -491,7 +491,7 @@
                                       c/{{post.cat.name}}
                                     </a>
                                     <span>•</span>
-                                    <a href="{{ path('user_profile', {'id': post.userID.id}) }}" class="hover:text-blue-600 transition-colors">Posted by u/{{ post.userID.username }}</a>
+                                    <a href="{{ path('user_profile', {'id': post.userID.id}) }}" class="hover":text-blue-600 transition-colors">Posted by u/{{ post.userID.username }}</a>
                                     <span>•</span>
                                     <span>{{ post.date|date('d/m/Y') }}</span>
                                 </div>
@@ -540,7 +540,7 @@
                                         <div class="flex items-start space-x-4">
                                             {% if app.user %}
                                                 <div class="flex-shrink-0">
-                                                    <img src="{{ app.user.ppImg }}" alt="Profile" class="w-8 h-8 rounded-full">
+                                                    <img src="{{ asset('uploads/pp/' ~ app.user.getPpImg()) }}" alt="Profile" class="w-8 h-8 rounded-full">
                                                 </div>
                                             {% endif %}
                                             <div class="flex-grow">
@@ -584,7 +584,7 @@
                                                 <div class="comment-container">
                                                     <div class="flex items-start space-x-4">
                                                         <div class="flex-shrink-0">
-                                                            <img src="{{ commentaire.userID.ppImg }}" alt="Profile" class="w-8 h-8 rounded-full">
+                                                            <img src="{{ asset('uploads/pp/' ~ commentaire.userID.getPpImg()) }}" alt="Profile" class="w-8 h-8 rounded-full">
                                                         </div>
                                                         <div class="flex-grow">
                                                             <div class="bg-gray-50 rounded-lg p-4">
@@ -628,7 +628,7 @@
                                                                     {% for reply in commentaire.commentaires %}
                                                                         <div class="flex items-start space-x-4">
                                                                             <div class="flex-shrink-0">
-                                                                                <img src="{{ reply.userID.ppImg }}" alt="Profile" class="w-6 h-6 rounded-full">
+                                                                                <img src="{{ asset('uploads/pp/' ~ reply.userID.getPpImg()) }}" alt="Profile" class="w-6 h-6 rounded-full">
                                                                             </div>
                                                                             <div class="flex-grow">
                                                                                 <div class="bg-gray-50 rounded-lg p-3">
@@ -800,18 +800,12 @@
                             </h3>
                         </div>
                         <div class="card-content space-y-2">
+                            {% for category in mostDangerousCategories %}
                             <div class="flex items-center justify-between">
-                                <span class="text-sm">c/conspiracy</span>
-                                <button class="btn btn-outline btn-sm">View</button>
+                                <span class="text-sm">c/{{ category.name }}</span>
+                                <a href="{{ path('categories_posts', {'id': category.id}) }}" class="btn btn-outline btn-sm">View</a>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm">c/controversial</span>
-                                <button class="btn btn-outline btn-sm">View</button>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm">c/debate</span>
-                                <button class="btn btn-outline btn-sm">View</button>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -826,18 +820,14 @@
                             </h3>
                         </div>
                         <div class="card-content space-y-3">
-                            <div class="trend-item">
-                                <div class="trend-title">Climate Change Solutions</div>
-                                <div class="trend-participants">1.2k participants</div>
-                            </div>
-                            <div class="trend-item">
-                                <div class="trend-title">AI Ethics Discussion</div>
-                                <div class="trend-participants">896 participants</div>
-                            </div>
-                            <div class="trend-item">
-                                <div class="trend-title">Education Reform</div>
-                                <div class="trend-participants">743 participants</div>
-                            </div>
+                            {% for post in mostCommentedPosts %}
+                                <div class="trend-item">
+                                    <a href="{{ path('posts_detail', {'id': post[0].id}) }}" class="trend-title hover:text-blue-600 transition-colors">
+                                        {{ post[0].title }}
+                                    </a>
+                                    <div class="trend-participants">{{ post.commentCount }} participants</div>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -856,10 +846,12 @@
                             {% for user in topUsers %}
                             <div class="ranking-item">
                                 <div class="ranking-number">{{ loop.index }}.</div>
-                                <div class="avatar avatar-sm">
-                                    <div class="avatar-fallback">{{ user.username[:2]|upper }}</div>
-                                </div>
-                                <span class="text-sm">{{ user.username }}</span>
+                                <a href="{{ path('user_profile', {'id': user.id}) }}" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                                    <div class="avatar avatar-sm">
+                                        <img src="{{ asset('uploads/pp/' ~ user.getPpImg) }}" alt="{{ user.username }}" class="w-full h-full object-cover">
+                                    </div>
+                                    <span class="text-sm">{{ user.username }}</span>
+                                </a>
                                 <span class="points">{{ user.dangerous }} pts</span>
                             </div>
                             {% endfor %}
@@ -885,51 +877,53 @@
                         </div>
                         <div class="card-content">
                             {% if app.user %}
-                                <div class="flex flex-col items-center space-y-4">
-                                    <!-- Photo de profil -->
-                                    <div class="w-24 h-24 rounded-full overflow-hidden border-2 {% if app.user.dangerous < 30 %}border-red-500{% elseif app.user.dangerous < 70 %}border-yellow-500{% else %}border-green-500{% endif %}">
-                                        <img src="{{ asset('uploads/pp/' ~ app.user.getPpImg) }}"  alt="Profile picture" class="w-full h-full object-cover">
-                                    </div>
-                                    
-                                    <!-- Nom d'utilisateur -->
-                                    <div class="text-center">
-                                        <h4 class="font-semibold text-lg">{{ app.user.username }}</h4>
-                                        <div class="flex items-center justify-center space-x-2 mt-1">
-                                            <span class="text-sm {% if app.user.dangerous < 30 %}text-red-500{% elseif app.user.dangerous < 70 %}text-yellow-500{% else %}text-green-500{% endif %}">
-                                                {% if app.user.dangerous < 30 %}
-                                                    <svg class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/>
-                                                    </svg>
-                                                {% elseif app.user.dangerous < 70 %}
-                                                    <svg class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 102 0V6zm-1 8a1 1 0 100-2 1 1 0 000 2z"/>
-                                                    </svg>
-                                                {% else %}
-                                                    <svg class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
-                                                    </svg>
-                                                {% endif %}
-                                                {{ app.user.dangerous }}% Safe
-                                            </span>
+                                <a href="{{ path('user_profile', {'id': app.user.id}) }}" class="block">
+                                    <div class="flex flex-col items-center space-y-4">
+                                        <!-- Photo de profil -->
+                                        <div class="w-24 h-24 rounded-full overflow-hidden border-2 {% if app.user.dangerous < 30 %}border-red-500{% elseif app.user.dangerous < 70 %}border-yellow-500{% else %}border-green-500{% endif %}">
+                                            <img src="{{ asset('uploads/pp/' ~ app.user.getPpImg()) }}"  alt="Profile" class="w-full h-full object-cover">
                                         </div>
-                                    </div>
+                                        
+                                        <!-- Nom d'utilisateur -->
+                                        <div class="text-center">
+                                            <h4 class="font-semibold text-lg">{{ app.user.username }}</h4>
+                                            <div class="flex items-center justify-center space-x-2 mt-1">
+                                                <span class="text-sm {% if app.user.dangerous < 30 %}text-red-500{% elseif app.user.dangerous < 70 %}text-yellow-500{% else %}text-green-500{% endif %}">
+                                                    {% if app.user.dangerous < 30 %}
+                                                        <svg class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/>
+                                                        </svg>
+                                                    {% elseif app.user.dangerous < 70 %}
+                                                        <svg class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 102 0V6zm-1 8a1 1 0 100-2 1 1 0 000 2z"/>
+                                                        </svg>
+                                                    {% else %}
+                                                        <svg class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                                                        </svg>
+                                                    {% endif %}
+                                                    {{ app.user.dangerous }}% Safe
+                                                </span>
+                                            </div>
+                                        </div>
 
-                                    <!-- Statistiques -->
-                                    <div class="grid grid-cols-3 gap-4 w-full text-center">
-                                        <div>
-                                            <div class="font-semibold">{{ app.user.posts|length }}</div>
-                                            <div class="text-xs text-gray-500">Posts</div>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold">{{ app.user.abonnements|length }}</div>
-                                            <div class="text-xs text-gray-500">Following</div>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold">{{ app.user.abonnements|length }}</div>
-                                            <div class="text-xs text-gray-500">Followers</div>
+                                        <!-- Statistiques -->
+                                        <div class="grid grid-cols-3 gap-4 w-full text-center">
+                                            <div>
+                                                <div class="font-semibold">{{ app.user.posts|length }}</div>
+                                                <div class="text-xs text-gray-500">Posts</div>
+                                            </div>
+                                            <div>
+                                                <div class="font-semibold">{{ app.user.abonnements|filter(a => a.followedUser is not null)|length }}</div>
+                                                <div class="text-xs text-gray-500">Following</div>
+                                            </div>
+                                            <div>
+                                                <div class="font-semibold">{{ app.user.followers|length }}</div>
+                                                <div class="text-xs text-gray-500">Followers</div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             {% else %}
                                 <div class="text-sm text-gray-500">
                                     Your personal UTSU frontpage. Come here to check in with your favorite communities.

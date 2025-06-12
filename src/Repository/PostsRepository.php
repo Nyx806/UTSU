@@ -54,4 +54,16 @@ class PostsRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findMostCommentedPosts(int $limit = 3): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p', 'COUNT(c.id) as commentCount')
+            ->leftJoin('p.commentaires', 'c')
+            ->groupBy('p.id')
+            ->orderBy('commentCount', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

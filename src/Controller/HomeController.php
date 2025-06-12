@@ -29,6 +29,8 @@ final class HomeController extends AbstractController
         }
 
         $posts = $postsRepository->findAll();
+        $mostDangerousCategories = $categoriesRepository->findBy([], ['dangerous' => 'DESC'], 3);
+        $mostCommentedPosts = $postsRepository->findMostCommentedPosts(3);
 
         // Handle comment submission
         if ($request->isMethod('POST') && $request->request->has('post_id')) {
@@ -95,6 +97,8 @@ final class HomeController extends AbstractController
             'categories' => $categoriesRepository->findBy([], ['id' => 'ASC']),
             'posts' => $postsRepository->findBy([], ['id' => 'ASC']),
             'topUsers' => $userRepository->findTopThreeUsers(),
+            'mostDangerousCategories' => $mostDangerousCategories,
+            'mostCommentedPosts' => $mostCommentedPosts,
             ]
         );
     }
