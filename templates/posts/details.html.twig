@@ -23,7 +23,7 @@
         </div>
 
         <div class="mt-6 text-sm text-gray-600">
-            Écrit par : <span class="font-semibold">{{ post.getUserID.username }}</span>
+            Écrit par : <a href="{{ path('user_profile', {'id': post.userID.id}) }}" class="font-semibold hover:text-blue-600 transition-colors">{{ post.userID.username }}</a>
         </div>
     </div>
 
@@ -38,9 +38,7 @@
                     {% if commentaire.getComParent() is null %}
                         <div class="border rounded p-4 bg-gray-50 shadow-sm">
                             <div class="flex justify-between items-center mb-2">
-                                <span class="text-sm font-semibold text-gray-700">
-                                    {{ commentaire.userID }}
-                                </span>
+                                <a href="{{ path('user_profile', {'id': commentaire.userID.id}) }}" class="font-semibold hover:text-blue-600 transition-colors">{{ commentaire.userID.username }}</a>
                                 <span class="text-xs text-gray-400">{{ commentaire.creationDate|date('d/m/Y à H:i') }}</span>
                             </div>
 
@@ -77,9 +75,7 @@
                                     {% for reply in commentaire.commentaires %}
                                         <div class="border-l-2 border-gray-300 pl-4">
                                             <div class="flex justify-between items-center mb-2">
-                                                <span class="text-sm font-semibold text-gray-700">
-                                                    {{ reply.userID }}
-                                                </span>
+                                                <a href="{{ path('user_profile', {'id': reply.userID.id}) }}" class="font-semibold hover:text-blue-600 transition-colors">{{ reply.userID.username }}</a>
                                                 <span class="text-xs text-gray-400">{{ reply.creationDate|date('d/m/Y à H:i') }}</span>
                                             </div>
 

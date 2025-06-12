@@ -491,7 +491,7 @@
                                       c/{{post.cat.name}}
                                     </a>
                                     <span>•</span>
-                                    <span>Posted by u/{{ post.userID.username }}</span>
+                                    <a href="{{ path('user_profile', {'id': post.userID.id}) }}" class="hover:text-blue-600 transition-colors">Posted by u/{{ post.userID.username }}</a>
                                     <span>•</span>
                                     <span>{{ post.date|date('d/m/Y') }}</span>
                                 </div>
@@ -873,7 +873,7 @@
                     </div>
 
                     <!-- Create Post -->
-                    <div class="card">
+                   <div class="card">
                         <div class="card-content">
                             <a href="{{ path('posts_new') }}" class="btn btn-primary btn-lg w-full">
                                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -894,7 +894,7 @@
                                 <div class="flex flex-col items-center space-y-4">
                                     <!-- Photo de profil -->
                                     <div class="w-24 h-24 rounded-full overflow-hidden border-2 {% if app.user.dangerous < 30 %}border-red-500{% elseif app.user.dangerous < 70 %}border-yellow-500{% else %}border-green-500{% endif %}">
-                                        <img src="{{ app.user.ppImg }}" alt="Profile picture" class="w-full h-full object-cover">
+                                        <img src="{{ asset('uploads/pp/' ~ app.user.getPpImg) }}"  alt="Profile picture" class="w-full h-full object-cover">
                                     </div>
                                     
                                     <!-- Nom d'utilisateur -->
