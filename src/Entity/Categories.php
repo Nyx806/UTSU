@@ -19,6 +19,12 @@ class Categories
     #[ORM\Column(type: Types::TEXT)]
     private ?string $name = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $icon = null;
+
     #[ORM\Column(type: Types::INTEGER, nullable: false)]
     private ?int $dangerous = null;
 
@@ -34,10 +40,17 @@ class Categories
     #[ORM\OneToMany(targetEntity: Abonnement::class, mappedBy: 'category')]
     private Collection $abonnements;
 
+    /**
+     * @var Collection<int, CategoryLikes>
+     */
+    #[ORM\OneToMany(targetEntity: CategoryLikes::class, mappedBy: 'category', orphanRemoval: true)]
+    private Collection $likes;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->abonnements = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -53,6 +66,30 @@ class Categories
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getIcon(): ?string
+    {
+        return $this->icon;
+    }
+
+    public function setIcon(?string $icon): static
+    {
+        $this->icon = $icon;
 
         return $this;
     }
@@ -127,6 +164,46 @@ class Categories
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, CategoryLikes>
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(CategoryLikes $like): static
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
+            $like->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(CategoryLikes $like): static
+    {
+        if ($this->likes->removeElement($like)) {
+            // set the owning side to null (unless already changed)
+            if ($like->getCategory() === $this) {
+                $like->setCategory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function countSafeLikes(): int
+    {
+        return $this->likes->filter(fn(CategoryLikes $like) => $like->isSafe())->count();
+    }
+
+    public function countDangerousLikes(): int
+    {
+        return $this->likes->filter(fn(CategoryLikes $like) => $like->isDangerous())->count();
     }
 
     public function __toString(): string

@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Explore Communities</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     :root {
       --coffee-50: #faf8f5;
@@ -101,6 +102,10 @@
       box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
     }
 
+    .icon-container:hover {
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    }
+
     .join-button {
       background: linear-gradient(to right, var(--coffee-500), var(--coffee-600));
       color: white;
@@ -119,6 +124,14 @@
       transform: scale(1.05);
       opacity: 0.9;
       box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    }
+
+    /* New style for subscribed state */
+    .join-button.is-subscribed-red {
+      background:#d7c2a3; /* red-600 J'ai changé */
+    }
+    .join-button.is-subscribed-red:hover {
+      background: #d7c2a3; /* red-700 J'ai changé*/
     }
 
     .view-button {
@@ -185,11 +198,13 @@
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      border: 2px solid transparent;
     }
 
     .stats-button:hover {
       box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
       transform: scale(1.05);
+      opacity: 0.9;
     }
 
     .zone-button {
@@ -257,6 +272,61 @@
     .load-more-button:hover .load-more-overlay {
       opacity: 0.1;
     }
+
+    /* Common styles for all filter buttons (All Communities, Safe, Moderate, Danger) */
+    .filter-common-styles {
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      font-weight: 600;
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border: 2px solid;
+    }
+    .filter-common-styles:hover {
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+      transform: scale(1.05);
+    }
+
+    /* Active state for "All Communities" button */
+    .all-communities-active {
+      background: linear-gradient(to right, var(--coffee-500), var(--coffee-600));
+      color: white;
+      border-color: transparent;
+    }
+    .all-communities-active:hover {
+      opacity: 0.9;
+    }
+
+    /* Inactive state for all filter buttons */
+    .filter-inactive {
+      background: white;
+      color: #78716c;
+      border-color: #e7e5e4;
+    }
+    .filter-inactive:hover {
+      background: #fafaf9;
+      border-color: #d6d3d1;
+    }
+
+    /* Specific active states for Safe, Moderate, Danger Zones */
+    .zone-safe.active {
+      background-color: #dcfce7; /* light green */
+      color: #16a34a; /* dark green */
+      border-color: #86efac; /* green border */
+    }
+    .zone-moderate.active {
+      background-color: #fef9c3; /* light yellow */
+      color: #ca8a04; /* dark yellow */
+      border-color: #fde047; /* yellow border */
+    }
+    .zone-danger.active {
+      background-color: #fee2e2; /* light red */
+      color: #dc2626; /* dark red */
+      border-color: #fca5a5; /* red border */
+    }
   </style>
 </head>
 <body class="reddit-container bg-gray-100" >
@@ -291,27 +361,37 @@
             </form>
           </div>
 
+          <!-- Create Category Button -->
+          <div class="max-w-lg mx-auto mb-12">
+            <a href="{{ path('categories_new') }}" class="stats-button w-full">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+              </svg>
+              Create new community
+            </a>
+          </div>
+
           <!-- Stats -->
           <div class="flex flex-wrap justify-center gap-6 mb-8">
-            <a href="{{ path('categories_index', {'search': search}) }}" class="stats-button zone-button {{ zone == '' ? 'active' : '' }}">
+            <a href="{{ path('categories_index', {'search': search}) }}" class="filter-common-styles {% if zone == '' %}all-communities-active{% else %}filter-inactive{% endif %}">
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path>
               </svg>
               All Communities ({{ totalAllCategoriesCount }})
             </a>
-            <a href="{{ path('categories_index', {'search': search, 'zone': 'safe'}) }}" class="zone-button {{ zone == 'safe' ? 'active' : '' }}">
+            <a href="{{ path('categories_index', {'search': search, 'zone': 'safe'}) }}" class="filter-common-styles {% if zone == 'safe' %}zone-safe active{% else %}filter-inactive{% endif %}">
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
               </svg>
               Safe Zone
             </a>
-            <a href="{{ path('categories_index', {'search': search, 'zone': 'moderate'}) }}" class="zone-button {{ zone == 'moderate' ? 'active' : '' }}">
+            <a href="{{ path('categories_index', {'search': search, 'zone': 'moderate'}) }}" class="filter-common-styles {% if zone == 'moderate' %}zone-moderate active{% else %}filter-inactive{% endif %}">
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
               </svg>
               Moderate Zone
             </a>
-            <a href="{{ path('categories_index', {'search': search, 'zone': 'danger'}) }}" class="zone-button {{ zone == 'danger' ? 'active' : '' }}">
+            <a href="{{ path('categories_index', {'search': search, 'zone': 'danger'}) }}" class="filter-common-styles {% if zone == 'danger' %}zone-danger active{% else %}filter-inactive{% endif %}">
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
               </svg>
@@ -331,7 +411,11 @@
               <div class="flex items-start justify-between mb-4">
                 <div class="flex items-center gap-4 flex-1">
                   <div class="icon-container">
-                    <span class="text-2xl">📁</span>
+                    {% if category.icon starts with 'fa-' %}
+                      <i class="fas {{ category.icon }} text-2xl"></i>
+                    {% else %}
+                      <i class="fas fa-folder text-2xl"></i>
+                    {% endif %}
                   </div>
                   <div class="flex-1">
                     <div class="flex items-center gap-2 mb-2">
@@ -339,7 +423,7 @@
                         {{ category.name }}
                       </h3>
                     </div>
-                    {% if category.dangerous <= 0 %}
+                    {% if category.dangerous < 0 %}
                       <span class="zone-badge zone-danger">
                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                           <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
@@ -366,7 +450,7 @@
               </div>
               
               <p class="reddit-text-light text-sm leading-relaxed">
-                Safe and well-moderated community for discussing {{ category.name|lower }}
+                {{ category.description }}
               </p>
             </div>
             
@@ -398,16 +482,22 @@
                 </div>
                 
                 <div class="flex items-center gap-2">
-                  <button class="vote-button group/vote">
-                    <svg class="w-5 h-5 text-stone-400 group-hover/vote:text-stone-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                  <button class="vote-button group/vote safe-like-btn" data-category-id="{{ category.id }}">
+                    <svg class="safe-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="16" height="16">
+                      <path d="M12 2L4 5v6c0 5.55 3.84 10.74 8 11 4.16-.26 8-5.45 8-11V5l-8-3z"/>
+                      <path fill="white" d="M10.5 14.5l-2.5-2.5 1.41-1.41L10.5 11.67l4.59-4.59L16.5 8.5z"/>
                     </svg>
                   </button>
-                  <button class="vote-button group/vote">
-                    <svg class="w-5 h-5 text-stone-400 group-hover/vote:text-stone-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+
+                  <span id="safe-likes-{{ category.id }}" class="text-sm" style="font-weight: 600;">{{ category.countSafeLikes() }}</span>
+
+                  <button class="vote-button group/vote dangerous-like-btn" data-category-id="{{ category.id }}">
+                    <svg class="danger-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="16" height="16">
+                      <path d="M1 21h22L12 2 1 21z"/>
+                      <path fill="white" d="M13 16h-2v2h2v-2zm0-6h-2v4h2v-4z"/>
                     </svg>
                   </button>
+                  <span id="dangerous-likes-{{ category.id }}" class="text-sm" style="font-weight: 600;">{{ category.countDangerousLikes() }}</span>
                 </div>
               </div>
 
@@ -420,7 +510,7 @@
                     {% endif %}
                   {% endfor %}
                 {% endif %}
-                <button onclick="joinCategory({{ category.id }}, this, {{ isSubscribed ? 'true' : 'false' }})" class="join-button {{ isSubscribed ? 'bg-red-600 hover:bg-red-700' : '' }}">
+                <button onclick="joinCategory({{ category.id }}, this, {{ isSubscribed ? 'true' : 'false' }})" class="join-button {{ isSubscribed ? 'is-subscribed-red' : '' }}">
                   {{ isSubscribed ? 'Leave' : 'Join' }}
                 </button>
                 <a href="{{ path('categories_posts', {'id': category.id}) }}" class="view-button">
@@ -509,10 +599,73 @@
               });
           });
         }
+
+        // Like functionality
+        document.querySelectorAll('.safe-like-btn, .dangerous-like-btn').forEach(button => {
+          button.addEventListener('click', function() {
+            const categoryId = this.dataset.categoryId;
+            const type = this.classList.contains('safe-like-btn') ? 'safe' : 'dangerous';
+            
+            fetch(`{{ path('category_toggle_like', {'id': 0}) }}`.replace('0', categoryId), {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ type: type })
+            })
+            .then(response => {
+              if (response.status === 401) {
+                window.location.href = '{{ path('app_login') }}';
+                return;
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data) {
+                const safeLikesElement = document.getElementById(`safe-likes-${categoryId}`);
+                const dangerousLikesElement = document.getElementById(`dangerous-likes-${categoryId}`);
+                
+                if (safeLikesElement) safeLikesElement.textContent = data.safeLikes;
+                if (dangerousLikesElement) dangerousLikesElement.textContent = data.dangerousLikes;
+
+                // Update zone badge if needed
+                const cardElement = this.closest('.reddit-card');
+                const zoneBadge = cardElement.querySelector('.zone-badge');
+                if (zoneBadge) {
+                  const dangerousScore = data.dangerousScore;
+                  let newZoneClass = '';
+                  let newZoneText = '';
+                  
+                  if (dangerousScore < 0) {
+                    newZoneClass = 'zone-danger';
+                    newZoneText = 'Danger Zone';
+                  } else if (dangerousScore < 500) {
+                    newZoneClass = 'zone-moderate';
+                    newZoneText = 'Moderate Zone';
+                  } else {
+                    newZoneClass = 'zone-safe';
+                    newZoneText = 'Safe Zone';
+                  }
+                  
+                  zoneBadge.className = `zone-badge ${newZoneClass}`;
+                  zoneBadge.innerHTML = `
+                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    ${newZoneText} (${dangerousScore} points)
+                  `;
+                }
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+          });
+        });
       });
 
       function joinCategory(categoryId, button, isSubscribedInitial) {
-        let isSubscribed = isSubscribedInitial; // Use the initial state
+        let isSubscribed = isSubscribedInitial;
         fetch(`{{ path('categories_join', {'id': 0}) }}`.replace('0', categoryId), {
           method: 'POST',
           headers: {
@@ -522,7 +675,7 @@
         .then(response => {
           if (response.status === 401) {
             window.location.href = '{{ path('app_login') }}';
-            return; // Stop execution if unauthorized
+            return;
           }
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -530,28 +683,31 @@
           return response.json();
         })
         .then(data => {
-          isSubscribed = data.isSubscribed; // Update based on server response
+          isSubscribed = data.isSubscribed;
+
+          const cardElement = button.closest('.reddit-card');
+          const membersCountSpan = cardElement.querySelector('.text-center .text-lg.font-bold.text-stone-900');
+          let currentMembers = parseInt(membersCountSpan.textContent);
+
           if (isSubscribed) {
             button.textContent = 'Leave';
-            button.classList.remove('bg-coffee-600', 'hover:bg-coffee-700');
-            button.classList.add('bg-red-600', 'hover:bg-red-700');
+            button.classList.add('is-subscribed-red');
+            currentMembers++;
           } else {
             button.textContent = 'Join';
-            button.classList.remove('bg-red-600', 'hover:bg-red-700');
-            button.classList.add('bg-coffee-600', 'hover:bg-coffee-700');
+            button.classList.remove('is-subscribed-red');
+            currentMembers--;
           }
+          membersCountSpan.textContent = currentMembers;
         })
         .catch(error => {
           console.error('Error:', error);
-          // In case of error, revert to the initial state if possible or show a generic error
           if (isSubscribedInitial) {
             button.textContent = 'Leave';
-            button.classList.remove('bg-coffee-600', 'hover:bg-coffee-700');
-            button.classList.add('bg-red-600', 'hover:bg-red-700');
+            button.classList.add('is-subscribed-red');
           } else {
             button.textContent = 'Join';
-            button.classList.remove('bg-red-600', 'hover:bg-red-700');
-            button.classList.add('bg-coffee-600', 'hover:bg-coffee-700');
+            button.classList.remove('is-subscribed-red');
           }
         });
       }

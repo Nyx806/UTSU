@@ -33,9 +33,12 @@ class AppFixtures extends Fixture
 
         // Create 2 categories
         $categories = [];
+        $categoryIcons = ['Camera', 'BookOpen', 'Users', 'Settings', 'Heart', 'Star'];
         for ($i = 0; $i < 2; $i++) {
             $category = new Categories();
             $category->setName($faker->word);
+            $category->setDescription($faker->sentence(10));
+            $category->setIcon($categoryIcons[array_rand($categoryIcons)]);
             $category->setDangerous(0); // Set dangerous to 0 for categories
             $manager->persist($category);
             $categories[] = $category;

@@ -67,6 +67,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Likes::class, mappedBy: 'userID', orphanRemoval: true)]
     private Collection $likes;
 
+    /**
+     * @var Collection<int, CategoryLikes>
+     */
+    #[ORM\OneToMany(targetEntity: CategoryLikes::class, mappedBy: 'userID', orphanRemoval: true)]
+    private Collection $categoryLikes;
+
     #[ORM\Column(length: 255)]
     private ?string $username = null;
 
@@ -91,6 +97,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->followers = new ArrayCollection();
         $this->posts = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->categoryLikes = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->notifications = new ArrayCollection();
     }
@@ -308,6 +315,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($like->getUserID() === $this) {
                 $like->setUserID(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CategoryLikes>
+     */
+    public function getCategoryLikes(): Collection
+    {
+        return $this->categoryLikes;
+    }
+
+    public function addCategoryLike(CategoryLikes $categoryLike): static
+    {
+        if (!$this->categoryLikes->contains($categoryLike)) {
+            $this->categoryLikes->add($categoryLike);
+            $categoryLike->setUserID($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategoryLike(CategoryLikes $categoryLike): static
+    {
+        if ($this->categoryLikes->removeElement($categoryLike)) {
+            // set the owning side to null (unless already changed)
+            if ($categoryLike->getUserID() === $this) {
+                $categoryLike->setUserID(null);
             }
         }
 

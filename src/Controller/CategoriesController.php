@@ -23,7 +23,7 @@ final class CategoriesController extends AbstractController
         $search = $request->query->get('search', '');
         $zone = $request->query->get('zone', '');
         $page = max(1, (int) $request->query->get('page', 1));
-        $limit = 12;
+        $limit = 5;
 
         // Base query builder for total categories, including search filter
         $baseQueryBuilder = $categoriesController->createQueryBuilder('c');
@@ -43,12 +43,12 @@ final class CategoriesController extends AbstractController
                         ->setParameter('safeThreshold', 500);
                     break;
                 case 'moderate':
-                    $queryBuilder->andWhere('c.dangerous > :minModerate AND c.dangerous < :maxModerate')
+                    $queryBuilder->andWhere('c.dangerous >= :minModerate AND c.dangerous < :maxModerate')
                         ->setParameter('minModerate', 0)
                         ->setParameter('maxModerate', 500);
                     break;
                 case 'danger':
-                    $queryBuilder->andWhere('c.dangerous <= :dangerThreshold')
+                    $queryBuilder->andWhere('c.dangerous < :dangerThreshold')
                         ->setParameter('dangerThreshold', 0);
                     break;
             }
@@ -94,8 +94,26 @@ final class CategoriesController extends AbstractController
             throw $this->createAccessDeniedException('Vous devez être connecté pour créer une catégorie');
         }
 
+        // Liste des icônes disponibles
+        $availableIcons = [
+            'fa-folder' => 'Dossier',
+            'fa-comments' => 'Discussion',
+            'fa-music' => 'Musique',
+            'fa-gamepad' => 'Jeux vidéo',
+            'fa-microchip' => 'Technologie',
+            'fa-book' => 'Littérature',
+            'fa-film' => 'Cinéma',
+            'fa-camera' => 'Photographie',
+            'fa-code' => 'Programmation',
+            'fa-palette' => 'Art',
+            'fa-utensils' => 'Cuisine',
+            'fa-futbol' => 'Sport',
+        ];
+
         if ($request->isMethod('POST')) {
             $name = $request->request->get('name');
+            $description = $request->request->get('description');
+            $icon = $request->request->get('icon');
 
             if (empty($name)) {
                 $this->addFlash('error', 'Le nom de la catégorie ne peut pas être vide');
@@ -104,6 +122,8 @@ final class CategoriesController extends AbstractController
 
             $category = new Categories();
             $category->setName($name);
+            $category->setDescription($description);
+            $category->setIcon($icon);
             $category->setDangerous(0);
 
             $em->persist($category);
@@ -113,7 +133,9 @@ final class CategoriesController extends AbstractController
             return $this->redirectToRoute('categories_index');
         }
 
-        return $this->render('categories/new.html.twig');
+        return $this->render('categories/new.html.twig', [
+            'availableIcons' => $availableIcons
+        ]);
     }
 
     #[Route('/{id}', name: 'posts')]

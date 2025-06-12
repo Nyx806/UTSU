@@ -50,7 +50,7 @@ final class PostsController extends AbstractController
             $em->persist($posts);
             $em->flush();
 
-            return $this->redirectToRoute('home_index');
+            return $this->redirectToRoute('categories_posts', ['id' => $cat->getId()]);
         }
 
         return $this->render(
@@ -89,7 +89,7 @@ final class PostsController extends AbstractController
             $em->persist($posts);
             $em->flush();
 
-            return $this->redirectToRoute('home_index');
+            return $this->redirectToRoute('categories_posts', ['id' => $posts->getCat()->getId()]);
         }
 
         return $this->render('posts/new.html.twig', [
