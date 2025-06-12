@@ -128,6 +128,11 @@ final class CategoriesController extends AbstractController
     #[Route('/{id}/join', name: 'join', methods: ['POST'])]
     public function join(int $id, CategoriesRepository $catRepo, AbonnementRepository $abonnementRepo, EntityManagerInterface $em): Response
     {
+        // Validate that id is a positive integer
+        if ($id <= 0) {
+            throw $this->createNotFoundException('Invalid category ID');
+        }
+
         $category = $catRepo->find($id);
         if (!$category) {
             throw $this->createNotFoundException('Category not found');
