@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
+
     #[Route(path: '/admin', name: 'admin')]
     public function index(): Response
     {
@@ -23,7 +24,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Utsu Site');
+        ->setTitle('Utsu Site');
     }
 
     public function configureMenuItems(): iterable

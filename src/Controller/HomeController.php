@@ -16,13 +16,14 @@ use App\Entity\Notification;
 #[Route('/', name: 'home_')]
 final class HomeController extends AbstractController
 {
+
     #[Route('/', name: 'index')]
     public function index(
         CategoriesRepository $categoriesRepository,
         PostsRepository $postsRepository,
         Request $request,
         EntityManagerInterface $em,
-        UserRepository $userRepository
+        UserRepository $userRepository,
     ): Response {
         if ($this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('admin_index');
@@ -33,15 +34,17 @@ final class HomeController extends AbstractController
         $page = max(1, (int) $request->query->get('page', 1));
         $limit = 5;
 
-        // Récupérer les posts selon le filtre
+      // Récupérer les posts selon le filtre.
         if ($user) {
             switch ($filter) {
                 case 'new':
                     $posts = $postsRepository->findNewPosts($user, $page, $limit);
                     break;
+
                 case 'friends':
                     $posts = $postsRepository->findFriendsPosts($user, $page, $limit);
                     break;
+
                 case 'hot':
                 default:
                     $posts = $postsRepository->findHotPosts($user, $page, $limit);
@@ -49,18 +52,18 @@ final class HomeController extends AbstractController
             }
             $totalPosts = $postsRepository->countPostsByFilter($user, $filter);
         } else {
-            // Si l'utilisateur n'est pas connecté, afficher tous les posts
+          // Si l'utilisateur n'est pas connecté, afficher tous les posts.
             $posts = $postsRepository->findBy([], ['date' => 'DESC'], $limit, ($page - 1) * $limit);
             $totalPosts = $postsRepository->count([]);
         }
 
-        // Calculer le nombre total de pages
+      // Calculer le nombre total de pages.
         $totalPages = ceil($totalPosts / $limit);
 
         $mostDangerousCategories = $categoriesRepository->findBy([], ['dangerous' => 'DESC'], 3);
         $mostCommentedPosts = $postsRepository->findMostCommentedPosts(3);
 
-        // Handle comment submission
+      // Handle comment submission.
         if ($request->isMethod('POST') && $request->request->has('post_id')) {
             $postId = $request->request->get('post_id');
             $post = $postsRepository->find($postId);
@@ -72,7 +75,7 @@ final class HomeController extends AbstractController
                 $com->setUserID($this->getUser());
                 $com->setCreationDate(new \DateTimeImmutable());
 
-                // Handle file uploads
+              // Handle file uploads.
                 $file = $request->files->get('img');
                 $video = $request->files->get('video');
 
@@ -94,14 +97,14 @@ final class HomeController extends AbstractController
                     $com->setVideo($videoName);
                 }
 
-                // Handle parent comment
+            // Handle parent comment.
                 $parentId = $request->request->get('comment_parent');
                 if ($parentId) {
                     $parent = $em->getRepository(Commentaires::class)->find($parentId);
                     if ($parent) {
                         $com->setComParent($parent);
 
-                        // Créer une notification pour l'auteur du commentaire parent
+                    // Créer une notification pour l'auteur du commentaire parent.
                         if ($parent->getUserID() !== $this->getUser()) {
                             $notification = new Notification();
                             $notification->setUser($parent->getUserID());
@@ -116,8 +119,8 @@ final class HomeController extends AbstractController
 
                 $this->addFlash('success', 'Comment added successfully!');
                 return $this->redirectToRoute('home_index', [
-                    'filter' => $filter,
-                    'page' => $page
+                'filter' => $filter,
+                'page' => $page,
                 ]);
             }
         }
@@ -125,14 +128,14 @@ final class HomeController extends AbstractController
         return $this->render(
             'home/index.html.twig',
             [
-                'categories' => $categoriesRepository->findBy([], ['id' => 'ASC']),
-                'posts' => $posts,
-                'topUsers' => $userRepository->findTopThreeUsers(),
-                'mostDangerousCategories' => $mostDangerousCategories,
-                'mostCommentedPosts' => $mostCommentedPosts,
-                'currentFilter' => $filter,
-                'currentPage' => $page,
-                'totalPages' => $totalPages
+            'categories' => $categoriesRepository->findBy([], ['id' => 'ASC']),
+            'posts' => $posts,
+            'topUsers' => $userRepository->findTopThreeUsers(),
+            'mostDangerousCategories' => $mostDangerousCategories,
+            'mostCommentedPosts' => $mostCommentedPosts,
+            'currentFilter' => $filter,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
             ]
         );
     }

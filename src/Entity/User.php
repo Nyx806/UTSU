@@ -25,15 +25,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
+  /**
+   * @var list<string> The user roles
+   */
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
+  /**
+   * @var string The hashed password
+   */
     #[ORM\Column]
     private ?string $password = null;
 
@@ -43,42 +43,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $type = null;
 
-    /**
-     * @var Collection<int, Abonnement>
-     */
+  /**
+   * @var \Doctrine\Common\Collections\Collection<int, Abonnement>
+   */
     #[ORM\OneToMany(targetEntity: Abonnement::class, mappedBy: 'userID')]
     private Collection $abonnements;
 
-    /**
-     * @var Collection<int, Abonnement>
-     */
+  /**
+   * @var \Doctrine\Common\Collections\Collection<int, Abonnement>
+   */
     #[ORM\OneToMany(targetEntity: Abonnement::class, mappedBy: 'followedUser')]
     private Collection $followers;
 
-    /**
-     * @var Collection<int, Posts>
-     */
+  /**
+   * @var \Doctrine\Common\Collections\Collection<int, Posts>
+   */
     #[ORM\OneToMany(targetEntity: Posts::class, mappedBy: 'userID')]
     private Collection $posts;
 
-    /**
-     * @var Collection<int, Likes>
-     */
+  /**
+   * @var \Doctrine\Common\Collections\Collection<int, Likes>
+   */
     #[ORM\OneToMany(targetEntity: Likes::class, mappedBy: 'userID', orphanRemoval: true)]
     private Collection $likes;
+
+  /**
+   * @var \Doctrine\Common\Collections\Collection<int, CategoryLikes>
+   */
+    #[ORM\OneToMany(targetEntity: CategoryLikes::class, mappedBy: 'userID', orphanRemoval: true)]
+    private Collection $categoryLikes;
 
     #[ORM\Column(length: 255)]
     private ?string $username = null;
 
-    /**
-     * @var Collection<int, Commentaires>
-     */
+  /**
+   * @var \Doctrine\Common\Collections\Collection<int, Commentaires>
+   */
     #[ORM\OneToMany(targetEntity: Commentaires::class, mappedBy: 'userID', orphanRemoval: true)]
     private Collection $commentaires;
 
-    /**
-     * @var Collection<int, Notification>
-     */
+  /**
+   * @var \Doctrine\Common\Collections\Collection<int, Notification>
+   */
     #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $notifications;
 
@@ -91,6 +97,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->followers = new ArrayCollection();
         $this->posts = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->categoryLikes = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->notifications = new ArrayCollection();
     }
@@ -112,33 +119,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
+  /**
+   * A visual identifier that represents this user.
+   *
+   * @see UserInterface
+   */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     *
-     * @return list<string>
-     */
+  /**
+   * @see UserInterface
+   *
+   * @return list<string>
+   */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
+      // Guarantee every user at least has ROLE_USER.
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
 
-    /**
-     * @param list<string> $roles
-     */
+  /**
+   * @param list<string> $roles
+   */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
@@ -146,9 +153,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
+  /**
+   * @see PasswordAuthenticatedUserInterface
+   */
     public function getPassword(): ?string
     {
         return $this->password;
@@ -161,13 +168,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
+  /**
+   * @see UserInterface
+   */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+      // If you store any temporary, sensitive data on the user, clear it here
+      // $this->plainPassword = null;.
     }
 
     public function getPpImg()
@@ -194,9 +201,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Abonnement>
-     */
+  /**
+   * @return \Doctrine\Common\Collections\Collection<int, Abonnement>
+   */
     public function getAbonnements(): Collection
     {
         return $this->abonnements;
@@ -215,7 +222,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeAbonnement(Abonnement $abonnement): static
     {
         if ($this->abonnements->removeElement($abonnement)) {
-            // set the owning side to null (unless already changed)
+          // Set the owning side to null (unless already changed)
             if ($abonnement->getUserID() === $this) {
                 $abonnement->setUserID(null);
             }
@@ -224,9 +231,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Abonnement>
-     */
+  /**
+   * @return \Doctrine\Common\Collections\Collection<int, Abonnement>
+   */
     public function getFollowers(): Collection
     {
         return $this->followers;
@@ -245,7 +252,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeFollower(Abonnement $follower): static
     {
         if ($this->followers->removeElement($follower)) {
-            // set the owning side to null (unless already changed)
+          // Set the owning side to null (unless already changed)
             if ($follower->getFollowedUser() === $this) {
                 $follower->setFollowedUser(null);
             }
@@ -254,9 +261,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Posts>
-     */
+  /**
+   * @return \Doctrine\Common\Collections\Collection<int, Posts>
+   */
     public function getPosts(): Collection
     {
         return $this->posts;
@@ -275,7 +282,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removePost(Posts $post): static
     {
         if ($this->posts->removeElement($post)) {
-            // set the owning side to null (unless already changed)
+          // Set the owning side to null (unless already changed)
             if ($post->getUserID() === $this) {
                 $post->setUserID(null);
             }
@@ -284,9 +291,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Likes>
-     */
+  /**
+   * @return \Doctrine\Common\Collections\Collection<int, Likes>
+   */
     public function getLikes(): Collection
     {
         return $this->likes;
@@ -305,9 +312,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeLike(Likes $like): static
     {
         if ($this->likes->removeElement($like)) {
-            // set the owning side to null (unless already changed)
+          // Set the owning side to null (unless already changed)
             if ($like->getUserID() === $this) {
                 $like->setUserID(null);
+            }
+        }
+
+        return $this;
+    }
+
+  /**
+   * @return \Doctrine\Common\Collections\Collection<int, CategoryLikes>
+   */
+    public function getCategoryLikes(): Collection
+    {
+        return $this->categoryLikes;
+    }
+
+    public function addCategoryLike(CategoryLikes $categoryLike): static
+    {
+        if (!$this->categoryLikes->contains($categoryLike)) {
+            $this->categoryLikes->add($categoryLike);
+            $categoryLike->setUserID($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategoryLike(CategoryLikes $categoryLike): static
+    {
+        if ($this->categoryLikes->removeElement($categoryLike)) {
+          // Set the owning side to null (unless already changed)
+            if ($categoryLike->getUserID() === $this) {
+                $categoryLike->setUserID(null);
             }
         }
 
@@ -326,9 +363,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Commentaires>
-     */
+  /**
+   * @return \Doctrine\Common\Collections\Collection<int, Commentaires>
+   */
     public function getCommentaires(): Collection
     {
         return $this->commentaires;
@@ -347,7 +384,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeCommentaire(Commentaires $commentaire): static
     {
         if ($this->commentaires->removeElement($commentaire)) {
-            // set the owning side to null (unless already changed)
+          // Set the owning side to null (unless already changed)
             if ($commentaire->getUserID() === $this) {
                 $commentaire->setUserID(null);
             }
@@ -358,7 +395,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __toString(): string
     {
-        return $this->getUsername(); // ou email, ou nom complet, selon ce que tu veux afficher
+      // Ou email, ou nom complet, selon ce que tu veux afficher.
+        return $this->getUsername();
     }
 
     public function getDangerous(): ?int
@@ -373,9 +411,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Notification>
-     */
+  /**
+   * @return \Doctrine\Common\Collections\Collection<int, Notification>
+   */
     public function getNotifications(): Collection
     {
         return $this->notifications;
@@ -394,7 +432,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeNotification(Notification $notification): static
     {
         if ($this->notifications->removeElement($notification)) {
-            // set the owning side to null (unless already changed)
+          // Set the owning side to null (unless already changed)
             if ($notification->getUser() === $this) {
                 $notification->setUser(null);
             }

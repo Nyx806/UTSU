@@ -35,9 +35,9 @@ class Commentaires
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'commentaires')]
     private ?self $com_parent = null;
 
-    /**
-     * @var Collection<int, self>
-     */
+  /**
+   * @var \Doctrine\Common\Collections\Collection<int, self>
+   */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'com_parent')]
     private Collection $commentaires;
 
@@ -127,9 +127,9 @@ class Commentaires
         return $this;
     }
 
-    /**
-     * @return Collection<int, self>
-     */
+  /**
+   * @return \Doctrine\Common\Collections\Collection<int, self>
+   */
     public function getCommentaires(): Collection
     {
         return $this->commentaires;
@@ -148,7 +148,7 @@ class Commentaires
     public function removeCommentaire(self $commentaire): static
     {
         if ($this->commentaires->removeElement($commentaire)) {
-            // set the owning side to null (unless already changed)
+          // Set the owning side to null (unless already changed)
             if ($commentaire->getComParent() === $this) {
                 $commentaire->setComParent(null);
             }
@@ -171,6 +171,7 @@ class Commentaires
 
     public function __toString(): string
     {
-        return $this->getContenu(); // ou email, ou nom complet, selon ce que tu veux afficher
+      // Ou email, ou nom complet, selon ce que tu veux afficher.
+        return $this->getContenu();
     }
 }

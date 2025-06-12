@@ -2,33 +2,37 @@
 
 namespace App\Controller;
 
-use App\Entity\Likes;
-use App\Entity\Posts;
+use App\Entity\CategoryLikes;
+use App\Entity\Categories;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class LikesController extends AbstractController
+class CategoryLikesController extends AbstractController
 {
 
-    #[Route('/posts/{id}/toggle-like', name: 'post_toggle_like', methods: ['POST'])]
-    public function toggleLike(Posts $post, Request $request, EntityManagerInterface $em): Response
+    #[Route('/categories/{id}/toggle-like', name: 'category_toggle_like', methods: ['POST'])]
+    public function toggleLike(Categories $category, Request $request, EntityManagerInterface $em): Response
     {
       // Decode JSON body.
         $data = json_decode($request->getContent(), true);
         $type = $data['type'] ?? null;
         $user = $this->getUser();
 
-        $existingLike = $post->getLikes()->filter(
-            fn(Likes $like) => $like->getUserID() === $user
+        if (!$user) {
+            return $this->json(['error' => 'You must be logged in to like a category'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $existingLike = $category->getLikes()->filter(
+            fn(CategoryLikes $like) => $like->getUserID() === $user
         )->first();
 
       // Log the received data for debugging.
         error_log('Received data: ' . $request->getContent());
 
-      // Validate the 'type' parameter ajout.
+      // Validate the 'type' parameter.
         if (!in_array($type, ['safe', 'dangerous'], true)) {
             return $this->json(
                 [
@@ -38,10 +42,9 @@ class LikesController extends AbstractController
             );
         }
 
-      // Modification de la logique pour utiliser des chaînes de caractères 'safe' et 'dangerous' pour le type de like.
         if ($existingLike) {
             if ($existingLike->getType() === $type) {
-                $post->removeLike($existingLike);
+                $category->removeLike($existingLike);
                 $em->remove($existingLike);
                 $action = 'removed';
             } else {
@@ -50,22 +53,30 @@ class LikesController extends AbstractController
                 $action = 'updated';
             }
         } else {
-            $like = new Likes();
+            $like = new CategoryLikes();
             $like->setType($type);
-            $like->setPost($post);
+            $like->setCategory($category);
             $like->setUserID($user);
-            $post->addLike($like);
+            $category->addLike($like);
             $em->persist($like);
             $action = 'added';
         }
 
         $em->flush();
+
+      // Update category dangerous score based on likes.
+        $safeLikes = $category->countSafeLikes();
+        $dangerousLikes = $category->countDangerousLikes();
+        $category->setDangerous($dangerousLikes - $safeLikes);
+        $em->flush();
+
         return $this->json(
             [
             'message' => 'Like toggled successfully',
             'action' => $action,
-            'safeLikes' => $post->countSafeLikes(),
-            'dangerousLikes' => $post->countDangerousLikes(),
+            'safeLikes' => $category->countSafeLikes(),
+            'dangerousLikes' => $category->countDangerousLikes(),
+            'dangerousScore' => $category->getDangerous(),
             ]
         );
     }

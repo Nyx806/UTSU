@@ -15,7 +15,6 @@ use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
-use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
 class LoginAuthenticator extends AbstractAuthenticator
 {
@@ -42,13 +41,13 @@ class LoginAuthenticator extends AbstractAuthenticator
             throw new CustomUserMessageAuthenticationException('Username and password are required.');
         }
 
-        // Vérifier si l'utilisateur existe
+      // Vérifier si l'utilisateur existe.
         $user = $this->userRepository->findOneBy(['username' => $username]);
         if (!$user) {
             throw new CustomUserMessageAuthenticationException('Invalid username or password.');
         }
 
-        // Retourner un Passport avec les badges nécessaires
+      // Retourner un Passport avec les badges nécessaires.
         return new Passport(
             new UserBadge(
                 $username,
@@ -62,7 +61,7 @@ class LoginAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // Rediriger vers la page d'accueil après succès
+      // Rediriger vers la page d'accueil après succès.
         return new RedirectResponse($this->urlGenerator->generate('home_index'));
     }
 
@@ -71,7 +70,7 @@ class LoginAuthenticator extends AbstractAuthenticator
         return new JsonResponse(
             [
             'error' => 'Authentication failed',
-            'message' => $exception->getMessage()
+            'message' => $exception->getMessage(),
             ],
             Response::HTTP_UNAUTHORIZED
         );
