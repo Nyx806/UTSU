@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Posts;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\User;
 
 /**
  * @extends ServiceEntityRepository<Posts>
@@ -65,5 +66,100 @@ class PostsRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findHotPosts(User $user, int $page = 1, int $limit = 5): array
+    {
+        // Récupérer les catégories suivies par l'utilisateur
+        $followedCategories = $user->getAbonnements()
+            ->filter(fn($abonnement) => $abonnement->getCategory() !== null)
+            ->map(fn($abonnement) => $abonnement->getCategory())
+            ->toArray();
+
+        // Récupérer les posts des catégories suivies et les posts tendance
+        return $this->createQueryBuilder('p')
+            ->select('DISTINCT p')
+            ->leftJoin('p.commentaires', 'c')
+            ->where('p.cat IN (:categories)')
+            ->orWhere('p.id IN (SELECT p2.id FROM App\Entity\Posts p2 LEFT JOIN p2.commentaires c2 GROUP BY p2.id ORDER BY COUNT(c2.id) DESC)')
+            ->setParameter('categories', $followedCategories)
+            ->orderBy('p.date', 'DESC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findNewPosts(User $user, int $page = 1, int $limit = 5): array
+    {
+        // Récupérer les catégories suivies par l'utilisateur
+        $followedCategories = $user->getAbonnements()
+            ->filter(fn($abonnement) => $abonnement->getCategory() !== null)
+            ->map(fn($abonnement) => $abonnement->getCategory())
+            ->toArray();
+
+        return $this->createQueryBuilder('p')
+            ->where('p.cat IN (:categories)')
+            ->setParameter('categories', $followedCategories)
+            ->orderBy('p.date', 'DESC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findFriendsPosts(User $user, int $page = 1, int $limit = 5): array
+    {
+        // Récupérer les utilisateurs suivis
+        $followedUsers = $user->getAbonnements()
+            ->filter(fn($abonnement) => $abonnement->getFollowedUser() !== null)
+            ->map(fn($abonnement) => $abonnement->getFollowedUser())
+            ->toArray();
+
+        return $this->createQueryBuilder('p')
+            ->where('p.userID IN (:users)')
+            ->setParameter('users', $followedUsers)
+            ->orderBy('p.date', 'DESC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countPostsByFilter(User $user, string $filter): int
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('COUNT(DISTINCT p.id)');
+
+        switch ($filter) {
+            case 'hot':
+                $followedCategories = $user->getAbonnements()
+                    ->filter(fn($abonnement) => $abonnement->getCategory() !== null)
+                    ->map(fn($abonnement) => $abonnement->getCategory())
+                    ->toArray();
+                $qb->leftJoin('p.commentaires', 'c')
+                   ->where('p.cat IN (:categories)')
+                   ->orWhere('p.id IN (SELECT p2.id FROM App\Entity\Posts p2 LEFT JOIN p2.commentaires c2 GROUP BY p2.id ORDER BY COUNT(c2.id) DESC)')
+                   ->setParameter('categories', $followedCategories);
+                break;
+            case 'new':
+                $followedCategories = $user->getAbonnements()
+                    ->filter(fn($abonnement) => $abonnement->getCategory() !== null)
+                    ->map(fn($abonnement) => $abonnement->getCategory())
+                    ->toArray();
+                $qb->where('p.cat IN (:categories)')
+                   ->setParameter('categories', $followedCategories);
+                break;
+            case 'friends':
+                $followedUsers = $user->getAbonnements()
+                    ->filter(fn($abonnement) => $abonnement->getFollowedUser() !== null)
+                    ->map(fn($abonnement) => $abonnement->getFollowedUser())
+                    ->toArray();
+                $qb->where('p.userID IN (:users)')
+                   ->setParameter('users', $followedUsers);
+                break;
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 }

@@ -648,7 +648,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
           <span>Notifications</span>
-          <div class="notification-badge" style="display: none;"></div>
+          <div class="notification-badge" style="position: absolute; top: -5px; right: -5px; width: 8px; height: 8px; background-color: #ef4444; border-radius: 50%; display: none;"></div>
       </a>
     </div>
 
@@ -859,10 +859,11 @@
       const response = await fetch('/notifications/count');
       const data = await response.json();
       
-      const badge = document.querySelector('.notification-badge');
-      if (badge) {
+      // Mettre à jour tous les badges de notification
+      const badges = document.querySelectorAll('.notification-badge');
+      badges.forEach(badge => {
         badge.style.display = data.count > 0 ? 'block' : 'none';
-      }
+      });
     } catch (error) {
       console.error('Error updating notification count:', error);
     }
@@ -872,7 +873,11 @@
   setInterval(updateNotificationCount, 30000);
 
   // Mettre à jour le compteur au chargement de la page
-  document.addEventListener('DOMContentLoaded', updateNotificationCount);
+  document.addEventListener('DOMContentLoaded', () => {
+    updateNotificationCount();
+    // Mettre à jour aussi après 5 secondes pour s'assurer que les données sont à jour
+    setTimeout(updateNotificationCount, 5000);
+  });
 
   document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search');
