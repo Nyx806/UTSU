@@ -11,26 +11,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
-class DashboardController extends AbstractDashboardController
-{
-    #[Route(path: '/admin', name: 'admin')]
-    public function index(): Response
-    {
-        $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-        return $this->redirect($adminUrlGenerator->setController(UserCrudController::class)->generateUrl());
-    }
+class DashboardController extends AbstractDashboardController {
 
-    public function configureDashboard(): Dashboard
-    {
-        return Dashboard::new()
-            ->setTitle('Utsu Site');
-    }
+  #[Route(path: '/admin', name: 'admin')]
+  public function index(): Response {
+    $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
+    return $this->redirect($adminUrlGenerator->setController(UserCrudController::class)->generateUrl());
+  }
 
-    public function configureMenuItems(): iterable
-    {
-        yield MenuItem::linkToCrud('Users', 'fas fa-user', 'App\Entity\User');
-        yield MenuItem::linkToCrud('Comentaires', 'fas fa-commentaires', 'App\Entity\Commentaires');
-        yield MenuItem::linkToCrud('Posts', 'fas fa-posts', 'App\Entity\Posts');
-        yield MenuItem::linkToCrud('Categories', 'fas fa-categories', 'App\Entity\Categories');
-    }
+  public function configureDashboard(): Dashboard {
+    return Dashboard::new()
+      ->setTitle('Utsu Site');
+  }
+
+  public function configureMenuItems(): iterable {
+    yield MenuItem::linkToCrud('Users', 'fas fa-user', 'App\Entity\User');
+    yield MenuItem::linkToCrud('Comentaires', 'fas fa-commentaires', 'App\Entity\Commentaires');
+    yield MenuItem::linkToCrud('Posts', 'fas fa-posts', 'App\Entity\Posts');
+    yield MenuItem::linkToCrud('Categories', 'fas fa-categories', 'App\Entity\Categories');
+  }
+
 }

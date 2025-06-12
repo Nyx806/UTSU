@@ -666,7 +666,7 @@
 
       function joinCategory(categoryId, button, isSubscribedInitial) {
         let isSubscribed = isSubscribedInitial;
-        fetch(`{{ path('categories_join', {'id': 0}) }}`.replace('0', categoryId), {
+        fetch(`{{ path('categories_toggle_subscription', {'id': 0}) }}`.replace('0', categoryId), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

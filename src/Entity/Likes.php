@@ -6,76 +6,66 @@ use App\Repository\LikesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LikesRepository::class)]
-class Likes
-{
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+class Likes {
+  #[ORM\Id]
+  #[ORM\GeneratedValue]
+  #[ORM\Column]
+  private ?int $id = NULL;
 
-    #[ORM\ManyToOne(inversedBy: 'likes')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $userID = null;
+  #[ORM\ManyToOne(inversedBy: 'likes')]
+  #[ORM\JoinColumn(nullable: FALSE)]
+  private ?User $userID = NULL;
 
-    #[ORM\ManyToOne(inversedBy: 'likes')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Posts $post = null;
+  #[ORM\ManyToOne(inversedBy: 'likes')]
+  #[ORM\JoinColumn(nullable: FALSE)]
+  private ?Posts $post = NULL;
 
-    #[ORM\Column]
-    private ?string $type = null;
+  #[ORM\Column]
+  private ?string $type = NULL;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+  public function getId(): ?int {
+    return $this->id;
+  }
 
-    public function getUserID(): ?User
-    {
-        return $this->userID;
-    }
+  public function getUserID(): ?User {
+    return $this->userID;
+  }
 
-    public function setUserID(?User $userID): static
-    {
-        $this->userID = $userID;
+  public function setUserID(?User $userID): static {
+    $this->userID = $userID;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    public function getPost(): ?Posts
-    {
-        return $this->post;
-    }
+  public function getPost(): ?Posts {
+    return $this->post;
+  }
 
-    public function setPost(?Posts $post): static
-    {
-        $this->post = $post;
+  public function setPost(?Posts $post): static {
+    $this->post = $post;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
+  public function getType(): ?string {
+    return $this->type;
+  }
 
-    public function setType(string $type): static
-    {
-        $this->type = $type;
-        return $this;
-    }
+  public function setType(string $type): static {
+    $this->type = $type;
+    return $this;
+  }
 
-    public function isSafe(): bool
-    {
-        return $this->type === 'safe';
-    }
+  public function isSafe(): bool {
+    return $this->type === 'safe';
+  }
 
-    public function isDangerous(): bool
-    {
-        return $this->type === 'dangerous';
-    }
+  public function isDangerous(): bool {
+    return $this->type === 'dangerous';
+  }
 
-    public function __toString(): string
-    {
-        return $this->type;
-    }
+  public function __toString(): string {
+    return $this->type;
+  }
+
 }
