@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-100 py-8">
+    <div class="max-w-2xl mx-auto px-4">
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-xl font-semibold text-gray-900">Notifications</h1>
+                    <button onclick="markAllAsRead()" class="text-sm text-blue-600 hover:text-blue-800">
+                        Tout marquer comme lu
+                    </button>
+                </div>
+            </div>
+
+            <div class="divide-y divide-gray-200">
+                {% if notifications|length == 0 %}
+                    <div class="p-4 text-center text-gray-500">
+                        Aucune notification non lue
+                    </div>
+                {% else %}
+                    {% for notification in notifications %}
+                        <div class="p-4 hover:bg-gray-50 transition-colors" id="notification-{{ notification.id }}">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <img src="{{ asset('uploads/pp/' ~ notification.comment.userID.ppImg) }}" 
+                                         alt="Profile" 
+                                         class="w-10 h-10 rounded-full">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm text-gray-900">
+                                        <span class="font-medium">{{ notification.comment.userID.username }}</span>
+                                        a répondu à votre commentaire
+                                    </p>
+                                    <p class="mt-1 text-sm text-gray-500">
+                                        {{ notification.comment.contenu|slice(0, 100) }}{% if notification.comment.contenu|length > 100 %}...{% endif %}
+                                    </p>
+                                    <div class="mt-2 flex items-center space-x-4">
+                                        <a href="{{ path('posts_detail', {'id': notification.comment.post.id}) }}#comment-{{ notification.comment.id }}" 
+                                           class="text-sm text-blue-600 hover:text-blue-800">
+                                            Voir la réponse
+                                        </a>
+                                        <button onclick="markAsRead({{ notification.id }})" 
+                                                class="text-sm text-gray-500 hover:text-gray-700">
+                                            Marquer comme lu
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <span class="text-xs text-gray-500">
+                                        {{ notification.createdAt|date('d/m/Y H:i') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+async function markAsRead(id) {
+    try {
+        const response = await fetch(`/notifications/mark-as-read/${id}`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        if (response.ok) {
+            document.getElementById(`notification-${id}`).remove();
+            updateNotificationCount();
+        }
+    } catch (error) {
+        console.error('Error marking notification as read:', error);
+    }
+}
+
+async function markAllAsRead() {
+    try {
+        const response = await fetch('/notifications/mark-all-as-read', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        if (response.ok) {
+            window.location.reload();
+        }
+    } catch (error) {
+        console.error('Error marking all notifications as read:', error);
+    }
+}
+
+async function updateNotificationCount() {
+    try {
+        const response = await fetch('/notifications/count');
+        const data = await response.json();
+        
+        const badge = document.querySelector('.notification-badge');
+        if (badge) {
+            badge.style.display = data.count > 0 ? 'block' : 'none';
+        }
+    } catch (error) {
+        console.error('Error updating notification count:', error);
+    }
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-100 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Search Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Search Results</h1>
+            <p class="mt-2 text-gray-600">
+                {% if query %}
+                    Results for "{{ query }}"
+                {% else %}
+                    Enter a search term to find posts, comments, and users
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Search Filters -->
+        <div class="mb-6 flex space-x-4">
+            <a href="{{ path('app_search', {'q': query, 'type': 'all'}) }}" 
+               class="px-4 py-2 rounded-lg {{ type == 'all' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50' }}">
+                All
+            </a>
+            <a href="{{ path('app_search', {'q': query, 'type': 'posts'}) }}"
+               class="px-4 py-2 rounded-lg {{ type == 'posts' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50' }}">
+                Posts
+            </a>
+            <a href="{{ path('app_search', {'q': query, 'type': 'comments'}) }}"
+               class="px-4 py-2 rounded-lg {{ type == 'comments' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50' }}">
+                Comments
+            </a>
+            <a href="{{ path('app_search', {'q': query, 'type': 'users'}) }}"
+               class="px-4 py-2 rounded-lg {{ type == 'users' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50' }}">
+                Users
+            </a>
+        </div>
+
+        <!-- Results -->
+        <div class="space-y-8">
+            {% if type == 'all' or type == 'posts' %}
+                {% if results.posts|length > 0 %}
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Posts</h2>
+                        <div class="space-y-4">
+                            {% for post in results.posts %}
+                                <div class="border-b border-gray-200 pb-4 last:border-0">
+                                    <div class="flex items-center space-x-3 mb-2">
+                                        <img src="{{ post.userID.ppImg }}" alt="{{ post.userID.username }}" class="w-8 h-8 rounded-full">
+                                        <span class="font-medium text-gray-900">{{ post.userID.username }}</span>
+                                        <span class="text-gray-500 text-sm">{{ post.date|date('M d, Y') }}</span>
+                                    </div>
+                                    <p class="text-gray-800 mb-2">{{ post.contenu|slice(0, 200) }}{% if post.contenu|length > 200 %}...{% endif %}</p>
+                                    <a href="{{ path('posts_detail', {'id': post.id}) }}" class="text-blue-600 hover:text-blue-800">Read more →</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            {% if type == 'all' or type == 'comments' %}
+                {% if results.comments|length > 0 %}
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Comments</h2>
+                        <div class="space-y-4">
+                            {% for comment in results.comments %}
+                                <div class="border-b border-gray-200 pb-4 last:border-0">
+                                    <div class="flex items-center space-x-3 mb-2">
+                                        <img src="{{ comment.userID.ppImg }}" alt="{{ comment.userID.username }}" class="w-8 h-8 rounded-full">
+                                        <span class="font-medium text-gray-900">{{ comment.userID.username }}</span>
+                                        <span class="text-gray-500 text-sm">{{ comment.creationDate|date('M d, Y') }}</span>
+                                    </div>
+                                    <p class="text-gray-800 mb-2">{{ comment.contenu|slice(0, 200) }}{% if comment.contenu|length > 200 %}...{% endif %}</p>
+                                    <a href="{{ path('posts_detail', {'id': comment.post.id}) }}" class="text-blue-600 hover:text-blue-800">View post →</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            {% if type == 'all' or type == 'users' %}
+                {% if results.users|length > 0 %}
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Users</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {% for user in results.users %}
+                                <div class="flex items-center space-x-4 p-4 border rounded-lg hover:bg-gray-50">
+                                    <img src="{{ user.ppImg }}" alt="{{ user.username }}" class="w-12 h-12 rounded-full">
+                                    <div>
+                                        <h3 class="font-medium text-gray-900">{{ user.username }}</h3>
+                                        <p class="text-sm text-gray-500">{{ user.email }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            {% if query and results.posts|length == 0 and results.comments|length == 0 and results.users|length == 0 %}
+                <div class="text-center py-12">
+                    <p class="text-gray-500 text-lg">No results found for "{{ query }}"</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -40,4 +40,18 @@ class CommentairesRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function search(string $query): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.userID', 'u')
+            ->leftJoin('c.post', 'p')
+            ->where('c.contenu LIKE :query')
+            ->orWhere('u.username LIKE :query')
+            ->orWhere('p.contenu LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('c.creation_date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
