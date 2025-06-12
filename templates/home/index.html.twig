@@ -491,7 +491,7 @@
                                       c/{{post.cat.name}}
                                     </a>
                                     <span>•</span>
-                                    <a href="{{ path('user_profile', {'id': post.userID.id}) }}" class="hover":text-blue-600 transition-colors">Posted by u/{{ post.userID.username }}</a>
+                                    <a href="{{ path('user_profile', {'id': post.userID.id}) }}" class="hover:underline hover:text-blue-600 transition-colors">Posted by u/{{ post.userID.username }}</a>
                                     <span>•</span>
                                     <span>{{ post.date|date('d/m/Y') }}</span>
                                 </div>
