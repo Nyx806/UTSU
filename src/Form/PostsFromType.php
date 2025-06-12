@@ -29,7 +29,8 @@ class PostsFromType extends AbstractType
                 'attr' => [
                     'accept' => 'image/*',
                 ],
-            ]);
+                ]
+            );
 
         // Ne montre la catégorie que si show_category vaut true
         if ($options['show_category']) {
@@ -47,6 +48,7 @@ class PostsFromType extends AbstractType
             [
             'data_class' => Posts::class,
             'show_category' => true, // valeur par défaut
-        ]);
+            ]
+        );
     }
 }

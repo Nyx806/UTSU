@@ -13,6 +13,7 @@ use App\Form\ComFromType;
 use App\Repository\CategoriesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Notification;
 
 #[Route('/posts', name: 'posts_')]
 final class PostsController extends AbstractController
@@ -118,6 +119,14 @@ final class PostsController extends AbstractController
                 $parentComment = $em->getRepository(Commentaires::class)->find($parentId);
                 if ($parentComment) {
                     $com->setComParent($parentComment);
+
+                    // Créer une notification pour l'auteur du commentaire parent
+                    if ($parentComment->getUserID() !== $this->getUser()) {
+                        $notification = new Notification();
+                        $notification->setUser($parentComment->getUserID());
+                        $notification->setComment($com);
+                        $em->persist($notification);
+                    }
                 }
             }
 
