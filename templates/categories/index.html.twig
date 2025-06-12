@@ -259,7 +259,7 @@
     }
   </style>
 </head>
-<body class="reddit-container">
+<body class="reddit-container bg-gray-100" >
     {% include 'home/_navbar.html.twig' %}
 
     <!-- Hero Section -->
@@ -293,12 +293,12 @@
 
           <!-- Stats -->
           <div class="flex flex-wrap justify-center gap-6 mb-8">
-            <div class="stats-button">
+            <a href="{{ path('categories_index', {'search': search}) }}" class="stats-button zone-button {{ zone == '' ? 'active' : '' }}">
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path>
               </svg>
-              All Communities ({{ categories|length }})
-            </div>
+              All Communities ({{ totalAllCategoriesCount }})
+            </a>
             <a href="{{ path('categories_index', {'search': search, 'zone': 'safe'}) }}" class="zone-button {{ zone == 'safe' ? 'active' : '' }}">
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
@@ -412,8 +412,16 @@
               </div>
 
               <div class="flex gap-3">
-                <button onclick="joinCategory({{ category.id }}, this)" class="join-button">
-                  Join
+                {% set isSubscribed = false %}
+                {% if app.user %}
+                  {% for abonnement in userSubscriptions %}
+                    {% if abonnement.category and abonnement.category.id == category.id %}
+                      {% set isSubscribed = true %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                <button onclick="joinCategory({{ category.id }}, this, {{ isSubscribed ? 'true' : 'false' }})" class="join-button {{ isSubscribed ? 'bg-red-600 hover:bg-red-700' : '' }}">
+                  {{ isSubscribed ? 'Leave' : 'Join' }}
                 </button>
                 <a href="{{ path('categories_posts', {'id': category.id}) }}" class="view-button">
                   View Posts
@@ -428,7 +436,7 @@
       <div class="text-center mt-16">
         {% if currentPage < totalPages %}
           <button id="loadMoreBtn" class="load-more-button">
-            <span class="relative z-10">Discover More Communities</span>
+            <span class="relative z-10">Load More Categories</span>
             <div class="load-more-overlay"></div>
           </button>
         {% endif %}
@@ -466,6 +474,10 @@
               url.searchParams.set('zone', currentZone);
             }
 
+            // Show loading state
+            loadMoreBtn.disabled = true;
+            loadMoreBtn.innerHTML = '<span class="relative z-10">Loading...</span><div class="load-more-overlay"></div>';
+
             fetch(url.toString())
               .then(response => response.text())
               .then(html => {
@@ -480,24 +492,46 @@
                   });
                 }
                 
+                // Reset button state
+                loadMoreBtn.disabled = false;
+                loadMoreBtn.innerHTML = '<span class="relative z-10">Load More Categories</span><div class="load-more-overlay"></div>';
+                
+                // Hide button if no more pages
                 if (currentPage >= {{ totalPages }}) {
                   loadMoreBtn.style.display = 'none';
                 }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                // Reset button state on error
+                loadMoreBtn.disabled = false;
+                loadMoreBtn.innerHTML = '<span class="relative z-10">Load More Categories</span><div class="load-more-overlay"></div>';
               });
           });
         }
       });
 
-      function joinCategory(categoryId, button) {
+      function joinCategory(categoryId, button, isSubscribedInitial) {
+        let isSubscribed = isSubscribedInitial; // Use the initial state
         fetch(`{{ path('categories_join', {'id': 0}) }}`.replace('0', categoryId), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           }
         })
-        .then(response => response.json())
+        .then(response => {
+          if (response.status === 401) {
+            window.location.href = '{{ path('app_login') }}';
+            return; // Stop execution if unauthorized
+          }
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then(data => {
-          if (data.isSubscribed) {
+          isSubscribed = data.isSubscribed; // Update based on server response
+          if (isSubscribed) {
             button.textContent = 'Leave';
             button.classList.remove('bg-coffee-600', 'hover:bg-coffee-700');
             button.classList.add('bg-red-600', 'hover:bg-red-700');
@@ -509,8 +543,15 @@
         })
         .catch(error => {
           console.error('Error:', error);
-          if (error.status === 401) {
-            window.location.href = '{{ path('app_login') }}';
+          // In case of error, revert to the initial state if possible or show a generic error
+          if (isSubscribedInitial) {
+            button.textContent = 'Leave';
+            button.classList.remove('bg-coffee-600', 'hover:bg-coffee-700');
+            button.classList.add('bg-red-600', 'hover:bg-red-700');
+          } else {
+            button.textContent = 'Join';
+            button.classList.remove('bg-red-600', 'hover:bg-red-700');
+            button.classList.add('bg-coffee-600', 'hover:bg-coffee-700');
           }
         });
       }
