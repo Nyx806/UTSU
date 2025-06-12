@@ -50,6 +50,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $abonnements;
 
     /**
+     * @var Collection<int, Abonnement>
+     */
+    #[ORM\OneToMany(targetEntity: Abonnement::class, mappedBy: 'followedUser')]
+    private Collection $followers;
+
+    /**
      * @var Collection<int, Posts>
      */
     #[ORM\OneToMany(targetEntity: Posts::class, mappedBy: 'userID')]
@@ -82,6 +88,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->abonnements = new ArrayCollection();
+        $this->followers = new ArrayCollection();
         $this->posts = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
@@ -211,6 +218,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($abonnement->getUserID() === $this) {
                 $abonnement->setUserID(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Abonnement>
+     */
+    public function getFollowers(): Collection
+    {
+        return $this->followers;
+    }
+
+    public function addFollower(Abonnement $follower): static
+    {
+        if (!$this->followers->contains($follower)) {
+            $this->followers->add($follower);
+            $follower->setFollowedUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollower(Abonnement $follower): static
+    {
+        if ($this->followers->removeElement($follower)) {
+            // set the owning side to null (unless already changed)
+            if ($follower->getFollowedUser() === $this) {
+                $follower->setFollowedUser(null);
             }
         }
 

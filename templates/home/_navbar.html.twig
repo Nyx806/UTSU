@@ -743,7 +743,7 @@
         <div class="sidebar-section-title">Recents</div>
         
         {% if app.user %}
-          {% set recentAbonnements = app.user.abonnements|slice(0, 3)|sort((a, b) => b.id <=> a.id) %}
+          {% set recentAbonnements = app.user.abonnements|filter(a => a.category is not null)|slice(0, 3)|sort((a, b) => b.id <=> a.id) %}
           {% for abonnement in recentAbonnements %}
             <div class="community-item">
               <div class="community-avatar">{{ abonnement.category.name|first|upper }}</div>
@@ -771,7 +771,7 @@
 
         <!-- Subscribed Communities -->
         {% if app.user %}
-          {% for abonnement in app.user.abonnements %}
+          {% for abonnement in app.user.abonnements|filter(a => a.category is not null) %}
             <div class="community-item" data-category-id="{{ abonnement.category.id }}">
               <div class="community-avatar">{{ abonnement.category.name|first|upper }}</div>
               <span style="font-size: 0.875rem;">r/{{ abonnement.category.name }}</span>
