@@ -19,7 +19,7 @@ class UserSubscriptionController extends AbstractController
     public function toggleSubscription(User $user, EntityManagerInterface $entityManager): JsonResponse
     {
         $currentUser = $this->getUser();
-        
+
         // Vérifier si l'utilisateur essaie de s'abonner à lui-même
         if ($currentUser === $user) {
             return $this->json(
@@ -29,7 +29,7 @@ class UserSubscriptionController extends AbstractController
         }
 
         $abonnementRepository = $entityManager->getRepository(Abonnement::class);
-        
+
         // Vérifier si l'utilisateur est déjà abonné
         $existingAbonnement = $abonnementRepository->findOneBy(
             [
