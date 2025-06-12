@@ -81,7 +81,13 @@ class PostsRepository extends ServiceEntityRepository
             ->select('DISTINCT p')
             ->leftJoin('p.commentaires', 'c')
             ->where('p.cat IN (:categories)')
-            ->orWhere('p.id IN (SELECT p2.id FROM App\Entity\Posts p2 LEFT JOIN p2.commentaires c2 GROUP BY p2.id ORDER BY COUNT(c2.id) DESC)')
+            ->orWhere('p.id IN (
+                SELECT p2.id 
+                FROM App\Entity\Posts p2 
+                LEFT JOIN p2.commentaires c2 
+                GROUP BY p2.id 
+                ORDER BY COUNT(c2.id) DESC
+            )')
             ->setParameter('categories', $followedCategories)
             ->orderBy('p.date', 'DESC')
             ->setFirstResult(($page - 1) * $limit)
@@ -139,7 +145,13 @@ class PostsRepository extends ServiceEntityRepository
                     ->toArray();
                 $qb->leftJoin('p.commentaires', 'c')
                    ->where('p.cat IN (:categories)')
-                   ->orWhere('p.id IN (SELECT p2.id FROM App\Entity\Posts p2 LEFT JOIN p2.commentaires c2 GROUP BY p2.id ORDER BY COUNT(c2.id) DESC)')
+                   ->orWhere('p.id IN (
+                       SELECT p2.id 
+                       FROM App\Entity\Posts p2 
+                       LEFT JOIN p2.commentaires c2 
+                       GROUP BY p2.id 
+                       ORDER BY COUNT(c2.id) DESC
+                   )')
                    ->setParameter('categories', $followedCategories);
                 break;
             case 'new':
