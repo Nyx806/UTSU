@@ -37,7 +37,9 @@ class NotificationController extends AbstractController
     public function markAsRead(Notification $notification, EntityManagerInterface $entityManager): JsonResponse
     {
         if ($notification->getUser() !== $this->getUser()) {
-            throw $this->createAccessDeniedException('You cannot mark this notification as read');
+            throw $this->createAccessDeniedException(
+                'You cannot mark this notification as read'
+            );
         }
 
         $notification->setIsRead(true);
