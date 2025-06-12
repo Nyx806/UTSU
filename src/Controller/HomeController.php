@@ -28,7 +28,35 @@ final class HomeController extends AbstractController
             return $this->redirectToRoute('admin_index');
         }
 
-        $posts = $postsRepository->findAll();
+        $user = $this->getUser();
+        $filter = $request->query->get('filter', 'hot');
+        $page = max(1, (int) $request->query->get('page', 1));
+        $limit = 5;
+
+        // Récupérer les posts selon le filtre
+        if ($user) {
+            switch ($filter) {
+                case 'new':
+                    $posts = $postsRepository->findNewPosts($user, $page, $limit);
+                    break;
+                case 'friends':
+                    $posts = $postsRepository->findFriendsPosts($user, $page, $limit);
+                    break;
+                case 'hot':
+                default:
+                    $posts = $postsRepository->findHotPosts($user, $page, $limit);
+                    break;
+            }
+            $totalPosts = $postsRepository->countPostsByFilter($user, $filter);
+        } else {
+            // Si l'utilisateur n'est pas connecté, afficher tous les posts
+            $posts = $postsRepository->findBy([], ['date' => 'DESC'], $limit, ($page - 1) * $limit);
+            $totalPosts = $postsRepository->count([]);
+        }
+
+        // Calculer le nombre total de pages
+        $totalPages = ceil($totalPosts / $limit);
+
         $mostDangerousCategories = $categoriesRepository->findBy([], ['dangerous' => 'DESC'], 3);
         $mostCommentedPosts = $postsRepository->findMostCommentedPosts(3);
 
@@ -87,18 +115,24 @@ final class HomeController extends AbstractController
                 $em->flush();
 
                 $this->addFlash('success', 'Comment added successfully!');
-                return $this->redirectToRoute('home_index');
+                return $this->redirectToRoute('home_index', [
+                    'filter' => $filter,
+                    'page' => $page
+                ]);
             }
         }
 
         return $this->render(
             'home/index.html.twig',
             [
-            'categories' => $categoriesRepository->findBy([], ['id' => 'ASC']),
-            'posts' => $postsRepository->findBy([], ['id' => 'ASC']),
-            'topUsers' => $userRepository->findTopThreeUsers(),
-            'mostDangerousCategories' => $mostDangerousCategories,
-            'mostCommentedPosts' => $mostCommentedPosts,
+                'categories' => $categoriesRepository->findBy([], ['id' => 'ASC']),
+                'posts' => $posts,
+                'topUsers' => $userRepository->findTopThreeUsers(),
+                'mostDangerousCategories' => $mostDangerousCategories,
+                'mostCommentedPosts' => $mostCommentedPosts,
+                'currentFilter' => $filter,
+                'currentPage' => $page,
+                'totalPages' => $totalPages
             ]
         );
     }

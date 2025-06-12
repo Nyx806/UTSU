@@ -476,9 +476,9 @@
                     <div class="posts-header">
                         <h1 class="posts-title">Popular posts</h1>
                         <div class="posts-filters">
-                            <span class="filter-active">Hot</span>
-                            <span class="filter-inactive">New</span>
-                            <span class="filter-inactive">Friends</span>
+                            <a href="{{ path('home_index', {'filter': 'hot'}) }}" class="filter-{{ currentFilter == 'hot' ? 'active' : 'inactive' }}">Hot</a>
+                            <a href="{{ path('home_index', {'filter': 'new'}) }}" class="filter-{{ currentFilter == 'new' ? 'active' : 'inactive' }}">New</a>
+                            <a href="{{ path('home_index', {'filter': 'friends'}) }}" class="filter-{{ currentFilter == 'friends' ? 'active' : 'inactive' }}">Friends</a>
                         </div>
                     </div>
 
@@ -686,6 +686,32 @@
                             </div>
                         </div>
                         {% endfor %}
+
+                        <!-- Pagination -->
+                        {% if totalPages > 1 %}
+                        <div class="flex justify-center items-center space-x-2 mt-6">
+                            {% if currentPage > 1 %}
+                                <a href="{{ path('home_index', {'filter': currentFilter, 'page': currentPage - 1}) }}" 
+                                   class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 transition-colors">
+                                    Previous
+                                </a>
+                            {% endif %}
+
+                            {% for i in 1..totalPages %}
+                                <a href="{{ path('home_index', {'filter': currentFilter, 'page': i}) }}" 
+                                   class="px-3 py-1 rounded {% if i == currentPage %}bg-blue-600 text-white{% else %}bg-gray-200 hover:bg-gray-300{% endif %} transition-colors">
+                                    {{ i }}
+                                </a>
+                            {% endfor %}
+
+                            {% if currentPage < totalPages %}
+                                <a href="{{ path('home_index', {'filter': currentFilter, 'page': currentPage + 1}) }}" 
+                                   class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 transition-colors">
+                                    Next
+                                </a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div id="commentForm" class="hidden mt-4 p-4 bg-white rounded-lg shadow">

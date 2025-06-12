@@ -26,11 +26,13 @@ class NotificationController extends AbstractController
     #[Route('/count', name: 'app_notifications_count', methods: ['GET'])]
     public function count(NotificationRepository $notificationRepository): JsonResponse
     {
-        $count = $notificationRepository->countUnreadByUser($this->getUser());
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['count' => 0]);
+        }
 
-        return $this->json([
-            'count' => $count
-        ]);
+        $count = $notificationRepository->countUnreadByUser($user);
+        return $this->json(['count' => (int)$count]);
     }
 
     #[Route('/mark-as-read/{id}', name: 'app_notifications_mark_read', methods: ['POST'])]
