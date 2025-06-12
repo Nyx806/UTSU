@@ -60,4 +60,4 @@ class UserSubscriptionController extends AbstractController
             ]
         );
     }
-} 
+}
