@@ -172,10 +172,12 @@ final class CategoriesController extends AbstractController
         }
 
         $abonnementRepository = $entityManager->getRepository(Abonnement::class);
-        $existingAbonnement = $abonnementRepository->findOneBy([
-            'userID' => $user,
-            'category' => $category
-        ]);
+        $qb = $abonnementRepository->createQueryBuilder('a')
+            ->where('a.userID = :user')
+            ->andWhere('a.category = :category')
+            ->setParameter('user', $user)
+            ->setParameter('category', $category);
+        $existingAbonnement = $qb->getQuery()->getOneOrNullResult();
 
         if ($existingAbonnement) {
             $entityManager->remove($existingAbonnement);
