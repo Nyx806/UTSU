@@ -12,24 +12,27 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 /**
  * @extends ServiceEntityRepository<User>
  */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface {
+class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+{
 
-  public function __construct(ManagerRegistry $registry) {
-    parent::__construct($registry, User::class);
-  }
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, User::class);
+    }
 
   /**
    * Used to upgrade (rehash) the user's password automatically over time.
    */
-  public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void {
-    if (!$user instanceof User) {
-      throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
-    }
+    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
+    {
+        if (!$user instanceof User) {
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
+        }
 
-    $user->setPassword($newHashedPassword);
-    $this->getEntityManager()->persist($user);
-    $this->getEntityManager()->flush();
-  }
+        $user->setPassword($newHashedPassword);
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+    }
 
   // /**
   //     * @return User[] Returns an array of User objects
@@ -54,23 +57,24 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
   //            ->getOneOrNullResult()
   //        ;
   //    }
-  public function findTopThreeUsers(): array {
-    return $this->createQueryBuilder('u')
-      ->orderBy('u.dangerous', 'DESC')
-      ->addOrderBy('u.id', 'ASC')
-      ->setMaxResults(3)
-      ->getQuery()
-      ->getResult();
-  }
+    public function findTopThreeUsers(): array
+    {
+        return $this->createQueryBuilder('u')
+        ->orderBy('u.dangerous', 'DESC')
+        ->addOrderBy('u.id', 'ASC')
+        ->setMaxResults(3)
+        ->getQuery()
+        ->getResult();
+    }
 
-  public function search(string $query): array {
-    return $this->createQueryBuilder('u')
-      ->where('u.username LIKE :query')
-      ->orWhere('u.email LIKE :query')
-      ->setParameter('query', '%' . $query . '%')
-      ->orderBy('u.username', 'ASC')
-      ->getQuery()
-      ->getResult();
-  }
-
+    public function search(string $query): array
+    {
+        return $this->createQueryBuilder('u')
+        ->where('u.username LIKE :query')
+        ->orWhere('u.email LIKE :query')
+        ->setParameter('query', '%' . $query . '%')
+        ->orderBy('u.username', 'ASC')
+        ->getQuery()
+        ->getResult();
+    }
 }

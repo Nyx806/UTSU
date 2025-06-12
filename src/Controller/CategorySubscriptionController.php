@@ -11,43 +11,43 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/category')]
-class CategorySubscriptionController extends AbstractController {
+class CategorySubscriptionController extends AbstractController
+{
 
-  #[Route('/{id}/toggle-subscription', name: 'api_category_toggle_subscription', methods: ['POST'])]
-  #[IsGranted('ROLE_USER')]
-  public function toggleSubscription(Categories $category, EntityManagerInterface $entityManager): JsonResponse {
-    $user = $this->getUser();
-    $abonnementRepository = $entityManager->getRepository(Abonnement::class);
+    #[Route('/{id}/toggle-subscription', name: 'api_category_toggle_subscription', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function toggleSubscription(Categories $category, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $user = $this->getUser();
+        $abonnementRepository = $entityManager->getRepository(Abonnement::class);
 
-    // Vérifier si l'utilisateur est déjà abonné.
-    $existingAbonnement = $abonnementRepository->findOneBy(
-          [
+      // Vérifier si l'utilisateur est déjà abonné.
+        $existingAbonnement = $abonnementRepository->findOneBy(
+            [
             'userID' => $user,
             'category' => $category,
-          ]
-      );
+            ]
+        );
 
-    if ($existingAbonnement) {
-      // Désabonner.
-      $entityManager->remove($existingAbonnement);
-      $subscribed = FALSE;
-    }
-    else {
-      // Abonner.
-      $abonnement = new Abonnement();
-      $abonnement->setUserID($user);
-      $abonnement->setCategory($category);
-      $entityManager->persist($abonnement);
-      $subscribed = TRUE;
-    }
+        if ($existingAbonnement) {
+          // Désabonner.
+            $entityManager->remove($existingAbonnement);
+            $subscribed = false;
+        } else {
+          // Abonner.
+            $abonnement = new Abonnement();
+            $abonnement->setUserID($user);
+            $abonnement->setCategory($category);
+            $entityManager->persist($abonnement);
+            $subscribed = true;
+        }
 
-    $entityManager->flush();
+        $entityManager->flush();
 
-    return $this->json(
-          [
+        return $this->json(
+            [
             'subscribed' => $subscribed,
-          ]
-      );
-  }
-
+            ]
+        );
+    }
 }

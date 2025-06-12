@@ -11,43 +11,45 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PostsFromType extends AbstractType {
+class PostsFromType extends AbstractType
+{
 
-  public function buildForm(FormBuilderInterface $builder, array $options): void {
-    $builder
-      ->add('title')
-      ->add('contenu')
-      ->add(
-              'photo',
-              FileType::class,
-              [
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+        ->add('title')
+        ->add('contenu')
+        ->add(
+            'photo',
+            FileType::class,
+            [
                 'label' => 'Photo',
-                'mapped' => FALSE,
-                'required' => FALSE,
+                'mapped' => false,
+                'required' => false,
                 'attr' => [
                   'accept' => 'image/*',
                 ],
               ]
-          );
+        );
 
-    // Ne montre la catégorie que si show_category vaut true.
-    if ($options['show_category']) {
-      $builder->add('cat', EntityType::class, [
-        'class' => Categories::class,
-        'choice_label' => 'name',
-        'placeholder' => 'Sélectionnez une catégorie',
-      ]);
+      // Ne montre la catégorie que si show_category vaut true.
+        if ($options['show_category']) {
+            $builder->add('cat', EntityType::class, [
+            'class' => Categories::class,
+            'choice_label' => 'name',
+            'placeholder' => 'Sélectionnez une catégorie',
+            ]);
+        }
     }
-  }
 
-  public function configureOptions(OptionsResolver $resolver): void {
-    $resolver->setDefaults(
-          [
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults(
+            [
             'data_class' => Posts::class,
-    // Valeur par défaut.
-            'show_category' => TRUE,
-          ]
-      );
-  }
-
+            // Valeur par défaut.
+            'show_category' => true,
+            ]
+        );
+    }
 }

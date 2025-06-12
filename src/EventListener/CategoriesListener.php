@@ -8,24 +8,27 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Twig\Environment;
 
-class CategoriesListener implements EventSubscriberInterface {
-  private $twig;
-  private $categoriesRepository;
+class CategoriesListener implements EventSubscriberInterface
+{
+    private $twig;
+    private $categoriesRepository;
 
-  public function __construct(Environment $twig, CategoriesRepository $categoriesRepository) {
-    $this->twig = $twig;
-    $this->categoriesRepository = $categoriesRepository;
-  }
+    public function __construct(Environment $twig, CategoriesRepository $categoriesRepository)
+    {
+        $this->twig = $twig;
+        $this->categoriesRepository = $categoriesRepository;
+    }
 
-  public function onKernelController(ControllerEvent $event) {
-    $categories = $this->categoriesRepository->findAll();
-    $this->twig->addGlobal('categories', $categories);
-  }
+    public function onKernelController(ControllerEvent $event)
+    {
+        $categories = $this->categoriesRepository->findAll();
+        $this->twig->addGlobal('categories', $categories);
+    }
 
-  public static function getSubscribedEvents() {
-    return [
-      KernelEvents::CONTROLLER => 'onKernelController',
-    ];
-  }
-
+    public static function getSubscribedEvents()
+    {
+        return [
+        KernelEvents::CONTROLLER => 'onKernelController',
+        ];
+    }
 }

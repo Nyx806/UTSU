@@ -9,10 +9,11 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<CategoryLikes>
  */
-class CategoryLikesRepository extends ServiceEntityRepository {
+class CategoryLikesRepository extends ServiceEntityRepository
+{
 
-  public function __construct(ManagerRegistry $registry) {
-    parent::__construct($registry, CategoryLikes::class);
-  }
-
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, CategoryLikes::class);
+    }
 }

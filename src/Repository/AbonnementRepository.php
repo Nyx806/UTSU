@@ -9,11 +9,13 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Abonnement>
  */
-class AbonnementRepository extends ServiceEntityRepository {
+class AbonnementRepository extends ServiceEntityRepository
+{
 
-  public function __construct(ManagerRegistry $registry) {
-    parent::__construct($registry, Abonnement::class);
-  }
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Abonnement::class);
+    }
 
   // /**
   //     * @return Abonnement[] Returns an array of Abonnement objects

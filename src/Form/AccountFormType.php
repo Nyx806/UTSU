@@ -13,14 +13,16 @@ use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 
-class AccountFormType extends AbstractType {
+class AccountFormType extends AbstractType
+{
 
-  public function buildForm(FormBuilderInterface $builder, array $options): void {
-    $builder
-      ->add(
-              'email',
-              EmailType::class,
-              [
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+        ->add(
+            'email',
+            EmailType::class,
+            [
                 'constraints' => [
                   new NotBlank(['message' => 'Veuillez entrer un email']),
                   new Length(
@@ -31,11 +33,11 @@ class AccountFormType extends AbstractType {
                   ),
                 ],
               ]
-          )
-      ->add(
-              'username',
-              TextType::class,
-              [
+        )
+        ->add(
+            'username',
+            TextType::class,
+            [
                 'constraints' => [
                   new NotBlank(['message' => 'Veuillez entrer un nom d\'utilisateur']),
                   new Length(
@@ -48,13 +50,13 @@ class AccountFormType extends AbstractType {
                   ),
                 ],
               ]
-          )
-      ->add(
-              'pp_img',
-              FileType::class,
-              [
-                'required' => FALSE,
-                'mapped' => FALSE,
+        )
+        ->add(
+            'pp_img',
+            FileType::class,
+            [
+                'required' => false,
+                'mapped' => false,
                 'constraints' => [
                   new File(
                       [
@@ -72,15 +74,15 @@ class AccountFormType extends AbstractType {
                   'accept' => 'image/*',
                 ],
               ]
-          );
-  }
+        );
+    }
 
-  public function configureOptions(OptionsResolver $resolver): void {
-    $resolver->setDefaults(
-          [
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults(
+            [
             'data_class' => User::class,
-          ]
-      );
-  }
-
+            ]
+        );
+    }
 }
