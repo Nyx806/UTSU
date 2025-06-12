@@ -10,6 +10,7 @@ use App\Repository\CategoriesRepository;
 use App\Repository\AbonnementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Categories;
 
 #[Route('/categories', name: 'categories_')]
 final class CategoriesController extends AbstractController
@@ -26,7 +27,36 @@ final class CategoriesController extends AbstractController
         );
     }
 
-    #[Route('/{id}', name: 'posts')]
+    #[Route('/new', name: 'new')]
+    public function new(Request $request, EntityManagerInterface $em): Response
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour créer une catégorie');
+        }
+
+        if ($request->isMethod('POST')) {
+            $name = $request->request->get('name');
+
+            if (empty($name)) {
+                $this->addFlash('error', 'Le nom de la catégorie ne peut pas être vide');
+                return $this->redirectToRoute('categories_new');
+            }
+
+            $category = new Categories();
+            $category->setName($name);
+            $category->setDangerous(0);
+
+            $em->persist($category);
+            $em->flush();
+
+            $this->addFlash('success', 'Catégorie créée avec succès');
+            return $this->redirectToRoute('categories_index');
+        }
+
+        return $this->render('categories/new.html.twig');
+    }
+
+    #[Route('/show/{id}', name: 'posts')]
     public function showByCategorie(int $id, CategoriesRepository $catRepo, PostsRepository $postRepo): Response
     {
         $categorie = $catRepo->find($id);
