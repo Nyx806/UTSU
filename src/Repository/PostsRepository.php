@@ -184,9 +184,9 @@ class PostsRepository extends ServiceEntityRepository
         ->leftJoin('c.commentaires', 'r')
         ->where('p.id = :id')
         ->setParameter('id', $id)
-      // Order top-level comments.
+        // Order top-level comments.
         ->orderBy('c.creation_date', 'ASC')
-      // Order replies.
+        // Order replies.
         ->addOrderBy('r.creation_date', 'ASC')
         ->getQuery()
         ->getOneOrNullResult();
