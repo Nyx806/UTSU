@@ -61,7 +61,7 @@ RUN printf ':80 {\n    root * /app/public\n    encode gzip\n    php_server\n    
 # Create .env file if it doesn't exist
 RUN [ -f .env ] || touch .env
 
-# Create startup script
+# Copy and set up entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
