@@ -1,0 +1,17 @@
+.git
+.gitignore
+.gitlab
+.gitlab-ci.yml
+node_modules
+vendor
+var
+.env
+.env.*
+*.log
+docker-compose*
+Dockerfile
+.dockerignore
+README.md
+tests
+phpunit.xml.dist
+phpcs.xml.dist 

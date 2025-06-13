@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  app:
+    image: nyx806/utsu:latest
+    ports:
+      - "80:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@db:5432/${DB_NAME:-utsu}?serverVersion=15&charset=utf8
+      - APP_ENV=prod
+      - APP_SECRET=${APP_SECRET:-$(openssl rand -hex 16)}
+      - SERVER_NAME=srv865567.hstgr.cloud
+    volumes:
+      - app_data:/app/var
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=${DB_NAME:-utsu}
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  app_data:
+    driver: local 
