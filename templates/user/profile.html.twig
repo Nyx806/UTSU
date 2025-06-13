@@ -4,24 +4,421 @@
 
 {% block stylesheets %}
 <style>
+    /* Coffee Theme Colors */
     :root {
-        --background: #f5f5f5;
-        --foreground: #4a4a4a;
+        --coffee-50: #faf8f5;
+        --coffee-100: #f4efe6;
+        --coffee-200: #e8dcc9;
+        --coffee-300: #d7c2a3;
+        --coffee-400: #c4a47c;
+        --coffee-500: #b5906a;
+        --coffee-600: #a67c5a;
+        --coffee-700: #8a654c;
+        --coffee-800: #715344;
+        --coffee-900: #5d4439;
+
+        /* Design System Mapping */
+        --background: var(--coffee-50);
+        --foreground: var(--coffee-900);
         --card: #ffffff;
-        --card-foreground: #4a4a4a;
-        --primary: #8b7355;
+        --card-foreground: var(--coffee-800);
+        --primary: var(--coffee-600);
         --primary-foreground: #ffffff;
-        --secondary: #d2c4b6;
-        --secondary-foreground: #4a4a4a;
-        --muted: #e8e0d9;
-        --muted-foreground: #8b7355;
-        --accent: #d2c4b6;
-        --accent-foreground: #4a4a4a;
-        --destructive: #ef4444;
-        --destructive-foreground: #ffffff;
-        --border: #e8e0d9;
-        --input: #e8e0d9;
-        --ring: #8b7355;
+        --secondary: var(--coffee-100);
+        --secondary-foreground: var(--coffee-800);
+        --muted: var(--coffee-200);
+        --muted-foreground: var(--coffee-600);
+        --accent: var(--coffee-300);
+        --accent-foreground: var(--coffee-800);
+        --border: var(--coffee-200);
+        --ring: var(--coffee-500);
+    }
+
+    /* Danger Colors */
+    .cover-banner {
+        height: 8rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        position: relative;
+        overflow: hidden;
+        transition: background-color 0.3s ease;
+        {% if user.dangerous < -1000 %}
+            background-color: #8B0000;
+        {% elseif user.dangerous < -950 %}
+            background-color: #B22222;
+        {% elseif user.dangerous < -900 %}
+            background-color: #FF0000;
+        {% elseif user.dangerous < -850 %}
+            background-color: #FF4500;
+        {% elseif user.dangerous < -800 %}
+            background-color: #FF6347;
+        {% elseif user.dangerous < -750 %}
+            background-color: #FF8C00;
+        {% elseif user.dangerous < -700 %}
+            background-color: #FFB300;
+        {% elseif user.dangerous < -650 %}
+            background-color: #FFD700;
+        {% elseif user.dangerous < -600 %}
+            background-color: #FFC107;
+        {% elseif user.dangerous < -500 %}
+            background-color: #FF9800;
+        {% elseif user.dangerous < -400 %}
+            background-color: #FF5722;
+        {% elseif user.dangerous < -300 %}
+            background-color: #E53935;
+        {% elseif user.dangerous < -200 %}
+            background-color: #D81B60;
+        {% elseif user.dangerous < -100 %}
+            background-color: #BA68C8;
+        {% elseif user.dangerous < -50 %}
+            background-color: #9C27B0;
+        {% elseif user.dangerous <= 0 %}
+            background-color: #673AB7;
+        {% elseif user.dangerous <= 25 %}
+            background-color: #B2DFDB;
+        {% elseif user.dangerous <= 50 %}
+            background-color: #A5D6A7;
+        {% elseif user.dangerous <= 75 %}
+            background-color: #AED581;
+        {% elseif user.dangerous <= 100 %}
+            background-color: #FFF59D;
+        {% elseif user.dangerous <= 150 %}
+            background-color: #FFE082;
+        {% elseif user.dangerous <= 200 %}
+            background-color: #FFECB3;
+        {% elseif user.dangerous <= 300 %}
+            background-color: #D1C4E9;
+        {% elseif user.dangerous <= 400 %}
+            background-color: #B39DDB;
+        {% elseif user.dangerous <= 500 %}
+            background-color: #CE93D8;
+        {% elseif user.dangerous <= 550 %}
+            background-color: #F8BBD0;
+        {% elseif user.dangerous <= 600 %}
+            background-color: #F48FB1;
+        {% elseif user.dangerous <= 700 %}
+            background-color: #FFCCBC;
+        {% elseif user.dangerous <= 800 %}
+            background-color: #FFAB91;
+        {% elseif user.dangerous <= 900 %}
+            background-color: #FFCC80;
+        {% elseif user.dangerous <= 999 %}
+            background-color: #FFF176;
+        {% elseif user.dangerous <= 1499 %}
+            background-color: #E6EE9C;
+        {% else %}
+            background-color: #C5E1A5;
+        {% endif %}
+    }
+
+    /* Grade Badge Styles */
+    .grade-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: bold;
+        text-align: center;
+        margin: 0.5rem 0;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        {% if user.dangerous < -1000 %}
+            background-color: #8B0000;
+        {% elseif user.dangerous < -950 %}
+            background-color: #B22222;
+        {% elseif user.dangerous < -900 %}
+            background-color: #FF0000;
+        {% elseif user.dangerous < -850 %}
+            background-color: #FF4500;
+        {% elseif user.dangerous < -800 %}
+            background-color: #FF6347;
+        {% elseif user.dangerous < -750 %}
+            background-color: #FF8C00;
+        {% elseif user.dangerous < -700 %}
+            background-color: #FFB300;
+        {% elseif user.dangerous < -650 %}
+            background-color: #FFD700;
+        {% elseif user.dangerous < -600 %}
+            background-color: #FFC107;
+        {% elseif user.dangerous < -500 %}
+            background-color: #FF9800;
+        {% elseif user.dangerous < -400 %}
+            background-color: #FF5722;
+        {% elseif user.dangerous < -300 %}
+            background-color: #E53935;
+        {% elseif user.dangerous < -200 %}
+            background-color: #D81B60;
+        {% elseif user.dangerous < -100 %}
+            background-color: #BA68C8;
+        {% elseif user.dangerous < -50 %}
+            background-color: #9C27B0;
+        {% elseif user.dangerous <= 0 %}
+            background-color: #673AB7;
+        {% elseif user.dangerous <= 25 %}
+            background-color: #B2DFDB;
+        {% elseif user.dangerous <= 50 %}
+            background-color: #A5D6A7;
+        {% elseif user.dangerous <= 75 %}
+            background-color: #AED581;
+        {% elseif user.dangerous <= 100 %}
+            background-color: #FFF59D;
+        {% elseif user.dangerous <= 150 %}
+            background-color: #FFE082;
+        {% elseif user.dangerous <= 200 %}
+            background-color: #FFECB3;
+        {% elseif user.dangerous <= 300 %}
+            background-color: #D1C4E9;
+        {% elseif user.dangerous <= 400 %}
+            background-color: #B39DDB;
+        {% elseif user.dangerous <= 500 %}
+            background-color: #CE93D8;
+        {% elseif user.dangerous <= 550 %}
+            background-color: #F8BBD0;
+        {% elseif user.dangerous <= 600 %}
+            background-color: #F48FB1;
+        {% elseif user.dangerous <= 700 %}
+            background-color: #FFCCBC;
+        {% elseif user.dangerous <= 800 %}
+            background-color: #FFAB91;
+        {% elseif user.dangerous <= 900 %}
+            background-color: #FFCC80;
+        {% elseif user.dangerous <= 999 %}
+            background-color: #FFF176;
+        {% elseif user.dangerous <= 1499 %}
+            background-color: #E6EE9C;
+        {% else %}
+            background-color: #C5E1A5;
+        {% endif %}
+    }
+
+    .grade-negative {
+        background: linear-gradient(45deg, #ff0000, #cc0000);
+    }
+    .grade-positive {
+        background: linear-gradient(45deg, #006600, #009900);
+    }
+    .grade-neutral {
+        background: linear-gradient(45deg, var(--coffee-600), var(--coffee-700));
+    }
+
+    /* Custom animations for social interactions */
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes scale-in {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .animate-fade-in {
+        animation: fade-in 0.6s ease-out forwards;
+    }
+
+    .animate-scale-in {
+        animation: scale-in 0.4s ease-out forwards;
+    }
+
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hover-lift:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .social-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        transition: all 0.2s ease;
+        outline: 1px solid black;
+    }
+
+    .social-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transform: translateY(-2px);
+    }
+
+    .stat-card {
+        background: color-mix(in srgb, var(--muted) 50%, transparent);
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        text-align: center;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        outline: 1px solid black;
+    }
+
+    .stat-card:hover {
+        background: color-mix(in srgb, var(--muted) 70%, transparent);
+        transform: scale(1.05);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: none;
+        padding: 0.5rem 1rem;
+        min-width: 120px;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: var(--primary-foreground);
+    }
+
+    .btn-primary:hover {
+        background: color-mix(in srgb, var(--primary) 90%, black);
+    }
+
+    .btn-secondary {
+        background: var(--secondary);
+        color: var(--secondary-foreground);
+    }
+
+    .btn-secondary:hover {
+        background: color-mix(in srgb, var(--secondary) 80%, black);
+    }
+
+    .btn-ghost {
+        background: transparent;
+        color: var(--foreground);
+        padding: 0.25rem;
+        min-width: auto;
+    }
+
+    .btn-ghost:hover {
+        background: var(--accent);
+    }
+
+    .like-button {
+        padding: 0.25rem;
+        border-radius: 0.25rem;
+        transition: all 0.2s ease;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .like-button:hover {
+        transform: scale(1.05);
+    }
+
+    .safe-like-btn:hover {
+        background: color-mix(in srgb, green 10%, transparent);
+    }
+
+    .dangerous-like-btn:hover {
+        background: color-mix(in srgb, red 10%, transparent);
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 0.375rem;
+        padding: 0.125rem 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .badge:hover {
+        transform: scale(1.05);
+    }
+
+    .badge-secondary {
+        background: var(--coffee-200);
+        color: var(--coffee-800);
+    }
+
+    .badge-secondary:hover {
+        background: var(--coffee-300);
+    }
+
+    .community-badge {
+        background: var(--coffee-200);
+        color: var(--coffee-800);
+        padding: 0.125rem 0.5rem;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        transition: all 0.2s ease;
+    }
+
+    .community-badge:hover {
+        background: var(--coffee-300);
+    }
+
+    .cover-banner::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to right, color-mix(in srgb, var(--coffee-400) 20%, transparent), color-mix(in srgb, var(--coffee-500) 20%, transparent));
+        animation: pulse 2s infinite;
+    }
+
+    .profile-img {
+        width: 6rem;
+        height: 6rem;
+        border-radius: 50%;
+        border: 4px solid var(--card);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    .profile-img:hover {
+        transform: scale(1.05);
+    }
+
+    .post-title {
+        color: var(--foreground);
+        transition: color 0.2s ease;
+        text-decoration: none;
+    }
+
+    .post-title:hover {
+        color: var(--primary);
+    }
+
+    .read-more-btn {
+        color: var(--primary);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0.25rem 0;
+    }
+
+    .read-more-btn:hover {
+        color: color-mix(in srgb, var(--primary) 80%, black);
+        background: var(--coffee-100);
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
     }
 </style>
 {% endblock %}
@@ -29,107 +426,312 @@
 {% block body %}
     {% include 'home/_navbar.html.twig' %}
     
-    <div class="min-h-screen bg-[var(--background)] py-10">
-        <div class="max-w-4xl mx-auto">
-            <!-- En-tête du profil -->
-            <div class="bg-[var(--card)] rounded-lg shadow-lg p-6 mb-6">
-                <div class="flex items-center space-x-6">
-                    <div class="w-32 h-32 rounded-full overflow-hidden">
+    <div style="min-height: 100vh; background: var(--background); padding: 2rem 0;">
+        <div style="max-width: 64rem; margin: 0 auto; padding: 0 1rem;">
+            <!-- Profile Header -->
+            <div class="social-card animate-fade-in" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+                <!-- Cover/Banner Area -->
+                <div class="cover-banner"></div>
+                
+                <!-- Profile Info -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div style="display: flex; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap;">
+                        <!-- Profile Picture -->
                         <img src="{{ asset('uploads/pp/' ~ user.ppImg) }}" 
                              alt="Photo de profil de {{ user.username }}" 
-                             class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1">
-                        <h1 class="text-3xl font-bold text-[var(--primary)]">{{ user.username }}</h1>
+                             class="profile-img">
                         
-                        <!-- Statistiques -->
-                        <div class="grid grid-cols-4 gap-4 mt-4">
-                            <div class="text-center">
-                                <p class="text-2xl font-bold text-[var(--primary)]">{{ stats.posts }}</p>
-                                <p class="text-sm text-[var(--muted-foreground)]">Posts</p>
+                        <!-- User Info and Stats -->
+                        <div style="flex: 1; width: 100%; min-width: 300px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <h1 style="font-size: 1.5rem; font-weight: bold; color: var(--foreground); margin: 0; transition: color 0.2s ease;">{{ user.username }}</h1>
+                                    <span class="badge badge-secondary">
+                                        👤 Utilisateur
+                                    </span>
+                                </div>
+                                
+                                <!-- Action Button -->
+                                {% if app.user and app.user != user %}
+                                    <button class="btn {% if user in app.user.abonnements|map(a => a.followedUser) %}btn-secondary{% else %}btn-primary{% endif %}"
+                                            onclick="toggleSubscription({{ user.id }}, this)">
+                                        {% if user in app.user.abonnements|map(a => a.followedUser) %}
+                                            Se désabonner
+                                        {% else %}
+                                            S'abonner
+                                        {% endif %}
+                                    </button>
+                                {% endif %}
                             </div>
-                            <div class="text-center">
-                                <p class="text-2xl font-bold text-[var(--primary)]">{{ stats.followers }}</p>
-                                <p class="text-sm text-[var(--muted-foreground)]">Abonnés</p>
+
+                            <!-- Grade Badge -->
+                            <div class="grade-badge">
+                                {% if user.dangerous < -1000 %}
+                                    Case Prison
+                                {% elseif user.dangerous < -950 %}
+                                    Menace Publique
+                                {% elseif user.dangerous < -900 %}
+                                    Psychopathe
+                                {% elseif user.dangerous < -850 %}
+                                    Tueur en série
+                                {% elseif user.dangerous < -800 %}
+                                    Criminel de guerre
+                                {% elseif user.dangerous < -750 %}
+                                    Danger Biologique
+                                {% elseif user.dangerous < -700 %}
+                                    Nihiliste
+                                {% elseif user.dangerous < -650 %}
+                                    Sociopathe
+                                {% elseif user.dangerous < -600 %}
+                                    Instable
+                                {% elseif user.dangerous < -500 %}
+                                    Détraqué
+                                {% elseif user.dangerous < -400 %}
+                                    Fou Furieux
+                                {% elseif user.dangerous < -300 %}
+                                    Dark Sasuke
+                                {% elseif user.dangerous < -200 %}
+                                    Déviant
+                                {% elseif user.dangerous < -100 %}
+                                    Troublé
+                                {% elseif user.dangerous < -50 %}
+                                    Débile
+                                {% elseif user.dangerous <= 0 %}
+                                    Clown
+                                {% elseif user.dangerous <= 25 %}
+                                    Zen
+                                {% elseif user.dangerous <= 50 %}
+                                    Sage
+                                {% elseif user.dangerous <= 75 %}
+                                    Chad
+                                {% elseif user.dangerous <= 100 %}
+                                    Visionnaire
+                                {% elseif user.dangerous <= 150 %}
+                                    1000 qi
+                                {% elseif user.dangerous <= 200 %}
+                                    Analyste
+                                {% elseif user.dangerous <= 300 %}
+                                    Esprit Brillant
+                                {% elseif user.dangerous <= 400 %}
+                                    Socrate
+                                {% elseif user.dangerous <= 500 %}
+                                    Philosophe
+                                {% elseif user.dangerous <= 550 %}
+                                    Mentor
+                                {% elseif user.dangerous <= 600 %}
+                                    Gourou
+                                {% elseif user.dangerous <= 700 %}
+                                    Initié
+                                {% elseif user.dangerous <= 800 %}
+                                    Maître de la Connaissance
+                                {% elseif user.dangerous <= 900 %}
+                                    Élite
+                                {% elseif user.dangerous <= 999 %}
+                                    Président du Monde
+                                {% elseif user.dangerous <= 1499 %}
+                                    Dieu
+                                {% else %}
+                                    Créateur de l'Univers
+                                {% endif %}
                             </div>
-                            <div class="text-center">
-                                <p class="text-2xl font-bold text-[var(--primary)]">{{ stats.following }}</p>
-                                <p class="text-sm text-[var(--muted-foreground)]">Abonnements</p>
-                            </div>
-                            <div class="text-center">
-                                <p class="text-2xl font-bold text-[var(--primary)]">{{ stats.dangerous }}</p>
-                                <p class="text-sm text-[var(--muted-foreground)]">Dangerosité</p>
+                            
+                            <!-- Stats Grid -->
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
+                                <div class="stat-card">
+                                    <p style="font-size: 1.25rem; font-weight: bold; color: var(--primary); margin: 0;">{{ stats.posts }}</p>
+                                    <p style="font-size: 0.75rem; color: var(--muted-foreground); margin: 0;">Posts</p>
+                                </div>
+                                <div class="stat-card">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 0.25rem;">
+                                        <span style="font-size: 1rem; color: var(--primary);">👥</span>
+                                        <p id="followers-count" style="font-size: 1.25rem; font-weight: bold; color: var(--primary); margin: 0;">{{ stats.followers }}</p>
+                                    </div>
+                                    <p style="font-size: 0.75rem; color: var(--muted-foreground); margin: 0;">Abonnés</p>
+                                </div>
+                                <div class="stat-card">
+                                    <p style="font-size: 1.25rem; font-weight: bold; color: var(--primary); margin: 0;">{{ stats.following }}</p>
+                                    <p style="font-size: 0.75rem; color: var(--muted-foreground); margin: 0;">Abonnements</p>
+                                </div>
+                                <div class="stat-card">
+                                    <p style="font-size: 1.25rem; font-weight: bold; margin: 0;
+                                        {% if stats.dangerous < -1000 %}
+                                            color: #8B0000;
+                                        {% elseif stats.dangerous < -950 %}
+                                            color: #B22222;
+                                        {% elseif stats.dangerous < -900 %}
+                                            color: #FF0000;
+                                        {% elseif stats.dangerous < -850 %}
+                                            color: #FF4500;
+                                        {% elseif stats.dangerous < -800 %}
+                                            color: #FF6347;
+                                        {% elseif stats.dangerous < -750 %}
+                                            color: #FF8C00;
+                                        {% elseif stats.dangerous < -700 %}
+                                            color: #FFB300;
+                                        {% elseif stats.dangerous < -650 %}
+                                            color: #FFD700;
+                                        {% elseif stats.dangerous < -600 %}
+                                            color: #FFC107;
+                                        {% elseif stats.dangerous < -500 %}
+                                            color: #FF9800;
+                                        {% elseif stats.dangerous < -400 %}
+                                            color: #FF5722;
+                                        {% elseif stats.dangerous < -300 %}
+                                            color: #E53935;
+                                        {% elseif stats.dangerous < -200 %}
+                                            color: #D81B60;
+                                        {% elseif stats.dangerous < -100 %}
+                                            color: #BA68C8;
+                                        {% elseif stats.dangerous < -50 %}
+                                            color: #9C27B0;
+                                        {% elseif stats.dangerous <= 0 %}
+                                            color: #673AB7;
+                                        {% elseif stats.dangerous <= 25 %}
+                                            color: #064e3b;
+                                        {% elseif stats.dangerous <= 50 %}
+                                            color: #166534;
+                                        {% elseif stats.dangerous <= 75 %}
+                                            color: #33691e;
+                                        {% elseif stats.dangerous <= 100 %}
+                                            color: #665c00;
+                                        {% elseif stats.dangerous <= 150 %}
+                                            color: #7c4700;
+                                        {% elseif stats.dangerous <= 200 %}
+                                            color: #6d4c00;
+                                        {% elseif stats.dangerous <= 300 %}
+                                            color: #4a148c;
+                                        {% elseif stats.dangerous <= 400 %}
+                                            color: #4527a0;
+                                        {% elseif stats.dangerous <= 500 %}
+                                            color: #6a1b9a;
+                                        {% elseif stats.dangerous <= 550 %}
+                                            color: #880e4f;
+                                        {% elseif stats.dangerous <= 600 %}
+                                            color: #880e4f;
+                                        {% elseif stats.dangerous <= 700 %}
+                                            color: #6d4c41;
+                                        {% elseif stats.dangerous <= 800 %}
+                                            color: #5d4037;
+                                        {% elseif stats.dangerous <= 900 %}
+                                            color: #6d4c00;
+                                        {% elseif stats.dangerous <= 999 %}
+                                            color: #827717;
+                                        {% elseif stats.dangerous <= 1499 %}
+                                            color: #33691e;
+                                        {% else %}
+                                            color: #1b5e20;
+                                        {% endif %}">
+                                        {{ stats.dangerous }}
+                                    </p>
+
+                                    <p style="font-size: 0.75rem; color: var(--muted-foreground); margin: 0;">Dangerosité</p>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Bouton d'abonnement -->
-                        {% if app.user and app.user != user %}
-                            <button class="mt-4 px-6 py-2 rounded-full text-white bg-[var(--primary)] hover:bg-[var(--ring)] transition-colors"
-                                    onclick="toggleSubscription({{ user.id }}, this)">
-                                {% if user in app.user.abonnements|map(a => a.followedUser) %}
-                                    Se désabonner
-                                {% else %}
-                                    S'abonner
-                                {% endif %}
-                            </button>
-                        {% endif %}
                     </div>
                 </div>
             </div>
-
-            <!-- Posts -->
-            <div class="space-y-6">
-                {% for post in posts %}
-                    <div class="bg-[var(--card)] rounded-lg shadow-lg p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h2 class="text-xl font-semibold text-[var(--primary)]">
-                                    <a href="{{ path('posts_detail', {'id': post.id}) }}" class="hover:text-[var(--ring)]">
-                                        {{ post.title }}
-                                    </a>
-                                </h2>
-                                <p class="text-sm text-[var(--muted-foreground)]">
-                                    Publié le {{ post.date|date('d/m/Y à H:i') }}
+            
+            <!-- Posts Section -->
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                {% if posts|length > 0 %}
+                    {% for post in posts %}
+                        <div class="social-card animate-fade-in hover-lift" style="padding: 1.5rem; animation-delay: {{ loop.index0 * 100 }}ms;">
+                            <!-- Post Header -->
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                                        <a href="{{ path('categories_posts', {'id': post.cat.id}) }}" class="badge badge-secondary" style="text-decoration: none;">
+                                            <i class="fas {{ post.cat.icon }}"></i>
+                                            {{ post.cat.name }}
+                                        </a>
+                                        <span style="color: var(--muted-foreground); font-size: 0.75rem;">•</span>
+                                        <span style="color: var(--muted-foreground); font-size: 0.75rem;">
+                                            {{ post.date|date('d/m/Y à H:i') }}
+                                        </span>
+                                    </div>
+                                    <h2 style="font-size: 1.125rem; font-weight: 600; margin: 0 0 0.25rem 0;">
+                                        <a href="{{ path('posts_detail', {'id': post.id}) }}" class="post-title">
+                                            {{ post.title }}
+                                        </a>
+                                    </h2>
+                                </div>
+                                <span class="badge" style="margin-left: 1rem; transition: all 0.2s ease;
+                                    {% if post.dangerous > 50 %}
+                                        background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5;
+                                    {% elseif post.dangerous > 20 %}
+                                        background: #fef3c7; color: #92400e; border: 1px solid #fbbf24;
+                                    {% else %}
+                                        background: #dcfce7; color: #166534; border: 1px solid #86efac;
+                                    {% endif %}">
+                                    Dangerosité: {{ post.dangerous }}
+                                </span>
+                            </div>
+                            
+                            <!-- Post Image -->
+                            {% if post.photo is not null and post.photo is not empty %}
+                                <div style="margin-bottom: 1rem; border-radius: 0.5rem; overflow: hidden; cursor: pointer;">
+                                    <img src="{{ asset('uploads/posts/' ~ post.photo) }}" 
+                                         alt="Image du post"
+                                         class="hover-lift"
+                                         style="width: 100%; height: 16rem; object-fit: cover; transition: transform 0.3s ease;">
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Post Content -->
+                            <div style="margin-bottom: 1rem;">
+                                <p style="color: var(--foreground); line-height: 1.6; margin: 0;">
+                                    {{ post.contenu|length > 200 ? post.contenu|slice(0, 200) ~ '...' : post.contenu }}
                                 </p>
                             </div>
-                            <span class="px-3 py-1 rounded-full text-sm font-medium
-                                {% if post.dangerous > 50 %}
-                                    bg-red-100 text-red-800
-                                {% elseif post.dangerous > 20 %}
-                                    bg-yellow-100 text-yellow-800
-                                {% else %}
-                                    bg-green-100 text-green-800
-                                {% endif %}">
-                                Dangerosité: {{ post.dangerous }}
-                            </span>
-                        </div>
-                        
-                        {% if post.photo %}
-                            <div class="mb-4">
-                                <img src="{{ asset('uploads/posts/' ~ post.photo) }}" 
-                                     alt="Image du post" 
-                                     class="rounded-lg w-full object-cover max-h-96">
+                            
+                            <!-- Post Footer -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; flex-wrap: wrap;">
+                                <a href="{{ path('posts_detail', {'id': post.id}) }}" class="read-more-btn">
+                                    Lire la suite →
+                                </a>
+                                
+                                <div style="display: flex; align-items: center; gap: 1.5rem; font-size: 0.875rem; color: var(--muted-foreground);">
+                                    <!-- Safe Like Button -->
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <button class="btn btn-ghost safe-like-btn like-button" 
+                                                data-post-id="{{ post.id }}"
+                                                onclick="handleSafeLike({{ post.id }}, this)">
+                                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 1rem; height: 1rem; color: #059669;">
+                                              <path d="M12 2L4 5v6c0 5.55 3.84 10.74 8 11 4.16-.26 8-5.45 8-11V5l-8-3z"/>
+                                              <path fill="white" d="M10.5 14.5l-2.5-2.5 1.41-1.41L10.5 11.67l4.59-4.59L16.5 8.5z"/>
+                                            </svg>
+                                        </button>
+                                        <span id="safe-likes-{{ post.id }}" style="font-weight: 600; color: #059669;">{{ post.countSafeLikes() }}</span>
+                                    </div>
+
+                                    <!-- Dangerous Like Button -->
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <button class="btn btn-ghost dangerous-like-btn like-button" 
+                                                data-post-id="{{ post.id }}"
+                                                onclick="handleDangerousLike({{ post.id }}, this)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 1rem; height: 1rem; color: #dc2626;">
+                                                <path d="M1 21h22L12 2 1 21z"/>
+                                                <path fill="white" d="M13 16h-2v2h2v-2zm0-6h-2v4h2v-4z"/>
+                                            </svg>
+                                        </button>
+                                        <span id="dangerous-likes-{{ post.id }}" style="font-weight: 600; color: #dc2626;">{{ post.countDangerousLikes() }}</span>
+                                    </div>
+
+                                    <span style="cursor: pointer; transition: all 0.2s ease; transform: scale(1);" 
+                                          onmouseover="this.style.color='var(--primary)'; this.style.transform='scale(1.05)';"
+                                          onmouseout="this.style.color='var(--muted-foreground)'; this.style.transform='scale(1)';">
+                                        💬 {{ post.commentaires|length }} commentaires
+                                    </span>
+                                </div>
                             </div>
-                        {% endif %}
-                        
-                        <p class="text-[var(--foreground)]">{{ post.contenu|slice(0, 200) }}{% if post.contenu|length > 200 %}...{% endif %}</p>
-                        
-                        <div class="mt-4 flex justify-between items-center">
-                            <a href="{{ path('posts_detail', {'id': post.id}) }}" 
-                               class="text-[var(--primary)] hover:text-[var(--ring)]">
-                                Lire la suite →
-                            </a>
-                            <div class="flex items-center space-x-4">
-                                <span class="text-[var(--muted-foreground)]">
-                                    {{ post.likes|length }} likes
-                                </span>
-                                <span class="text-[var(--muted-foreground)]">
-                                    {{ post.commentaires|length }} commentaires
-                                </span>
-                            </div>
                         </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="animate-fade-in" style="text-align: center; padding: 3rem 0;">
+                        <p style="color: var(--muted-foreground); font-size: 1.125rem; margin: 0;">Aucun post publié pour le moment</p>
                     </div>
-                {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>
@@ -151,9 +753,10 @@
             
             // Mettre à jour le texte du bouton
             button.textContent = data.subscribed ? 'Se désabonner' : 'S\'abonner';
+            button.className = data.subscribed ? 'btn btn-secondary' : 'btn btn-primary';
             
             // Mettre à jour le compteur d'abonnés
-            const followersCount = document.querySelector('.text-2xl.font-bold:nth-child(2)');
+            const followersCount = document.getElementById('followers-count');
             if (followersCount) {
                 followersCount.textContent = data.followersCount;
             }
@@ -161,6 +764,108 @@
         .catch(error => {
             console.error('Error:', error);
             alert('Une erreur est survenue');
+        });
+    }
+
+    function handleSafeLike(postId, button) {
+        fetch(`/posts/${postId}/toggle-like`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ type: 'safe' })
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.message === 'Like toggled successfully') {
+                const safeLikesSpan = document.getElementById(`safe-likes-${postId}`);
+                const dangerousLikesSpan = document.getElementById(`dangerous-likes-${postId}`);
+                
+                if (safeLikesSpan) {
+                    safeLikesSpan.textContent = data.safeLikes;
+                }
+                if (dangerousLikesSpan) {
+                    dangerousLikesSpan.textContent = data.dangerousLikes;
+                }
+
+                // Mise à jour visuelle des boutons
+                const safeBtn = document.querySelector(`.safe-like-btn[data-post-id="${postId}"]`);
+                const dangerBtn = document.querySelector(`.dangerous-like-btn[data-post-id="${postId}"]`);
+                
+                if (data.action === 'added') {
+                    safeBtn.classList.add('active');
+                    dangerBtn.classList.remove('active');
+                } else if (data.action === 'removed') {
+                    safeBtn.classList.remove('active');
+                } else if (data.action === 'updated') {
+                    safeBtn.classList.add('active');
+                    dangerBtn.classList.remove('active');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function handleDangerousLike(postId, button) {
+        fetch(`/posts/${postId}/toggle-like`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ type: 'dangerous' })
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.message === 'Like toggled successfully') {
+                const safeLikesSpan = document.getElementById(`safe-likes-${postId}`);
+                const dangerousLikesSpan = document.getElementById(`dangerous-likes-${postId}`);
+                
+                if (safeLikesSpan) {
+                    safeLikesSpan.textContent = data.safeLikes;
+                }
+                if (dangerousLikesSpan) {
+                    dangerousLikesSpan.textContent = data.dangerousLikes;
+                }
+
+                // Mise à jour visuelle des boutons
+                const safeBtn = document.querySelector(`.safe-like-btn[data-post-id="${postId}"]`);
+                const dangerBtn = document.querySelector(`.dangerous-like-btn[data-post-id="${postId}"]`);
+                
+                if (data.action === 'added') {
+                    dangerBtn.classList.add('active');
+                    safeBtn.classList.remove('active');
+                } else if (data.action === 'removed') {
+                    dangerBtn.classList.remove('active');
+                } else if (data.action === 'updated') {
+                    dangerBtn.classList.add('active');
+                    safeBtn.classList.remove('active');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
         });
     }
     </script>
