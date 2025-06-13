@@ -2,111 +2,155 @@
 
 {% block title %}Mon Compte{% endblock %}
 
+{% block stylesheets %}
+<style>
+:root {
+  --coffee-50: #faf8f5;
+  --coffee-100: #f4efe6;
+  --coffee-200: #e8dcc9;
+  --coffee-300: #d7c2a3;
+  --coffee-400: #c4a47c;
+  --coffee-500: #b5906a;
+  --coffee-600: #a67c5a;
+  --coffee-700: #8a654c;
+  --coffee-800: #715344;
+  --coffee-900: #5d4439;
+}
+</style>
+{% endblock %}
+
 {% block body %}
 {% include 'home/_navbar.html.twig' %}
-<div class="min-h-screen bg-gray-100 py-10">
-    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow p-6">
-        <h1 class="text-2xl font-bold text-blue-600 mb-6">Mon compte</h1>
-
-        {# Affichage des informations du compte #}
-        <div class="space-y-6">
-            {# Photo de profil #}
-            <div class="flex items-center space-x-4">
-                <div class="w-24 h-24 rounded-full overflow-hidden">
-                    <img src="{{ asset('uploads/pp/' ~ app.user.getPpImg()) }}" 
-                         alt="Photo de profil" 
-                         class="w-full h-full object-cover">
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold text-gray-800">{{ app.user.username }}</h2>
-                    <p class="text-gray-600">{{ app.user.email }}</p>
-                </div>
+<div class="min-h-screen" style="background-color: var(--coffee-50);">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <!-- Header avec icône -->
+        <div class="mb-8">
+            <div class="flex items-center space-x-3 mb-2">
+                <svg class="w-7 h-7" style="color: var(--coffee-600);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <h1 class="text-3xl font-bold" style="color: var(--coffee-900);">Paramètres du compte</h1>
             </div>
-
-            {# Description #} 
-
-            {# Statistiques #}
-            <div class="grid grid-cols-3 gap-4 py-4 border-t border-b">
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-blue-600">{{ app.user.posts|length }}</p>
-                    <p class="text-sm text-gray-600">Posts</p>
-                </div>
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-blue-600">{{ app.user.commentaires|length }}</p>
-                    <p class="text-sm text-gray-600">Commentaires</p>
-                </div>
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-blue-600">{{ app.user.abonnements|length }}</p>
-                    <p class="text-sm text-gray-600">Abonnements</p>
-                </div>
-            </div>
-
-            {# Bouton de modification #}
-            <div class="text-right">
-                <button onclick="toggleEditForm()" 
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                    Modifier mon profil
-                </button>
-            </div>
+            <p style="color: var(--coffee-700);">Gérez votre profil et vos préférences de compte</p>
         </div>
 
-        {# Formulaire de modification (caché par défaut) #}
-        <div id="editForm" class="hidden mt-6 pt-6 border-t">
-            {{ form_start(accountForm) }}
-                <div class="space-y-4">
-                    {# Email #}
-                    <div class="form-group">
-                        {{ form_label(accountForm.email, 'Email', {
-                            'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}
-                        }) }}
-                        {{ form_widget(accountForm.email, {
-                            'attr': {
-                                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
-                            }
-                        }) }}
-                        {{ form_errors(accountForm.email) }}
+        <div class="space-y-6">
+            <!-- Section Profil -->
+            <div class="bg-white rounded-lg shadow-sm" style="border: 1px solid var(--coffee-300);">
+                <div class="px-4 py-3" style="background: linear-gradient(to right, var(--coffee-50), var(--coffee-100)); border-bottom: 1px solid var(--coffee-200);">
+                    <h3 class="font-semibold flex items-center space-x-3" style="color: var(--coffee-800);">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span>Profil</span>
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-24 h-24 rounded-full overflow-hidden border-2" style="border-color: var(--coffee-300);">
+                            <img src="{{ asset('uploads/pp/' ~ app.user.getPpImg()) }}" 
+                                 alt="Photo de profil" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold" style="color: var(--coffee-800);">{{ app.user.username }}</h2>
+                            <p style="color: var(--coffee-600);">{{ app.user.email }}</p>
+                        </div>
                     </div>
 
-                    {# Username #}
-                    <div class="form-group">
-                        {{ form_label(accountForm.username, 'Nom d\'utilisateur', {
-                            'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}
-                        }) }}
-                        {{ form_widget(accountForm.username, {
-                            'attr': {
-                                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
-                            }
-                        }) }}
-                        {{ form_errors(accountForm.username) }}
+                    <!-- Statistiques -->
+                    <div class="grid grid-cols-3 gap-4 py-6 mt-6" style="border-top: 1px solid var(--coffee-200); border-bottom: 1px solid var(--coffee-200);">
+                        <div class="text-center">
+                            <p class="text-2xl font-bold" style="color: var(--coffee-600);">{{ app.user.posts|length }}</p>
+                            <p class="text-sm" style="color: var(--coffee-700);">Posts</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold" style="color: var(--coffee-600);">{{ app.user.commentaires|length }}</p>
+                            <p class="text-sm" style="color: var(--coffee-700);">Commentaires</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold" style="color: var(--coffee-600);">{{ app.user.abonnements|length }}</p>
+                            <p class="text-sm" style="color: var(--coffee-700);">Abonnements</p>
+                        </div>
                     </div>
 
-                    {# Photo de profil #}
-                    <div class="form-group">
-                        {{ form_label(accountForm.pp_img, 'Photo de profil', {
-                            'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}
-                        }) }}
-                        {{ form_widget(accountForm.pp_img, {
-                            'attr': {
-                                'class': 'block w-full text-sm text-gray-700 border border-gray-300 rounded-lg file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 hover:file:bg-blue-700 transition'
-                            }
-                        }) }}
-                        {{ form_errors(accountForm.pp_img) }}
-                    </div>
-
-                    {# Boutons #}
-                    <div class="flex justify-end space-x-4">
-                        <button type="button" 
-                                onclick="toggleEditForm()" 
-                                class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
-                            Annuler
-                        </button>
-                        <button type="submit" 
-                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                            Enregistrer
+                    <div class="text-right mt-6">
+                        <button onclick="toggleEditForm()" 
+                                class="px-4 py-2 rounded-lg transition" 
+                                style="background-color: var(--coffee-600); color: white; hover:background-color: var(--coffee-700);">
+                            Modifier mon profil
                         </button>
                     </div>
                 </div>
-            {{ form_end(accountForm) }}
+            </div>
+
+            <!-- Formulaire de modification -->
+            <div id="editForm" class="hidden">
+                <div class="bg-white rounded-lg shadow-sm" style="border: 1px solid var(--coffee-300);">
+                    <div class="px-4 py-3" style="background: linear-gradient(to right, var(--coffee-50), var(--coffee-100)); border-bottom: 1px solid var(--coffee-200);">
+                        <h3 class="font-semibold" style="color: var(--coffee-800);">Modifier le profil</h3>
+                    </div>
+                    <div class="p-6">
+                        {{ form_start(accountForm) }}
+                            <div class="space-y-4">
+                                <div class="form-group">
+                                    {{ form_label(accountForm.email, 'Email', {
+                                        'label_attr': {'class': 'block text-sm font-medium mb-1', 'style': 'color: var(--coffee-800);'}
+                                    }) }}
+                                    {{ form_widget(accountForm.email, {
+                                        'attr': {
+                                            'class': 'w-full px-4 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2',
+                                            'style': 'border: 1px solid var(--coffee-300); color: var(--coffee-900);'
+                                        }
+                                    }) }}
+                                    {{ form_errors(accountForm.email) }}
+                                </div>
+
+                                <div class="form-group">
+                                    {{ form_label(accountForm.username, 'Nom d\'utilisateur', {
+                                        'label_attr': {'class': 'block text-sm font-medium mb-1', 'style': 'color: var(--coffee-800);'}
+                                    }) }}
+                                    {{ form_widget(accountForm.username, {
+                                        'attr': {
+                                            'class': 'w-full px-4 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2',
+                                            'style': 'border: 1px solid var(--coffee-300); color: var(--coffee-900);'
+                                        }
+                                    }) }}
+                                    {{ form_errors(accountForm.username) }}
+                                </div>
+
+                                <div class="form-group">
+                                    {{ form_label(accountForm.pp_img, 'Photo de profil', {
+                                        'label_attr': {'class': 'block text-sm font-medium mb-1', 'style': 'color: var(--coffee-800);'}
+                                    }) }}
+                                    {{ form_widget(accountForm.pp_img, {
+                                        'attr': {
+                                            'class': 'block w-full text-sm rounded-lg file:border-0 file:px-4 file:py-2 file:mr-4 transition',
+                                            'style': 'border: 1px solid var(--coffee-300); color: var(--coffee-900); file:bg-coffee-600 file:text-white hover:file:bg-coffee-700'
+                                        }
+                                    }) }}
+                                    {{ form_errors(accountForm.pp_img) }}
+                                </div>
+
+                                <div class="flex justify-end space-x-4 mt-6">
+                                    <button type="button" 
+                                            onclick="toggleEditForm()" 
+                                            class="px-4 py-2 rounded-lg transition"
+                                            style="border: 1px solid var(--coffee-300); color: var(--coffee-700); hover:bg-coffee-50">
+                                        Annuler
+                                    </button>
+                                    <button type="submit" 
+                                            class="px-4 py-2 rounded-lg transition"
+                                            style="background-color: var(--coffee-600); color: white; hover:background-color: var(--coffee-700);">
+                                        Enregistrer
+                                    </button>
+                                </div>
+                            </div>
+                        {{ form_end(accountForm) }}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

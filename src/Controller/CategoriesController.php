@@ -22,7 +22,7 @@ final class CategoriesController extends AbstractController
     public function index(
         CategoriesRepository $categoriesController,
         Request $request,
-        AbonnementRepository $abonnementRepository
+        AbonnementRepository $abonnementRepository,
     ): Response {
         $search = $request->query->get('search', '');
         $zone = $request->query->get('zone', '');
@@ -170,7 +170,7 @@ final class CategoriesController extends AbstractController
     public function toggleSubscription(
         int $id,
         CategoriesRepository $categoriesRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): JsonResponse {
         $category = $categoriesRepository->find($id);
         if (!$category) {
@@ -182,18 +182,18 @@ final class CategoriesController extends AbstractController
         $user = $this->getUser();
         if (!$user) {
             return $this->json([
-                'error' => 'You must be logged in to join a category'
+            'error' => 'You must be logged in to join a category',
             ], Response::HTTP_UNAUTHORIZED);
         }
 
       // Utilisation du QueryBuilder pour éviter le warning SQL injection.
         $qb = $entityManager->createQueryBuilder();
         $qb->select('a')
-            ->from(Abonnement::class, 'a')
-            ->where('a.userID = :userId')
-            ->andWhere('a.category = :categoryId')
-            ->setParameter('userId', $user)
-            ->setParameter('categoryId', $category);
+        ->from(Abonnement::class, 'a')
+        ->where('a.userID = :userId')
+        ->andWhere('a.category = :categoryId')
+        ->setParameter('userId', $user)
+        ->setParameter('categoryId', $category);
         $existingAbonnement = $qb->getQuery()->getOneOrNullResult();
 
         if ($existingAbonnement) {

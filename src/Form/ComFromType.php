@@ -19,25 +19,25 @@ class ComFromType extends AbstractType
             'img',
             FileType::class,
             [
-                'label' => 'Photo',
-                'mapped' => false,
-                'required' => false,
-                'attr' => [
-                  'accept' => 'image/*',
-                ],
-              ]
+            'label' => 'Photo',
+            'mapped' => false,
+            'required' => false,
+            'attr' => [
+              'accept' => 'image/*',
+            ],
+            ]
         )
         ->add(
             'video',
             FileType::class,
             [
-                'label' => 'Video',
-                'mapped' => false,
-                'required' => false,
-                'attr' => [
-                  'accept' => 'video/*',
-                ],
-              ]
+            'label' => 'Video',
+            'mapped' => false,
+            'required' => false,
+            'attr' => [
+              'accept' => 'video/*',
+            ],
+            ]
         );
     }
 

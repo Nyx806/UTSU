@@ -23,13 +23,13 @@ class PostsFromType extends AbstractType
             'photo',
             FileType::class,
             [
-                'label' => 'Photo',
-                'mapped' => false,
-                'required' => false,
-                'attr' => [
-                  'accept' => 'image/*',
-                ],
-              ]
+            'label' => 'Photo',
+            'mapped' => false,
+            'required' => false,
+            'attr' => [
+              'accept' => 'image/*',
+            ],
+            ]
         );
 
       // Ne montre la catégorie que si show_category vaut true.
